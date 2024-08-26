@@ -27,7 +27,10 @@ update = function(kart)
 	    gfx.print txt, 960-txt.len*20-10, 520, color.red, "large"
 	    gfx.line 960, 520, 960-txt.len*20-10, 520, color.red, 5
 	end if
-	end function
+	txt = "Round: " + level.section + " / 10" 
+	gfx.print txt, 960/2-txt.len*10, 600, color.white, "large"
+	gfx.line 960/2-txt.len*10, 600, 960/2+txt.len*10, 600, color.white, 5
+end function
 
 getUpgrades = function(obj)
 	if not obj isa kart.Kart then return null
@@ -86,8 +89,10 @@ levelComplete = function
 		camera.update(player.x, player.y)
 	end while
 	wait 0.5
+
 	gfx.clear
-    bg = new Sprite
+	sound.skid.adjust 0
+	bg = new Sprite
     bg.image = images.woodPanel
     bg.y = -320 + disp.scrollY
     bg.x = 960/2 + disp.scrollX
@@ -100,6 +105,65 @@ levelComplete = function
 	camera.update(0, 0)
 	bg.y = 320
 	bg.x = 960/2
+
+	if winner != player then
+		medals = []
+
+		bronze = new Sprite
+		bronze.image = images.bronzeMedal
+		bronze.x = 960*(3/8) + disp.scrollX; bronze.y = 640/2 + disp.scrollY; bronze.scale = 4
+		disp.sprites.push bronze
+		medals.push bronze
+
+		if player.losses < 2 then
+			silver = new Sprite
+			silver.image = images.silverMedal
+			silver.x = 960*(4/8) + disp.scrollX; silver.y = 640/2 + disp.scrollY; silver.scale = 4
+			disp.sprites.push silver
+			medals.push silver
+		end if
+
+		if player.losses == 0 then
+			gold = new Sprite
+			gold.image = images.goldMedal
+			gold.x = 960*(5/8) + disp.scrollX; gold.y = 640/2 + disp.scrollY; gold.scale = 4
+			disp.sprites.push gold
+			medals.push gold
+		end if
+
+		for a in range(0, 255, 5)
+			for m in medals
+		    	m.tint = color.rgba(255, 255, 255, a)
+			end for
+		    yield
+		end for
+
+		chosenMedal = medals[-1]
+
+		animStart = time
+		startX = chosenMedal.x 
+		startY = chosenMedal.y
+		while time < animStart + 2
+			chosenMedal.x = startX + (mathUtil.randRange(-10, 10) * (time - animStart))
+			chosenMedal.y = startY + (mathUtil.randRange(-10, 10) * (time - animStart))
+		end while
+		disp.sprites.removeVal chosenMedal
+
+		wait 0.5
+
+		for a in range(255, 0, -5)
+			for m in medals
+		    	m.tint = color.rgba(255, 255, 255, a)
+			end for
+		    yield
+		end for
+		for m in medals
+			disp.sprites.removeVal m
+		end for
+		player.losses += 1
+		playerLost = false
+		if player.losses >= 3 then endGame
+	end if
 
 	if file.exists(level.levelPath + "1-"  + (level.section+1) + ".dat") then
 		txt = "Level Complete! Choose an upgrade."
@@ -128,7 +192,6 @@ levelComplete = function
 		next.init
 
 		objects.clear
-		sound.skid.adjust 0
 		camera.update(0, 0)
 
 		upgradeButtons = []
@@ -184,62 +247,72 @@ levelComplete = function
 			end for
     	end while
 	else
-		txt = "Thank you for playing!"
-		gfx.print txt, 960/2 - txt.len*20/2, 600, color.white, "large"
-
-		menu = new ui.Button
-    	menu.x = 960/2; menu.y = 120
-    	menu.text = "RESTART"
-		menu.init
-
-		trophy = new Sprite
-		trophy.image = trophyImg
-		trophy.x = 960/2
-		trophy.y = 440
-		trophy.scale = 4
-
-		if player.wins >= 5 then
-			txt = "You got " + player.wins + " wins!"
-			gfx.print txt, 960/2 - txt.len*10, 260, color.white, "large"
-			txt = "And won a "
-			if player.wins == 10 then
-				trophy.tint = color.aqua
-				txt += "PLATINUM Trophy!"
-			else if player.wins >= 8 then
-				trophy.tint = color.yellow
-				txt += "GOLD Trophy!"
-			else if player.wins >= 6 then
-				trophy.tint = color.silver
-				txt += "SILVER Trophy!"
-			else if player.wins >= 5 then
-				trophy.tint = color.orange
-				txt += "BRONZE Trophy!"
-			end if
-			gfx.print txt, 960/2 - txt.len*10, 230, color.white, "large"
-			txt = "Play again?"
-			gfx.print txt, 960/2 - txt.len*10, 200, color.white, "large"
-			disp.sprites.push trophy
-		else
-			txt = "You got " + player.wins + " wins..."
-			gfx.print txt, 960/2 - txt.len*10, 250, color.white, "large"
-			txt = "Try again?"
-			gfx.print txt, 960/2 - txt.len*10, 200, color.white, "large"
-		end if
-
-		objects.clear
-
-		camera.update(0, 0)
-
-    	while true  // (press Control-C to exit)
-    	    yield
-    	    // The mouse button is down.  Check each of our buttons, 
-    	    // and do whatever they should do if clicked.
-			if menu.isClicked then
-				reset; run "main"
-				return
-    	    end if
-    	end while
+		endGame
 	end if
+end function
+
+endGame = function
+
+	if highscore.isHighScore(player.score) then
+		name = "BRU"//highscore.postNewScoreDialog
+		highscore.addScore player.score, name
+		highscore.saveScores
+	end if
+
+	txt = "Thank you for playing!"
+	gfx.print txt, 960/2 - txt.len*20/2, 580, color.white, "large"
+	menu = new ui.Button
+	menu.x = 960/2; menu.y = 100
+	menu.text = "RESTART"
+	menu.init
+	trophy = new Sprite
+	trophy.image = trophyImg
+	trophy.x = 960/2
+	trophy.y = 440
+	trophy.scale = 4
+
+	if player.wins >= 5 then
+		txt = "You got " + player.wins + " wins!"
+		gfx.print txt, 960/2 - txt.len*10, 260, color.white, "large"
+		txt = "And won a "
+		if player.wins == 10 then
+			trophy.tint = color.aqua
+			txt += "PLATINUM Trophy!"
+		else if player.wins >= 8 then
+			trophy.tint = color.yellow
+			txt += "GOLD Trophy!"
+		else if player.wins >= 6 then
+			trophy.tint = color.silver
+			txt += "SILVER Trophy!"
+		else if player.wins >= 3 then
+			trophy.tint = color.orange
+			txt += "BRONZE Trophy!"
+		end if
+		gfx.print txt, 960/2 - txt.len*10, 230, color.white, "large"
+		txt = "And lasted " + level.section + " Rounds."
+		gfx.print txt, 960/2 - txt.len*10, 200, color.white, "large"
+		txt = "Play again?"
+		gfx.print txt, 960/2 - txt.len*10, 170, color.white, "large"
+		disp.sprites.push trophy
+	else
+		txt = "You got " + player.wins + " wins..."
+		gfx.print txt, 960/2 - txt.len*10, 260, color.white, "large"
+		txt = "And lasted " + level.section + " Rounds."
+		gfx.print txt, 960/2 - txt.len*10, 230, color.white, "large"
+		txt = "Try again?"
+		gfx.print txt, 960/2 - txt.len*10, 200, color.white, "large"
+	end if
+	objects.clear
+	camera.update(0, 0)
+	while true  // (press Control-C to exit)
+	    yield
+	    // The mouse button is down.  Check each of our buttons, 
+	    // and do whatever they should do if clicked.
+		if menu.isClicked then
+			reset; run "main"
+			return
+	    end if
+	end while
 end function
 
 Button = new UpdatableSprite

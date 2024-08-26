@@ -272,7 +272,7 @@ Kart.checkCheckpoints = function
 					self.currentLap += 1
 					self.score += 200
 				end if
-				ui.update
+				ui.update self
 			end if
 		end if
 	end for
@@ -449,6 +449,7 @@ PlayerKart.sprites = []
 PlayerKart.maxDriftBoost = 400
 PlayerKart.driftBoost = 0
 PlayerKart.currentUpgrades = []
+PlayerKart.losses = 0
 
 PlayerKart.init = function
     super.init
