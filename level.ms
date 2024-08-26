@@ -36,6 +36,8 @@ setup = function
 		tintLevel color.rgb(170, 90, 150)
 	else if section > 3 then
 		tintLevel color.rgb(255, 200, 200)
+	else
+		tintLevel color.rgb(255, 255, 255)
 	end if
 
 	updatable.all = [player, enemy]

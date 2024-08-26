@@ -31,3 +31,14 @@ print "Car images loaded!"
 print "IMAGES LOADED!"
 
 woodPanel = file.loadImage("pics/WoodBG.png")
+
+tileset2 = []
+tileset2.push file.loadImage("pics/tileset2a.png")
+tileset2.push file.loadImage("pics/tileset2b.png")
+tileset2.push file.loadImage("pics/tileset2c.png")
+tileset2.push file.loadImage("pics/tileset2d.png")
+tileset2.push file.loadImage("pics/tileset2e.png")
+
+bronzeMedal = file.loadImage("pics/bronzeMedal.png")
+silverMedal = file.loadImage("pics/silverMedal.png")
+goldMedal = file.loadImage("pics/goldMedal.png")

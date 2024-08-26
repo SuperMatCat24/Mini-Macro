@@ -1,5 +1,5 @@
 tileSetPath:pics/tileset.png
-tileSetPath2:pics/tileset2.png
+tileSetPath2:pics/tileset2a.png
 tileSetTileSize:[16, 16]
 cellSize:[64, 64]
 overlap:[0, 0]

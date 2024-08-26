@@ -13,6 +13,7 @@ ensureImport "kart"
 ensureImport "pathUtil"
 ensureImport "ui"
 ensureImport "menu"
+ensureImport "highscore"
 
 musicVol = 0.2
 soundVol = 2
@@ -121,6 +122,10 @@ ui.update player
 ui.update enemy
 
 coinTimer = 0
+
+lastTileUpdate = time
+curTileFrame = 0
+
 lastTime = time
 while true
     yield
@@ -131,6 +136,13 @@ while true
     if coinTimer > 25 then
         objects.regenCoins
         coinTimer = 0
+    end if
+
+    if time > lastTileUpdate + 0.15 then
+        lastTileUpdate = time
+        curTileFrame += 1
+        curTileFrame = (curTileFrame + images.tileset2.len) % images.tileset2.len
+        ground.tileSet = images.tileset2[curTileFrame]
     end if
 
     updatable.update dt
