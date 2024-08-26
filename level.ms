@@ -29,6 +29,15 @@ setup = function
 	kart.clear
 	
 	tileUtil.loadFromFile lvl, walls, ground
+
+	if section == 10 then
+		tintLevel color.rgb(120, 70, 150)
+	else if section > 7 then
+		tintLevel color.rgb(170, 90, 150)
+	else if section > 3 then
+		tintLevel color.rgb(255, 200, 200)
+	end if
+
 	updatable.all = [player, enemy]
 	processLevel
 	outer.checkpoints = []
@@ -116,6 +125,15 @@ processLevel = function
 			else if c == 39 then
 				objects.Coin.place x, y
 			end if
+		end for
+	end for
+end function
+
+tintLevel = function(tint)
+	for y in range(0, walls.extent[1]-1)
+		for x in range(0, walls.extent[0]-1)
+			walls.setCellTint x, y, tint
+			ground.setCellTint x, y, tint
 		end for
 	end for
 end function
