@@ -241,7 +241,9 @@ Kart.checkMud = function
 	col = floor(self.x / 64)
 	row = floor(self.y / 64)
 	tile = ground.cell(col, row)
-	if level.mud.indexOf(tile) != null then return level.mud.indexOf(tile)
+	for tileData in level.mud
+		if tileData[0] == tile then return tileData[1]
+	end for
 	return -1
 end function
 
@@ -249,7 +251,9 @@ Kart.checkWater = function
 	col = floor(self.x / 64)
 	row = floor(self.y / 64)
 	tile = ground.cell(col, row)
-	if level.water.indexOf(tile) != null then return level.water.indexOf(tile)
+	for tileData in level.water
+		if tileData[0] == tile then return tileData[1]
+	end for
 	return -1
 end function
 
@@ -344,7 +348,7 @@ Kart.updateMaxSpeed = function(shrinkMod)
 	inWater = self.checkWater
 	if inWater != -1 then
 		if self.scale >= 3.9 then
-			self.currentMaxSpeed = mathUtil.moveTowards(self.currentMaxSpeed, self.mudSpeed * shrinkMod * self.speedModifier/(inWater+1), 700*self.mudModifier*(inWater+1)*dt)
+			self.currentMaxSpeed = mathUtil.moveTowards(self.currentMaxSpeed, self.mudSpeed * shrinkMod * self.speedModifier*(inWater), 700*self.mudModifier*dt)
 			self.tint = "#2222AA44"
 		else
 			self.currentMaxSpeed = mathUtil.moveTowards(self.currentMaxSpeed, self.maxSpeed*0.85 * shrinkMod * self.speedModifier, 1000*dt)
@@ -354,7 +358,7 @@ Kart.updateMaxSpeed = function(shrinkMod)
 		self.tint = "#FFFFFFFF"
     	mudType = self.checkMud
 		if mudType != -1 then
-			self.currentMaxSpeed = mathUtil.moveTowards(self.currentMaxSpeed, self.mudSpeed * shrinkMod * self.speedModifier/(mudType+1), 500*self.mudModifier*(mudType+1)*dt)
+			self.currentMaxSpeed = mathUtil.moveTowards(self.currentMaxSpeed, self.mudSpeed * shrinkMod * self.speedModifier*(mudType), 500*self.mudModifier*dt)
     	else
     	    self.currentMaxSpeed = mathUtil.moveTowards(self.currentMaxSpeed, self.maxSpeed * shrinkMod * self.speedModifier, 1000*dt)
 		end if

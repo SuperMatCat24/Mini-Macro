@@ -6,8 +6,8 @@ solid = []
 for i in range(32, 64)
 	solid.push i
 end for
-mud = [0, 1]
-water = [8]
+mud = [[0, 0.65], [1, 0.3], [4, 0.5]]
+water = [[12, 0.4]]
 
 act = 1
 section = 1
@@ -18,7 +18,7 @@ laps = 3
 
 levelPath = "/usr/levels/"
 
-setup = function()
+setup = function
 	lvl = levelPath + act + "-" + section + ".dat"
 	outer.name = act + "-" + section
 	walls.clear
