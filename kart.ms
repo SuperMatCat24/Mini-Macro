@@ -485,7 +485,7 @@ PlayerKart.update = function(dt = 0.0167)
 		col = floor(self.x / 64)
 		row = floor(self.y / 64)
 		tile = ground.cell(col, row)
-		if tile != null then mudAccel = 0.5
+		if tile != null then mudAccel = 0.7
 		if accelInput != 0 then
 			accelFactor = self.accel * self.accelModifier * mudAccel * accelInput * dt
 			self.vx += tdx * accelFactor
@@ -638,7 +638,7 @@ EnemyKart.update = function(dt = 0.0167)
 	col = floor(self.x / 64)
 	row = floor(self.y / 64)
 	tile = ground.cell(col, row)
-	if tile != null then mudAccel = 0.5
+	if tile != null then mudAccel = 0.7
 	accelFactor = self.accel * mudAccel * self.accelModifier * dt
 	self.vx += tdx * accelFactor
 	self.vy += tdy * accelFactor
