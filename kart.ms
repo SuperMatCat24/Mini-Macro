@@ -442,6 +442,25 @@ Kart.calculateVelocityAngle = function
 	return angle_deg
 end function
 
+Kart.tryAccelerate = function
+	self.boostTime = 0
+	// Accelerate or decelerate based on user input
+	accelInput = self.forwardInput
+	mudAccel = 1
+	col = floor(self.x / 64)
+	row = floor(self.y / 64)
+	tile = ground.cell(col, row)
+	if tile != null then mudAccel = 0.7
+	if accelInput != 0 then
+		accelFactor = self.accel * self.accelModifier * mudAccel * accelInput * dt
+		self.vx += tdx * accelFactor
+		self.vy += tdy * accelFactor
+	else
+		self.vx = mathUtil.moveTowards(self.vx, 0, self.decel * dt)
+		self.vy = mathUtil.moveTowards(self.vy, 0, self.decel * dt)
+	end if
+end function
+
 PlayerKart = new Kart
 PlayerKart.x = 480
 PlayerKart.y = 320
@@ -479,22 +498,7 @@ PlayerKart.update = function(dt = 0.0167)
 		self.vx += tdx * accelFactor
 		self.vy += tdy * accelFactor
 	else
-		self.boostTime = 0
-		// Accelerate or decelerate based on user input
-		accelInput = self.forwardInput
-		mudAccel = 1
-		col = floor(self.x / 64)
-		row = floor(self.y / 64)
-		tile = ground.cell(col, row)
-		if tile != null then mudAccel = 0.7
-		if accelInput != 0 then
-			accelFactor = self.accel * self.accelModifier * mudAccel * accelInput * dt
-			self.vx += tdx * accelFactor
-			self.vy += tdy * accelFactor
-		else
-			self.vx = mathUtil.moveTowards(self.vx, 0, self.decel * dt)
-			self.vy = mathUtil.moveTowards(self.vy, 0, self.decel * dt)
-		end if
+		self.tryAccelerate
 	end if
 
 	currentSpeed = sqrt(self.vx * self.vx + self.vy * self.vy)
