@@ -62,7 +62,7 @@ setEnemyUpgrade = function
 	for u in enemy.currentUpgrades
 		if u.name == chosenUpgrade.name then
 			enemy.coins -= chosenUpgrade.prices[chosenUpgrade.level]
-			enemy.score += 500
+			enemy.score += constants.upgradeScore
 			u.level += 1
 			return
 		end if
@@ -107,6 +107,9 @@ levelComplete = function
 	bg.x = 960/2
 
 	if winner != player then
+
+		player.score += constants.lossScore
+
 		medals = []
 
 		bronze = new Sprite
@@ -136,6 +139,8 @@ levelComplete = function
 		    	m.tint = color.rgba(255, 255, 255, a)
 			end for
 		    yield
+			txt = "Losses: " + player.losses + " / 3"
+			gfx.print txt, 960/2 - txt.len*10, 400, color.rgba(255, 255, 255, a), "large"
 		end for
 
 		chosenMedal = medals[-1]
@@ -143,11 +148,20 @@ levelComplete = function
 		animStart = time
 		startX = chosenMedal.x 
 		startY = chosenMedal.y
+		sound.suspence.play
+		sound.suspence.adjust 0
 		while time < animStart + 2
 			chosenMedal.x = startX + (mathUtil.randRange(-10, 10) * (time - animStart))
 			chosenMedal.y = startY + (mathUtil.randRange(-10, 10) * (time - animStart))
+			sound.suspence.adjust (time - animStart) / 4
 		end while
 		disp.sprites.removeVal chosenMedal
+		sound.suspence.stop
+		sound.crack.play
+		player.losses += 1
+		gfx.fillRect 0, 0, 960, 640, color.clear
+		txt = "Losses: " + player.losses + " / 3"
+		gfx.print txt, 960/2 - txt.len*10, 400, color.rgba(255, 255, 255, 255), "large"
 
 		wait 0.5
 
@@ -155,12 +169,14 @@ levelComplete = function
 			for m in medals
 		    	m.tint = color.rgba(255, 255, 255, a)
 			end for
+			txt = "Losses: " + player.losses + " / 3"
+			gfx.print txt, 960/2 - txt.len*10, 400, color.rgba(255, 255, 255, a), "large"
 		    yield
 		end for
+		gfx.fillRect 0, 0, 960, 640, color.clear
 		for m in medals
 			disp.sprites.removeVal m
 		end for
-		player.losses += 1
 		playerLost = false
 		if player.losses >= 3 then endGame
 	end if
@@ -224,7 +240,7 @@ levelComplete = function
 					for upgrade in player.currentUpgrades
 						if upgrade.name == chosenUpgrade.name then
 							player.coins -= chosenUpgrade.prices[chosenUpgrade.level]
-							player.score += 500
+							player.score += constants.upgradeScore
 							upgrade.level += 1
 						end if
 					end for

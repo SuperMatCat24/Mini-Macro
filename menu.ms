@@ -30,58 +30,10 @@ mainMenu = function
     play.text = "PLAY"
     play.init
 
-	settings = new ui.Button
-    settings.x = 960/1.5; settings.y = 200
-    settings.text = "SETTINGS"
-    settings.init
-
-    while true  // (press Control-C to exit)
-        yield
-        bg.x = bg.image.width*2+((time*-200)%bg.image.width/2*bg.scale)
-		car.x =  960/2 + sin(time*0.6)*300
-        logo.rotation = sin(time*3) * 2
-        // The mouse button is down.  Check each of our buttons, 
-        // and do whatever they should do if clicked.
-        if play.isClicked then
-            // Fade out
-	    	display(0).mode = displayMode.solidColor
-	    	d = display(0)
-			for a in range(5, 255, 5)
-			    d.color = color.rgba(0, 0, 0, a)
-			    yield
-	    	end for
-            gfx.clear
-			ui.Button.clear
-            disp.sprites = []
-            play.die
-            break
-        end if
-    end while
-end function
-
-mainMenu = function
-    ground.clear
-	walls.clear
-    gfx.clear
-    bg = new Sprite
-    bg.image = background
-    bg.x = 960/2; bg.y = 640/2; bg.scale = 4
-    disp.sprites.push bg
-
-	car = new Sprite
-    car.image = backgroundCar
-    car.x = 960/2; car.y = 640/2; car.scale = 4
-    disp.sprites.push car
-
-    logo = new Sprite
-    logo.image = logoImg
-    logo.x = 960/2; logo.y = 640/2; logo.scale = 4
-    disp.sprites.push logo
-
-    play = new ui.Button
-    play.x = 960/3; play.y = 200
-    play.text = "PLAY"
-    play.init
+    help = new ui.Button
+    help.x = 960/3; help.y = 100
+    help.text = "HELP"
+    help.init
 
 	settings = new ui.Button
     settings.x = 960/1.5; settings.y = 200
@@ -104,7 +56,52 @@ mainMenu = function
         else if settings.isClicked then
             optionsMenu
             return
+        else if help.isClicked then
+            helpMenu
+            return
         end if
+    end while
+end function
+
+helpMenu = function
+    gfx.clear
+    ui.Button.clear
+    bg = new Sprite
+    bg.image = images.infoPanel
+    bg.y = 320
+    bg.x = 960/2
+    bg.scale = 4
+    disp.sprites.push bg
+    
+    exit = new ui.Button
+    exit.x = 910; exit.y = 590
+    exit.text = "X"
+    exit.size = 0
+    exit.init
+
+    txt = "Score Table:"
+    gfx.print txt, 550, 505, color.black, "normal"
+    txt = "Win Score: " + constants.winScore
+    gfx.print txt, 550, 422, color.black, "normal"
+    txt = "Upgrade Score: " + constants.upgradeScore
+    gfx.print txt, 550, 372, color.black, "normal"
+    txt = "Lap Score: " + constants.lapScore
+    gfx.print txt, 550, 314, color.black, "normal"
+    txt = "Coin Score: " + constants.coinGetScore
+    gfx.print txt, 550, 260, color.black, "normal"
+    txt = "Loss Score: " + constants.lossScore
+    gfx.print txt, 550, 204, color.black, "normal"
+
+    while true
+        if exit.isClicked then
+            ui.Button.clear
+            gfx.clear
+            disp.sprites = [bg]
+            updatable.all = []
+            mainMenu
+            return
+        end if
+        yield
     end while
 end function
 
@@ -320,5 +317,4 @@ optionsMenu = function
         end if
         yield
     end while
-
 end function

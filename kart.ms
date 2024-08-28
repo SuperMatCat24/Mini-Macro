@@ -270,7 +270,7 @@ Kart.checkCheckpoints = function
 				self.currentCheckpoint = index
 				if self.currentCheckpoint == 0 then 
 					self.currentLap += 1
-					self.score += 200
+					self.score += constants.lapScore
 				end if
 				ui.update self
 			end if
@@ -280,7 +280,7 @@ Kart.checkCheckpoints = function
 	if self.currentLap > level.laps then
 		self.wins += 1
 		self.coins += 10
-		self.score += 1000
+		self.score += constants.winScore
 		ui.winner = self
 		ui.levelComplete
 	end if
@@ -303,7 +303,7 @@ Kart.update = function(dt=0.0167)
 	else if shrinkRay.level == 2 then
 		self.shootTimer -= dt * 0.9
 		if self.shootTimer <= 0 then
-			for i in range(-15, 15, 15)
+			for i in range(-25, 25, 25)
 				b = new Shot
 				if self isa PlayerKart then b.target = enemy
 				if self isa EnemyKart then b.target = player
@@ -347,7 +347,7 @@ Kart.updateMaxSpeed = function(shrinkMod)
 	
 	inWater = self.checkWater
 	if inWater != -1 then
-		if self.scale >= 3.9 then
+		if self.scale <= 4 then
 			self.currentMaxSpeed = mathUtil.moveTowards(self.currentMaxSpeed, self.mudSpeed * shrinkMod * self.speedModifier*(inWater), 700*self.mudModifier*dt)
 			self.tint = "#2222AA44"
 		else

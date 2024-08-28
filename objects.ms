@@ -27,7 +27,7 @@ end function
 Coin.collect = function(racer=null)
     if not self.active then return
 	racer.coins += 1
-    racer.score += 10
+    racer.score += constants.coinGetScore
 	disp.sprites.removeVal self
     //Coin.instances.removeVal self
     self.active = false

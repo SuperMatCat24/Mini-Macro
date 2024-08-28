@@ -31,6 +31,7 @@ print "Car images loaded!"
 print "IMAGES LOADED!"
 
 woodPanel = file.loadImage("pics/WoodBG.png")
+infoPanel = file.loadImage("pics/WoodPaperBG.png")
 
 tileset2 = []
 tileset2.push file.loadImage("pics/tileset2a.png")
