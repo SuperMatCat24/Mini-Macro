@@ -54,6 +54,18 @@ skid.mix skid3
 skid.play
 skid.adjust 0
 
+crack = new Sound 
+crack.init 1.6, [800, 100, 600, 50, 400, 20, 200, 0], [0.35, 0.15, 0], Sound.noiseWave 
+crack2 = new Sound 
+crack2.init 0.6, [1800, 100, 1000, 50, 700, 20, 300, 0], [0.25, 0], Sound.sawtoothWave 
+crack.mix crack2
+
+suspence = new Sound 
+suspence.init 0.2, 200, 0.15, Sound.squareWave 
+suspence.fadeIn = 0
+suspence.fadeOut = 0
+suspence.loop = true
+
 announce3 = file.loadSound("sfx/three.ogg")
 announce2 = file.loadSound("sfx/two.ogg")
 announce1 = file.loadSound("sfx/one.ogg")
