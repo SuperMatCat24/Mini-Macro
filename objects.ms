@@ -9,11 +9,13 @@ Coin.image = file.loadImage("pics/coin.png")
 Coin.scale = 4
 Coin.instances = []
 Coin.active = true
+Coin.lx = 0
+Coin.ly = 0
 
 Coin.place = function(tileX, tileY)
 	coin = new Coin
-	coin.x = tileX * 64 + 32
-    coin.y = tileY * 64 + 32
+	coin.lx = tileX * 64 + 32
+    coin.ly = tileY * 64 + 32
     coin.tileX = tileX
     coin.tileY = tileY
     disp.sprites.push coin

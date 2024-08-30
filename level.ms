@@ -40,7 +40,7 @@ setup = function
 		tintLevel color.rgb(255, 255, 255)
 	end if
 
-	updatable.all = [player, enemy]
+	updatable.all = [player, player2]
 	processLevel
 	outer.checkpoints = []
 
@@ -52,11 +52,11 @@ setup = function
 		checkpoint.height = c[3] * 64
 		outer.checkpoints.push checkpoint
 	end for
-	camera.update 0, 0
+	camera.update 
 	player.updateSprites
-	enemy.updateSprites
+	player2.updateSprites
 	ui.getUpgrades(player)
-	ui.getUpgrades(enemy)
+	ui.getUpgrades(player2)
 	if section == 1 then
 		display(0).mode = displayMode.solidColor
 		d = display(0)
@@ -76,15 +76,15 @@ setup = function
 		wait 0.5
 	end for
 	gfx.clear
-	ui.update enemy
+	ui.update player2
 	ui.update player
 end function
 
 blocksWalking = function(x, y)
 	// return whether the given pixel position is blocked from walking
 	// (horizontal movement), i.e., there is a solid block there
-	col = floor(x / 64)
-	row = floor(y / 64)
+	col = floor(x / ground.cellSize)
+	row = floor(y / ground.cellSize)
 	tile = walls.cell(col, row)
 	tileRow = floor(tile / 16)
 	tileCol = floor(tile % 16)
@@ -126,8 +126,8 @@ processLevel = function
 		for x in range(0, walls.extent[0]-1)
 			c = walls.cell(x, y)
 			if c == 37 then
-				player.x = x*64 + 32
-				player.y = y*64 + 32
+				player.lx = x*64 + 32
+				player.ly = y*64 + 32
 				player.vx = 0
 				player.vy = 0
 				player.bx = 0
@@ -140,18 +140,18 @@ processLevel = function
 				player.currentCheckpoint = 0
 				player.handleModifiers
 			else if c == 38 then
-				enemy.x = x*64 + 32
-				enemy.y = y*64 + 32
-				enemy.vx = 0
-				enemy.vy = 0
-				enemy.bx = 0
-				enemy.by = 0
-				enemy.angle_degrees = 0
-				enemy.rotation = 0
-				enemy.currentLap = 1
-				enemy.currentCheckpoint = 0
-				enemy.handleModifiers
-				enemy.pathPoint = pathUtil.PathPoint.make(globals.path, 0)
+				player2.lx = x*64 + 32
+				player2.ly = y*64 + 32
+				player2.vx = 0
+				player2.vy = 0
+				player2.bx = 0
+				player2.by = 0
+				player2.angle_degrees = 0
+				player2.rotation = 0
+				player2.currentLap = 1
+				player2.currentCheckpoint = 0
+				player2.handleModifiers
+				player2.pathPoint = pathUtil.PathPoint.make(globals.path, 0)
 				walls.setCell x, y, 9
 			else if c == 39 then
 				objects.Coin.place x, y

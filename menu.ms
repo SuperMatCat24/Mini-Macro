@@ -171,6 +171,16 @@ playerMenu = function
     enemyReadyButton.init
     enemyReadyButton.ready = false
     
+    txt = "Player 1"
+    gfx.print txt, 960*(1/4)-txt.len*10, 590, color.white, "large"
+
+    twoPlayerButton = new ui.Button
+    twoPlayerButton.size = 1
+    twoPlayerButton.x = 960*(3/4); twoPlayerButton.y = 590
+    twoPlayerButton.text = "AI Car"
+    twoPlayerButton.init
+    twoPlayerButton.ai = true
+    
     while true
         playerSprite.rotation += 1
         playerSprite.updateSprites
@@ -219,6 +229,16 @@ playerMenu = function
                 enemyReadyButton.color = color.white
                 enemyReadyButton.pressedColor = color.silver
             end if
+        else if twoPlayerButton.isClicked then
+            twoPlayerButton.ai = not twoPlayerButton.ai
+            if twoPlayerButton.ai == false then
+                twoPlayerButton.text = "Player 2"
+                globals.numPlayers = 2
+            else
+                twoPlayerButton.text = "AI Car"
+                globals.numPlayers = 1
+            end if
+            twoPlayerButton.printText
         end if
 
         if enemyReadyButton.ready == true and playerReadyButton.ready == true then break
@@ -227,10 +247,10 @@ playerMenu = function
     end while
     gfx.clear
     ui.Button.clear
-    disp.sprites = [player, enemy]
+    disp.sprites = [player, player2]
 
-    globals.player.images = playerSprite.images
-    globals.enemy.images = enemySprite.images
+    globals.p1Images = playerSprite.images
+    globals.p2Images = enemySprite.images
 end function
 
 optionsMenu = function

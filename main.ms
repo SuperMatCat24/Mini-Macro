@@ -1,6 +1,7 @@
 
 import "importUtil"
 ensureImport "constants"
+ensureImport "inputs"
 ensureImport "mapUtil"
 ensureImport "images"
 ensureImport "upgrades"
@@ -108,19 +109,34 @@ display(5).mode = displayMode.tile
 walls = display(5)
 walls.clear
 
+p1Images = []
+p2Images = []
+
 player = new kart.PlayerKart
-enemy = new kart.EnemyKart
+player2 = null
 
 menu.mainMenu
 
-player.init
-enemy.init
+if globals.hasIndex("numPlayers") and numPlayers == 2 then
+	player.inputs = inputs.inputsForPlayer(1)
+	player2 = new kart.PlayerKart
+	player2.inputs = inputs.inputsForPlayer(2)
+else
+	player.inputs = inputs.inputsForPlayer(0)
+	player2 = new kart.EnemyKart
+end if
+
+player.images = p1Images
+player2.images = p2Images
+
+player.init 0
+player2.init 1
 
 level.setup
 
 gfx.clear
 ui.update player
-ui.update enemy
+ui.update player2
 
 coinTimer = 0
 
@@ -133,6 +149,13 @@ while true
     dt = time-lastTime
     lastTime = time
     coinTimer += dt
+
+    player.x = player.lx * ground.cellSize / 64
+    player.y = player.ly * ground.cellSize / 64
+    player.scale = player.lScale * ground.cellSize / 64
+    player2.x = player2.lx * ground.cellSize / 64
+    player2.y = player2.ly * ground.cellSize / 64
+    player2.scale = player2.lScale * ground.cellSize / 64
 
     if coinTimer > 25 then
         objects.regenCoins
@@ -147,5 +170,5 @@ while true
     end if
 
     updatable.update dt
-    camera.update player.x, player.y
+    camera.update player isa kart.PlayerKart
 end while

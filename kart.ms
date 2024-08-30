@@ -13,8 +13,9 @@ findByType = function(lst, type)
 end function
 
 Kart = new StackedSprite
-Kart.x = 480
-Kart.y = 320
+Kart.lx = 480
+Kart.ly = 320
+Kart.lScale = 4
 Kart.scale = 4
 Kart.maxSpeed = 420
 Kart.mudSpeed = 165
@@ -63,7 +64,7 @@ end function
 Kart.checkWalls = function
 	if level.blocksWalking(self.x + 12, self.y) then
 		if self.checkCrate(self.x + 12, self.y) == true then return
-		self.x = floor((self.x + 12) / 64) * 64 - 12
+		self.lx = floor((self.lx + 12) / ground.cellSize) * ground.cellSize - 12
 		// if self.angle_degrees > 30 or self.angle_degrees < -30 then self.velocity *= -0.5
 		self.vx *= -0.6
 		self.bx *= -0.6
@@ -74,7 +75,7 @@ Kart.checkWalls = function
 	end if
 	if level.blocksWalking(self.x - 12, self.y) then
 		if self.checkCrate(self.x - 12, self.y) == true then return
-		self.x = ceil((self.x - 12) / 64) * 64 + 12
+		self.lx = ceil((self.lx - 12) / ground.cellSize) * ground.cellSize + 12
 		self.vx *= -0.6
 		self.bx *= -0.6
 		if abs(self.vx) > 70 then 
@@ -84,7 +85,7 @@ Kart.checkWalls = function
 	end if
 	if level.blocksWalking(self.x, self.y + 12) then
 		if self.checkCrate(self.x, self.y + 12) == true then return
-		self.y = floor((self.y + 12) / 64) * 64 - 12
+		self.ly = floor((self.ly + 12) / ground.cellSize) * ground.cellSize - 12
 		self.vy *= -0.6
 		self.by *= -0.6
 		if abs(self.vy) > 70 then 
@@ -94,7 +95,7 @@ Kart.checkWalls = function
 	end if
 	if level.blocksWalking(self.x, self.y - 12) then
 		if self.checkCrate(self.x, self.y - 12) == true then return
-		self.y = ceil((self.y - 12) / 64) * 64 + 12
+		self.ly = ceil((self.ly - 12) / ground.cellSize) * ground.cellSize + 12
 		self.vy *= -0.6
 		self.by *= -0.6
 		if abs(self.vy) > 70 then 
@@ -102,8 +103,8 @@ Kart.checkWalls = function
 			sound.bump.adjust 0.2 * globals.soundVol
 		end if
 	end if
-	if self.x < 0 then
-        self.x = 0
+	if self.lx * ground.cellSize / 64 < 0 then
+        self.lx = 0
         self.vx *= -0.6
         self.bx *= -0.6
         if abs(self.vx) > 70 then 
@@ -111,8 +112,8 @@ Kart.checkWalls = function
 			sound.bump.adjust 0.2 * globals.soundVol
 		end if
     end if
-	if self.y < 0 then
-        self.y = 0
+	if self.ly * ground.cellSize / 64 < 0 then
+        self.ly = 0 
         self.vy *= -0.6
         self.by *= -0.6
         if abs(self.vy) > 70 then 
@@ -120,8 +121,8 @@ Kart.checkWalls = function
 			sound.bump.adjust 0.2 * globals.soundVol
 		end if
     end if
-	if self.x > ground.extent[0] * 64 then 
-		self.x = ground.extent[0] * 64
+	if self.lx * ground.cellSize / 64 > ground.extent[0] * ground.cellSize then 
+		self.lx = ground.extent[0] * ground.cellSize 
 		self.vx *= -0.6
         self.bx *= -0.6
         if abs(self.vx) > 70 then 
@@ -129,8 +130,8 @@ Kart.checkWalls = function
 			sound.bump.adjust 0.2 * globals.soundVol
 		end if
 	end if
-	if self.y > ground.extent[1] * 64 then 
-		self.y = ground.extent[1] * 64
+	if self.ly * ground.cellSize / 64 > ground.extent[1] * ground.cellSize then 
+		self.ly = ground.extent[1] * ground.cellSize
 		self.vy *= -0.6
         self.by *= -0.6
         if abs(self.vy) > 70 then 
@@ -142,11 +143,11 @@ end function
 
 Kart.checkCrate = function(x, y)
 	if abs(self.vx) + abs(self.vy) < 100 then return
-	col = floor(x / 64)
-	row = floor(y / 64)
+	col = floor(x / ground.cellSize)
+	row = floor(y / ground.cellSize)
 	tile = walls.cell(col, row)
 	if tile == 45 then
-		if self.scale >= 5 then
+		if self.lScale >= 5 then
 			walls.setCell(col, row, null)
 			return true
 		else
@@ -204,9 +205,9 @@ Kart.handleModifiers = function
 end function
 
 Kart.checkEnemies = function
-    if self.worldBounds.overlaps(globals.enemy.worldBounds) then
-        dx = self.x - globals.enemy.x
-        dy = self.y - globals.enemy.y
+    if self.worldBounds.overlaps(globals.player2.worldBounds) then
+        dx = self.lx - globals.player2.lx
+        dy = self.ly - globals.player2.ly
         dist = sqrt(dx*dx + dy*dy)
         speed = 100
         
@@ -225,21 +226,21 @@ Kart.checkEnemies = function
         end if
 
         // Calculate weight difference and bounce factors
-        totalWeight = (self.weightModifier*(self.scale/4) + self.defenceTimer) + (globals.enemy.weightModifier*(globals.enemy.scale/4) + globals.enemy.defenceTimer)
-        selfBounceFactor = globals.enemy.weightModifier*(globals.enemy.scale/4) + globals.enemy.defenceTimer / totalWeight
-        enemyBounceFactor = self.weightModifier*(self.scale/4) + self.defenceTimer / totalWeight
+        totalWeight = (self.weightModifier*(self.lScale/4) + self.defenceTimer) + (globals.player2.weightModifier*(globals.player2.lScale/4) + globals.player2.defenceTimer)
+        selfBounceFactor = globals.player2.weightModifier*(globals.player2.lScale/4) + globals.player2.defenceTimer / totalWeight
+        enemyBounceFactor = self.weightModifier*(self.lScale/4) + self.defenceTimer / totalWeight
 
         // Update velocities to push them apart, proportional to weight
         self.vx += dx * speed/dist * selfBounceFactor
         self.vy += dy * speed/dist * selfBounceFactor
-        globals.enemy.vx -= dx * speed/dist * enemyBounceFactor
-        globals.enemy.vy -= dy * speed/dist * enemyBounceFactor
+        globals.player2.vx -= dx * speed/dist * enemyBounceFactor
+        globals.player2.vy -= dy * speed/dist * enemyBounceFactor
     end if
 end function
 
 Kart.checkMud = function
-	col = floor(self.x / 64)
-	row = floor(self.y / 64)
+	col = floor(self.x / ground.cellSize)
+	row = floor(self.y / ground.cellSize)
 	tile = ground.cell(col, row)
 	for tileData in level.mud
 		if tileData[0] == tile then return tileData[1]
@@ -248,8 +249,8 @@ Kart.checkMud = function
 end function
 
 Kart.checkWater = function
-	col = floor(self.x / 64)
-	row = floor(self.y / 64)
+	col = floor(self.x / ground.cellSize)
+	row = floor(self.y / ground.cellSize)
 	tile = ground.cell(col, row)
 	for tileData in level.water
 		if tileData[0] == tile then return tileData[1]
@@ -293,9 +294,9 @@ Kart.update = function(dt=0.0167)
 		self.shootTimer -= dt
 		if self.shootTimer <= 0 then
 			b = new Shot
-			if self isa PlayerKart then b.target = enemy
+			if self isa PlayerKart then b.target = player2
 			if self isa EnemyKart then b.target = player
-			b.x = self.x; b.y = self.y
+			b.x = self.lx; b.y = self.ly
 			b.rotation = self.rotation
 			b.init
 			self.shootTimer = self.shootTime
@@ -305,9 +306,9 @@ Kart.update = function(dt=0.0167)
 		if self.shootTimer <= 0 then
 			for i in range(-25, 25, 25)
 				b = new Shot
-				if self isa PlayerKart then b.target = enemy
+				if self isa PlayerKart then b.target = player2
 				if self isa EnemyKart then b.target = player
-				b.x = self.x; b.y = self.y
+				b.x = self.lx; b.y = self.ly
 				b.rotation = self.rotation + i
 				b.init
 				self.shootTimer = self.shootTime
@@ -347,7 +348,7 @@ Kart.updateMaxSpeed = function(shrinkMod)
 	
 	inWater = self.checkWater
 	if inWater != -1 then
-		if self.scale <= 4 then
+		if self.lScale <= 4 then
 			self.currentMaxSpeed = mathUtil.moveTowards(self.currentMaxSpeed, self.mudSpeed * shrinkMod * self.speedModifier*(inWater), 700*self.mudModifier*dt)
 			self.tint = "#2222AA44"
 		else
@@ -390,8 +391,8 @@ Kart.emitParticles = function(isPlayer, angle_dif)
 	else
 		if angle_dif > 45 then
 			p = new particles.DriftParticle
-			p.x = self.x
-			p.y = self.y
+			p.x = self.lx
+			p.y = self.ly
 			p.rotation = self.rotation
 			if isPlayer then
 				driftFraction = (self.driftBoost) / self.maxDriftBoost * 255
@@ -447,8 +448,8 @@ Kart.tryAccelerate = function(tdx, tdy)
 	// Accelerate or decelerate based on user input
 	accelInput = self.forwardInput
 	mudAccel = 1
-	col = floor(self.x / 64)
-	row = floor(self.y / 64)
+	col = floor(self.lx / ground.cellSize)
+	row = floor(self.ly / ground.cellSize)
 	tile = ground.cell(col, row)
 	if tile != null then mudAccel = 0.7
 	if accelInput != 0 then
@@ -469,9 +470,20 @@ PlayerKart.maxDriftBoost = 400
 PlayerKart.driftBoost = 0
 PlayerKart.currentUpgrades = []
 PlayerKart.losses = 0
+PlayerKart.playerNum = 0
+PlayerKart.inputs = null
 
-PlayerKart.init = function
+PlayerKart.init = function(playerTwo)
     super.init
+	self.playerNum = playerTwo
+end function
+
+PlayerKart.forwardInput = function
+	return self.inputs.vertical
+end function
+
+PlayerKart.turnInput = function
+	return self.inputs.horizontal
 end function
 
 PlayerKart.update = function(dt = 0.0167)
@@ -482,7 +494,7 @@ PlayerKart.update = function(dt = 0.0167)
 	self.shrinkTimer -= dt
 	if self.shrinkTimer < 0 then self.shrinkTimer = 0
 
-	self.updateUpgrades globals.enemy
+	self.updateUpgrades globals.player2
 
 	// Calculate direction vector based on angle
 	angle_radians = self.angle_degrees * ((pi * 2) / 360)
@@ -511,7 +523,7 @@ PlayerKart.update = function(dt = 0.0167)
 	// Calculate turn influence based on current speed
 	turnInfluence = self.turnInput * mathUtil.clamp(currentSpeed / (self.currentMaxSpeed * self.speedModifier * shrinkMod) * turnSpeed, -turnSpeed, turnSpeed) * dt
 
-	self.scale = 4 * self.scaleModifier * spdSclMod * shrinkMod + self.defenceTimer
+	self.lScale = 4 * self.scaleModifier * spdSclMod * shrinkMod + self.defenceTimer
 	if key.pressed("left shift") then
 		driftUpgrade = findByType(self.currentUpgrades, upgrades.Drift)
 		if driftUpgrade != null then
@@ -521,7 +533,7 @@ PlayerKart.update = function(dt = 0.0167)
 			else if driftUpgrade.level == 2 then
 				self.driftBoost += abs(turnInfluence) * 3
 				if self.driftBoost > self.maxDriftBoost then self.driftBoost = self.maxDriftBoost
-				self.scale = 4 * self.scaleModifier * spdSclMod * shrinkMod + (self.driftBoost/self.maxDriftBoost)
+				self.lScale = 4 * self.scaleModifier * spdSclMod * shrinkMod + (self.driftBoost/self.maxDriftBoost)
 			end if
 		end if
 	else if self.driftBoost != 0 then
@@ -537,8 +549,8 @@ PlayerKart.update = function(dt = 0.0167)
 	self.angle_degrees += turnInfluence
 
 	// Update position
-	self.x += (self.vx + self.bx) * dt
-	self.y += (self.vy + self.by) * dt
+	self.lx += (self.vx + self.bx) * dt
+	self.ly += (self.vy + self.by) * dt
 
 	// Ensure the angle is within 0 to 360 degrees
 	self.angle_degrees %= 360
@@ -583,10 +595,12 @@ EnemyKart.maxSpeed = 420
 EnemyKart.sprites = []
 EnemyKart.images = []
 EnemyKart.currentUpgrades = []
+EnemyKart.playerNum = 0
 
-EnemyKart.init = function
+EnemyKart.init = function(playerTwo)
     super.init
-    self.pathPoint = pathUtil.PathPoint.nearPoint(globals.path, [self.x, self.y])
+    self.pathPoint = pathUtil.PathPoint.nearPoint(globals.path, [self.lx, self.ly])
+	self.playerNum = playerTwo
 end function
 
 moveTowardsAngle = function(angle, target, value)
@@ -631,7 +645,7 @@ EnemyKart.update = function(dt = 0.0167)
 		if self.worldBounds.overlaps(globals.player.worldBounds) then self.defenceTimer = self.defenceTime
 	end if
 
-	self.scale = 4 * self.scaleModifier* shrinkMod
+	self.lScale = 4 * self.scaleModifier* shrinkMod
 	// Calculate direction vector based on angle
 	angle_radians = self.angle_degrees * ((pi * 2) / 360)
     
@@ -640,8 +654,8 @@ EnemyKart.update = function(dt = 0.0167)
 
 	self.boostTime = 0
 	mudAccel = 1
-	col = floor(self.x / 64)
-	row = floor(self.y / 64)
+	col = floor(self.lx / ground.cellSize)
+	row = floor(self.ly / ground.cellSize)
 	tile = ground.cell(col, row)
 	if tile != null then mudAccel = 0.7
 	accelFactor = self.accel * mudAccel * self.accelModifier * dt
@@ -659,12 +673,12 @@ EnemyKart.update = function(dt = 0.0167)
 
 	turnSpeed = self.turnSpeed
 	// Calculate turn influence based on current speed
-    dir = ((atan(self.y - self.pathPoint.position[1], self.x - self.pathPoint.position[0]))*180/pi+90) 
+    dir = ((atan(self.ly - self.pathPoint.position[1], self.lx - self.pathPoint.position[0]))*180/pi+90) 
 	self.angle_degrees = moveTowardsAngle(self.angle_degrees, -dir, turnSpeed*dt)
 
 	// Update position
-	self.x += (self.vx + self.bx) * dt
-	self.y += (self.vy + self.by) * dt
+	self.lx += (self.vx + self.bx) * dt
+	self.ly += (self.vy + self.by) * dt
 
 	// Ensure the angle is within 0 to 360 degrees
 	self.angle_degrees %= 360
@@ -720,7 +734,7 @@ EnemyKart.update = function(dt = 0.0167)
 	self.emitParticles false, angle_dif
 	super.update dt
 
-	if level.wallRaycast([self.x, self.y], [self.pathPoint.position[0], self.pathPoint.position[1]]) != null then
+	if level.wallRaycast([self.lx, self.ly], [self.pathPoint.position[0], self.pathPoint.position[1]]) != null then
 		self.pathPoint.advance(-100 * dt)
 	else if mathUtil.distance(self, self.pathPoint.position) < 250 then
 	    self.pathPoint.advance(currentSpeed * dt)
@@ -763,8 +777,8 @@ if self.target.worldBounds == null then return
 	angle_radians = -self.rotation * ((pi * 2) / 360)
 	dx = sin(angle_radians)
 	dy = cos(angle_radians)
-	self.x += dx * self.speed * dt
-	self.y += dy * self.speed * dt
+	self.lx += dx * self.speed * dt
+	self.ly += dy * self.speed * dt
 end function
 
 clear = function

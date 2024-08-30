@@ -16,13 +16,13 @@ update = function(kart)
 	    gfx.line 0, 520, txt.len*20+20, 520, color.white, 5
 	else
 		gfx.fillRect 960/2, 640/2, 960/2, 640/2, color.clear
-		txt = "Lap: " + enemy.currentLap + " / " + level.laps
+		txt = "Lap: " + player2.currentLap + " / " + level.laps
 	    gfx.print txt, 950-txt.len*20, 600, color.red, "large"
 	    gfx.line 960, 600, 960-txt.len*20-20, 600, color.red, 5
-	    txt = "Coins: " + enemy.coins
+	    txt = "Coins: " + player2.coins
 	    gfx.print txt, 950-txt.len*20, 560, color.red, "large"
 	    gfx.line 960, 560, 960-txt.len*20-20, 560, color.red, 5
-		score = "000000" + enemy.score
+		score = "000000" + player2.score
 		txt = "Score: " + score[-6:]
 	    gfx.print txt, 960-txt.len*20-10, 520, color.red, "large"
 	    gfx.line 960, 520, 960-txt.len*20-10, 520, color.red, 5
@@ -49,20 +49,20 @@ getUpgrades = function(obj)
 end function
 
 setEnemyUpgrade = function
-	possibleUpgrades = getUpgrades(enemy)
+	possibleUpgrades = getUpgrades(player2)
 
 	for i in range(possibleUpgrades.len-1, 0, -1)  // Loop through itemList in reverse
-	    if possibleUpgrades[i].prices[possibleUpgrades[i].level] > enemy.coins then possibleUpgrades.remove(i)
+	    if possibleUpgrades[i].prices[possibleUpgrades[i].level] > player2.coins then possibleUpgrades.remove(i)
 	end for
 
 	if possibleUpgrades == [] then return
 
 	chosenUpgrade = possibleUpgrades[possibleUpgrades.len*rnd]
 
-	for u in enemy.currentUpgrades
+	for u in player2.currentUpgrades
 		if u.name == chosenUpgrade.name then
-			enemy.coins -= chosenUpgrade.prices[chosenUpgrade.level]
-			enemy.score += constants.upgradeScore
+			player2.coins -= chosenUpgrade.prices[chosenUpgrade.level]
+			player2.score += constants.upgradeScore
 			u.level += 1
 			return
 		end if
@@ -75,17 +75,17 @@ levelComplete = function
 
 	particles.clear
 	lastTime = time
-	while player.vx + player.vy + enemy.vy + enemy.vx != 0
+	while player.vx + player.vy + player2.vy + player2.vx != 0
 		yield
 		dt=time-lastTime
 		lastTime = time
 		player.vx = mathUtil.moveTowards(player.vx, 0, 300 * dt)
-		enemy.vx = mathUtil.moveTowards(enemy.vx, 0, 300 * dt)
+		player2.vx = mathUtil.moveTowards(player2.vx, 0, 300 * dt)
 		player.vy = mathUtil.moveTowards(player.vy, 0, 300 * dt)
-		enemy.vy = mathUtil.moveTowards(enemy.vy, 0, 300 * dt)
+		player2.vy = mathUtil.moveTowards(player2.vy, 0, 300 * dt)
 		player.x += player.vx * dt; player.y += player.vy * dt
-		enemy.x += enemy.vx * dt; enemy.y += enemy.vy * dt
-		player.updateSprites; enemy.updateSprites
+		player2.x += player2.vx * dt; player2.y += player2.vy * dt
+		player.updateSprites; player2.updateSprites
 		camera.update(player.x, player.y)
 	end while
 	wait 0.5
@@ -189,16 +189,16 @@ levelComplete = function
 		gfx.print txt, 10, 10+90, color.white, "large"
 		txt = "Player coins: " + player.coins
 		gfx.print txt, 10, 10+60, color.yellow, "large"
-		txt = "Enemy wins: " + enemy.wins
+		txt = "player2 wins: " + player2.wins
 		gfx.print txt, 10, 10+30, color.white, "large"
-		txt = "Enemy coins: " + enemy.coins
+		txt = "player2 coins: " + player2.coins
 		gfx.print txt, 10, 10, color.yellow, "large"
 
 		if winner == player then
 			txt = "Player gets 10 coins for winning!"
 			gfx.print txt, 960/2 - txt.len*11/2, 560, color.yellow, "medium"
-		else if winner == enemy then
-			txt = "Enemy gets 10 coins for winning!"
+		else if winner == player2 then
+			txt = "player2 gets 10 coins for winning!"
 			gfx.print txt, 960/2 - txt.len*11/2, 560, color.yellow, "medium"
 		end if
 		
@@ -362,7 +362,7 @@ Button.init = function
 end function
 
 Button.printText = function
-	gfx.fillRect self.x-self.image.width*self.scale/2, self.y-self.image.height*self.scale/2, self.image.width*self.scale/2, self.image.height*self.scale/2, color.clear
+	gfx.fillRect self.x-self.image.width*self.scale/2, self.y-self.image.height*self.scale/2, self.image.width*self.scale, self.image.height*self.scale, color.clear
 	gfx.print self.text, self.x-self.text.len*10, self.y-32/2+5, color.black, "large"
 end function
 
