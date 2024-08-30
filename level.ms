@@ -10,7 +10,7 @@ mud = [[0, 0.65], [1, 0.3], [4, 0.5]]
 water = [[12, 0.4]]
 
 act = 1
-section = 1
+section = 7
 
 started = false
 checkpoints = []
@@ -91,6 +91,35 @@ blocksWalking = function(x, y)
 	if solid.indexOf(tile) != null then return true
 	return false
 end function
+
+wallRaycast = function(start, target)
+	stepSize = 16  // Step size for the ray
+	currentPos = {"x":start[0], "y":start[1]}
+	targetPos = {"x":target[0], "y":target[1]}
+	
+	direction = [target[0] - start[0], target[1] - start[1]]
+	magnitude = sqrt(direction[0]^2 + direction[1]^2)
+	direction[0] /= magnitude
+	direction[1] /= magnitude
+	
+	while true
+		// Calculate the next position
+		mathUtil.moveTowardsXY currentPos, targetPos, stepSize
+		
+		cellX = floor(currentPos.x/64)
+		cellY = floor(currentPos.y/64)
+		// Check if the current position hits a wall
+		if blocksWalking(currentPos.x, currentPos.y) then
+			return {"x": cellX, "y": cellY}  // Intersection found
+		end if
+		
+		// Check if the current position reaches the target
+		if currentPos == targetPos then
+			return null
+		end if
+	end while
+end function
+
 
 processLevel = function
 	for y in range(0, walls.extent[1]-1)

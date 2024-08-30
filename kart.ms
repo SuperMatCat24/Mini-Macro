@@ -442,7 +442,7 @@ Kart.calculateVelocityAngle = function
 	return angle_deg
 end function
 
-Kart.tryAccelerate = function
+Kart.tryAccelerate = function(tdx, tdy)
 	self.boostTime = 0
 	// Accelerate or decelerate based on user input
 	accelInput = self.forwardInput
@@ -498,7 +498,7 @@ PlayerKart.update = function(dt = 0.0167)
 		self.vx += tdx * accelFactor
 		self.vy += tdy * accelFactor
 	else
-		self.tryAccelerate
+		self.tryAccelerate tdx, tdy
 	end if
 
 	currentSpeed = sqrt(self.vx * self.vx + self.vy * self.vy)
@@ -719,7 +719,10 @@ EnemyKart.update = function(dt = 0.0167)
 
 	self.emitParticles false, angle_dif
 	super.update dt
-	if mathUtil.distance(self, self.pathPoint.position) < 250 then
+
+	if level.wallRaycast([self.x, self.y], [self.pathPoint.position[0], self.pathPoint.position[1]]) != null then
+		self.pathPoint.advance(-100 * dt)
+	else if mathUtil.distance(self, self.pathPoint.position) < 250 then
 	    self.pathPoint.advance(currentSpeed * dt)
 	end if
 	if self.pathPoint.isAtEnd then
