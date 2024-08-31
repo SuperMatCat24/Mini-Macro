@@ -86,7 +86,7 @@ levelComplete = function
 		player.x += player.vx * dt; player.y += player.vy * dt
 		player2.x += player2.vx * dt; player2.y += player2.vy * dt
 		player.updateSprites; player2.updateSprites
-		camera.update(player.x, player.y)
+		camera.update
 	end while
 	wait 0.5
 
@@ -102,7 +102,8 @@ levelComplete = function
         bg.y = y  + disp.scrollY
         yield
     end for
-	camera.update(0, 0)
+	player.x = 0; player.y = 0
+	camera.update
 	bg.y = 320
 	bg.x = 960/2
 
@@ -208,7 +209,7 @@ levelComplete = function
 		next.init
 
 		objects.clear
-		camera.update(0, 0)
+		camera.update
 
 		upgradeButtons = []
 		possibleUpgrades = getUpgrades(player)
