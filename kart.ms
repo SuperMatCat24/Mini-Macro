@@ -597,6 +597,7 @@ EnemyKart.sprites = []
 EnemyKart.images = []
 EnemyKart.currentUpgrades = []
 EnemyKart.playerNum = 0
+EnemyKart.driftBoost = 0
 
 EnemyKart.init = function(playerTwo)
     super.init

@@ -9,8 +9,8 @@ end for
 mud = [[0, 0.65], [1, 0.3], [4, 0.5]]
 water = [[12, 0.4]]
 
-act = 2
-section = 2
+act = 1
+section = 1
 
 started = false
 checkpoints = []
@@ -19,6 +19,7 @@ laps = 3
 levelPath = "/usr/levels/"
 
 setup = function
+	if globals.twoplayer == true then act = 2 else act = 1
 	lvl = levelPath + act + "-" + section + ".dat"
 	outer.name = act + "-" + section
 	walls.clear
