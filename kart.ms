@@ -62,9 +62,9 @@ Kart.init = function
 end function
 
 Kart.checkWalls = function
-	if level.blocksWalking(self.x + 12, self.y) then
-		if self.checkCrate(self.x + 12, self.y) == true then return
-		self.lx = floor((self.lx + 12) / ground.cellSize) * ground.cellSize - 12
+	if level.blocksWalking(self.x + (12*(self.scale/4)), self.y) then
+		if self.checkCrate(self.x + (12*(self.scale/4)), self.y) == true then return
+		self.lx = floor((self.lx + (12*(self.scale/4))) / ground.cellSize) * ground.cellSize - (12*(self.scale/4))
 		// if self.angle_degrees > 30 or self.angle_degrees < -30 then self.velocity *= -0.5
 		self.vx *= -0.6
 		self.bx *= -0.6
@@ -73,9 +73,9 @@ Kart.checkWalls = function
 			sound.bump.adjust 0.2 * globals.soundVol
 		end if
 	end if
-	if level.blocksWalking(self.x - 12, self.y) then
-		if self.checkCrate(self.x - 12, self.y) == true then return
-		self.lx = ceil((self.lx - 12) / ground.cellSize) * ground.cellSize + 12
+	if level.blocksWalking(self.x - (12*(self.scale/4)), self.y) then
+		if self.checkCrate(self.x - (12*(self.scale/4)), self.y) == true then return
+		self.lx = ceil((self.lx - (12*(self.scale/4))) / ground.cellSize) * ground.cellSize + (12*(self.scale/4))
 		self.vx *= -0.6
 		self.bx *= -0.6
 		if abs(self.vx) > 70 then 
@@ -83,9 +83,9 @@ Kart.checkWalls = function
 			sound.bump.adjust 0.2 * globals.soundVol
 		end if
 	end if
-	if level.blocksWalking(self.x, self.y + 12) then
-		if self.checkCrate(self.x, self.y + 12) == true then return
-		self.ly = floor((self.ly + 12) / ground.cellSize) * ground.cellSize - 12
+	if level.blocksWalking(self.x, self.y + (12*(self.scale/4))) then
+		if self.checkCrate(self.x, self.y + (12*(self.scale/4))) == true then return
+		self.ly = floor((self.ly + (12*(self.scale/4))) / ground.cellSize) * ground.cellSize - (12*(self.scale/4))
 		self.vy *= -0.6
 		self.by *= -0.6
 		if abs(self.vy) > 70 then 
@@ -93,9 +93,9 @@ Kart.checkWalls = function
 			sound.bump.adjust 0.2 * globals.soundVol
 		end if
 	end if
-	if level.blocksWalking(self.x, self.y - 12) then
-		if self.checkCrate(self.x, self.y - 12) == true then return
-		self.ly = ceil((self.ly - 12) / ground.cellSize) * ground.cellSize + 12
+	if level.blocksWalking(self.x, self.y - (12*(self.scale/4))) then
+		if self.checkCrate(self.x, self.y - (12*(self.scale/4))) == true then return
+		self.ly = ceil((self.ly - (12*(self.scale/4))) / ground.cellSize) * ground.cellSize + (12*(self.scale/4))
 		self.vy *= -0.6
 		self.by *= -0.6
 		if abs(self.vy) > 70 then 
@@ -296,7 +296,7 @@ Kart.update = function(dt=0.0167)
 			b = new Shot
 			if self isa PlayerKart then b.target = player2
 			if self isa EnemyKart then b.target = player
-			b.x = self.lx; b.y = self.ly
+			b.lx = self.lx; b.y = self.ly
 			b.rotation = self.rotation
 			b.init
 			self.shootTimer = self.shootTime
@@ -308,7 +308,7 @@ Kart.update = function(dt=0.0167)
 				b = new Shot
 				if self isa PlayerKart then b.target = player2
 				if self isa EnemyKart then b.target = player
-				b.x = self.lx; b.y = self.ly
+				b.lx = self.lx; b.y = self.ly
 				b.rotation = self.rotation + i
 				b.init
 				self.shootTimer = self.shootTime
@@ -391,8 +391,8 @@ Kart.emitParticles = function(isPlayer, angle_dif)
 	else
 		if angle_dif > 45 then
 			p = new particles.DriftParticle
-			p.x = self.lx
-			p.y = self.ly
+			p.lx = self.lx
+			p.ly = self.ly
 			p.rotation = self.rotation
 			if isPlayer then
 				driftFraction = (self.driftBoost) / self.maxDriftBoost * 255
@@ -463,8 +463,8 @@ Kart.tryAccelerate = function(tdx, tdy)
 end function
 
 PlayerKart = new Kart
-PlayerKart.x = 480
-PlayerKart.y = 320
+PlayerKart.lx = 480
+PlayerKart.ly = 320
 PlayerKart.sprites = []
 PlayerKart.maxDriftBoost = 400
 PlayerKart.driftBoost = 0
@@ -589,8 +589,8 @@ end function
 
 EnemyKart = new Kart
 EnemyKart.pathPoint = null
-EnemyKart.x = 480
-EnemyKart.y = 320
+EnemyKart.lx = 480
+EnemyKart.ly = 320
 EnemyKart.maxSpeed = 420
 EnemyKart.sprites = []
 EnemyKart.images = []
@@ -750,7 +750,7 @@ Shot.image = file.loadImage("pics/shot.png")
 Shot.target = null
 Shot.instances = []
 Shot.speed = 700
-Shot.scale = 4
+Shot.lScale = 4
 Shot.localBounds = new Bounds
 Shot.localBounds.width = Shot.image.width
 Shot.localBounds.height = Shot.image.height
