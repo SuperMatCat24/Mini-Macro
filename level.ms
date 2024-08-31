@@ -41,18 +41,19 @@ setup = function
 	end if
 
 	updatable.all = [player, player2]
-	processLevel
 	outer.checkpoints = []
+
+	camera.update
+	processLevel
 
 	for c in globals.get("checkpoint" + section)
 		checkpoint = new Bounds
-		checkpoint.x = c[0]*64
-		checkpoint.y = c[1]*64
-		checkpoint.width = c[2] * 64
-		checkpoint.height = c[3] * 64
+		checkpoint.x = c[0] * ground.cellSize
+		checkpoint.y = c[1] * ground.cellSize
+		checkpoint.width = c[2] * ground.cellSize
+		checkpoint.height = c[3] * ground.cellSize
 		outer.checkpoints.push checkpoint
 	end for
-	camera.update 
 	player.updateSprites
 	player2.updateSprites
 	ui.getUpgrades(player)
