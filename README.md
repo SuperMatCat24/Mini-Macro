@@ -8,3 +8,5 @@ Known bugs:
 Ai opponent can get stuck on walls when hit backwards.
 
 Laps are sometimes not counted correctly.
+
+Collisions with walls are broken
