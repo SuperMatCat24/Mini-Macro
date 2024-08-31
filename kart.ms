@@ -394,6 +394,7 @@ Kart.emitParticles = function(isPlayer, angle_dif)
 			p.lx = self.lx
 			p.ly = self.ly
 			p.rotation = self.rotation
+			p.parent = self
 			if isPlayer then
 				driftFraction = (self.driftBoost) / self.maxDriftBoost * 255
 				p.color = color.rgb(driftFraction, driftFraction/4, driftFraction/4)
