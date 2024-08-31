@@ -14,8 +14,9 @@ Coin.ly = 0
 
 Coin.place = function(tileX, tileY)
 	coin = new Coin
-	coin.lx = tileX * 64 + 32
-    coin.ly = tileY * 64 + 32
+	coin.x = tileX * ground.cellSize + (ground.cellSize/2)
+    coin.y = tileY * ground.cellSize + (ground.cellSize/2)
+    coin.scale = 4 * (ground.cellSize / 64)
     coin.tileX = tileX
     coin.tileY = tileY
     disp.sprites.push coin
