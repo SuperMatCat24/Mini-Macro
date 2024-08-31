@@ -40,6 +40,7 @@ update = function
 		else if sy + 640 > ground.extent[1] * 64 then
 			sy = ground.extent[1] * 64 - 640
 		end if
+		scrollTo sx, sy
 	else
 		// Calculate the cell size to ensure square tiles that fit within both dimensions
 		cellSize = mathUtil.min(960 / ground.extent[0], 640 / ground.extent[1])
@@ -48,34 +49,8 @@ update = function
 		ground.cellSize = cellSize
 		walls.cellSize = cellSize
 
-		// Recalculate x and y positions based on the new cellSize
-		x = ground.extent[0] * cellSize / 2
-		y = ground.extent[1] * cellSize / 2
-
-		sx = 0
-		sy = 0
-		if x - sx < camBox.left then
-			sx = x - camBox.left
-		else if x - sx > camBox.right then
-			sx = x - camBox.right
-		end if
-		if y - sy < camBox.bottom then
-			sy = y - camBox.bottom
-		else if y - sy > camBox.top then
-			sy = y - camBox.top
-		end if
-		if sx < 0 then
-			sx = 0
-		else if sx + 960 > ground.extent[0] * 64 then
-			sx = ground.extent[0] * 64 - 960
-		end if
-		if sy < 0 then
-			sy = 0
-		else if sy + 640 > ground.extent[1] * 64 then
-			sy = ground.extent[1] * 64 - 640
-		end if
+		scrollTo 0, 0
 	end if
-	scrollTo sx, sy
 end function
 
 scrollTo = function(sx, sy)
