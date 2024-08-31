@@ -39,12 +39,17 @@ update = function(twoPlayer)
 			sy = ground.extent[1] * 64 - 640
 		end if
 	else
-		x = (player.x + player2.x) / 2
-		y = (player.y + player2.y) / 2
-		dist = mathUtil.distance(player, player2) * 1.25 / 32
 
-		ground.cellSize= 64 - dist //= mathUtil.clamp(64 - dist, 1, 64)
-		walls.cellSize = 64 - dist// mathUtil.clamp(64 - dist, 1, 64)
+		// Calculate the cell size to ensure square tiles that fit within both dimensions
+cellSize = mathUtil.min(960 / ground.extent[0], 640 / ground.extent[1])
+
+// Apply the same cellSize to both ground and walls
+ground.cellSize = cellSize
+walls.cellSize = cellSize
+
+// Recalculate x and y positions based on the new cellSize
+x = ground.extent[0] * cellSize / 2
+y = ground.extent[1] * cellSize / 2
 
 		sx = ground.scrollX
 		sy = ground.scrollY
