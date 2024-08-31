@@ -10,3 +10,14 @@ Ai opponent can get stuck on walls when hit backwards.
 Laps are sometimes not counted correctly.
 
 Collisions with walls are broken
+
+
+
+To do:
+
+
+Two player upgrades screen
+Score saving
+Highscore screen
+Remake all levels to better fit two player
+Refactor old code
