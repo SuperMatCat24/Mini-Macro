@@ -9,8 +9,8 @@ end for
 mud = [[0, 0.65], [1, 0.3], [4, 0.5]]
 water = [[12, 0.4]]
 
-act = 1
-section = 7
+act = 2
+section = 2
 
 started = false
 checkpoints = []
