@@ -11,13 +11,14 @@ spawnRelativeToParent = function(parent, particle, offsetX, offsetY)
     relativeY = offsetX * sin(rotationRad) + offsetY * cos(rotationRad)
 
     // Calculate the new object's position
-    newX = parent.x + relativeX
-    newY = parent.y + relativeY
+    newX = parent.lx + relativeX
+    newY = parent.ly + relativeY
 
     p = new particle
+    p.parent = parent
 
-    p.x = newX
-    p.y = newY
+    p.lx = newX
+    p.ly = newY
     p.init
 end function
 
@@ -29,6 +30,7 @@ PlayerParticle.scale = 0.5
 PlayerParticle.top = false
 PlayerParticle.color = color.rgba(0, 0, 0, 255)
 PlayerParticle.instances = []
+PlayerParticle.parent = null
 
 PlayerParticle.init = function
     super.init
@@ -55,7 +57,7 @@ PlayerParticle.update = function(dt=0.0167)
     remainingTime = self.spawnTime + self.lifetime - time
     lifetimeFraction = remainingTime / self.lifetime
 
-    driftFraction = (player.driftBoost) / player.maxDriftBoost * 255
+    driftFraction = (self.parent.driftBoost) / self.parent.maxDriftBoost * 255
 
     alpha = lifetimeFraction * 255
     self.tint = self.color + color.rgba(0,0,0,alpha)[7:9]
@@ -69,8 +71,8 @@ VelocityParticle.instances = []
 VelocityParticle.init = function
     super.init
    
-    dx = self.;x - globals.player.x
-    dy = self.;y - globals.player.y
+    dx = self.lx - self.parent.lx
+    dy = self.ly - self.parent.ly
 
     magnitude = sqrt(dx^2 + dy^2)
 
