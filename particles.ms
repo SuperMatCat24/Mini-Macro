@@ -69,8 +69,8 @@ VelocityParticle.instances = []
 VelocityParticle.init = function
     super.init
    
-    dx = self.x - globals.player.x
-    dy = self.y - globals.player.y
+    dx = self.;x - globals.player.x
+    dy = self.;y - globals.player.y
 
     magnitude = sqrt(dx^2 + dy^2)
 
@@ -87,13 +87,13 @@ VelocityParticle.update = function(dt=0.0167)
     remainingTime = self.spawnTime + self.lifetime - time
     lifetimeFraction = remainingTime / self.lifetime
     if lifetimeFraction > 0.5 then
-        self.scale = 4 * (1 - (lifetimeFraction - 0.5) / 0.5)
+        self.lScale = 4 * (1 - (lifetimeFraction - 0.5) / 0.5)
     else
-        self.scale = 2 + (4 - 2) * (lifetimeFraction / 0.5)
+        self.lScale = 2 + (4 - 2) * (lifetimeFraction / 0.5)
     end if
 
-    self.x += self.vx * dt
-    self.y += self.vy * dt
+    self.lx += self.vx * dt
+    self.ly += self.vy * dt
     VelocityParticle.instances.removeVal self
 end function
 
@@ -111,15 +111,15 @@ BoostParticle.top = true
 
 BoostParticle.update = function(dt=0.0167)
     if self.spawnTime + self.lifetime < time then
-        self.die()
+        self.die
         return
     end if
     remainingTime = self.spawnTime + self.lifetime - time
     lifetimeFraction = remainingTime / self.lifetime
     if lifetimeFraction > 0.5 then
-        self.scale = 4 * (1 - (lifetimeFraction - 0.5) / 0.5)
+        self.lScale = 4 * (1 - (lifetimeFraction - 0.5) / 0.5)
     else
-        self.scale = 2 + (4 - 2) * (lifetimeFraction / 0.5)
+        self.lScale = 2 + (4 - 2) * (lifetimeFraction / 0.5)
     end if
 end function
 
