@@ -12,8 +12,10 @@ camBox.top = 300
 
 // Scroll as needed to get x,y (in world coordinates)
 // to be within camBox (in screen coordinates).
-update = function(twoPlayer)
-	if twoPlayer == false then
+update = function
+	if globals.twoplayer == false then
+		ground.cellSize = 64
+		walls.cellSize = 64
 		x = player.x
 		y = player.y
 		sx = ground.scrollX
@@ -39,20 +41,19 @@ update = function(twoPlayer)
 			sy = ground.extent[1] * 64 - 640
 		end if
 	else
-
 		// Calculate the cell size to ensure square tiles that fit within both dimensions
-cellSize = mathUtil.min(960 / ground.extent[0], 640 / ground.extent[1])
+		cellSize = mathUtil.min(960 / ground.extent[0], 640 / ground.extent[1])
 
-// Apply the same cellSize to both ground and walls
-ground.cellSize = cellSize
-walls.cellSize = cellSize
+		// Apply the same cellSize to both ground and walls
+		ground.cellSize = cellSize
+		walls.cellSize = cellSize
 
-// Recalculate x and y positions based on the new cellSize
-x = ground.extent[0] * cellSize / 2
-y = ground.extent[1] * cellSize / 2
+		// Recalculate x and y positions based on the new cellSize
+		x = ground.extent[0] * cellSize / 2
+		y = ground.extent[1] * cellSize / 2
 
-		sx = ground.scrollX
-		sy = ground.scrollY
+		sx = 0
+		sy = 0
 		if x - sx < camBox.left then
 			sx = x - camBox.left
 		else if x - sx > camBox.right then

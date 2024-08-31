@@ -35,6 +35,10 @@ Sprite.isOnScreen = function
 	return true
 end function
 
+Sprite.lx = 0
+Sprite.ly = 0
+Sprite.lScale = 1
+
 checkpoint1 = [[6, 9, 7, 1], [17, 14, 1, 9], [24, 9, 9, 1], [15, 5, 1, 7]]
 checkpoint2 = [[5, 14, 7, 1], [19, 18, 1, 7], [31, 14, 9, 1], [12, 11, 1, 5]]
 checkpoint3 = [[15, 15, 1, 5], [45, 17, 11, 1], [32, 24, 1, 3], [5, 19, 7, 1]]
@@ -117,10 +121,13 @@ player2 = null
 
 menu.mainMenu
 
+twoplayer = false
+
 if globals.hasIndex("numPlayers") and numPlayers == 2 then
 	player.inputs = inputs.inputsForPlayer(1)
 	player2 = new kart.PlayerKart
 	player2.inputs = inputs.inputsForPlayer(2)
+    twoplayer = true
 else
 	player.inputs = inputs.inputsForPlayer(0)
 	player2 = new kart.EnemyKart
@@ -150,12 +157,12 @@ while true
     lastTime = time
     coinTimer += dt
 
-    player.x = player.lx * ground.cellSize / 64
-    player.y = player.ly * ground.cellSize / 64
-    player.scale = player.lScale * ground.cellSize / 64
-    player2.x = player2.lx * ground.cellSize / 64
-    player2.y = player2.ly * ground.cellSize / 64
-    player2.scale = player2.lScale * ground.cellSize / 64
+    for a in updatable.all
+        if not (a isa Sprite or a isa UpdatableSprite or a isa StackedSprite) then continue
+        a.x = a.lx * ground.cellSize / 64
+        a.y = a.ly * ground.cellSize / 64
+        a.scale = a.lScale * ground.cellSize / 64
+    end for
 
     if coinTimer > 25 then
         objects.regenCoins
@@ -170,5 +177,5 @@ while true
     end if
 
     updatable.update dt
-    camera.update player isa kart.PlayerKart
+    camera.update 
 end while
