@@ -47,7 +47,8 @@ setup = function
 	camera.update
 	processLevel
 
-	for c in globals.get("checkpoint" + section)
+	for c in constants.checkpoints[act-1][section-1]
+		print c
 		checkpoint = new Bounds
 		checkpoint.x = c[0] * ground.cellSize
 		checkpoint.y = c[1] * ground.cellSize
