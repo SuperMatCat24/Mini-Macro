@@ -31,7 +31,7 @@ Node.path = function
 	result = []
 	n = self
 	while n
-		result.insert 0, n.position
+		result.insert 0, [n.position.x, n.position.y]
 		n = n.parent
 	end while
 	return result
@@ -45,13 +45,22 @@ find = function(startPos, endPos)
 	while toDoList
 		n = toDoList.pull
 		if n.position.x == endPos.x and n.position.y == endPos.y then return n.path
-        print [n.position.x, n.position.y]
+		//walls.setCellTint(n.position.x, n.position.y, color.red)
 		for pos in n.neighbors
 			if doneSet.hasIndex(pos) then continue
 			doneSet.push pos
-			if not level.blocksWalking(pos.x, pos.y) then continue
+			groundCell = ground.cell(pos.x, pos.y)
+
+			for tileData in level.mud
+				if tileData[0] == groundCell then continue
+			end for
+			for tileData in level.water
+				if tileData[0] == groundCell then continue
+			end for
+
+			if level.blocksWalking(pos.x*ground.cellSize, pos.y*ground.cellSize) then continue
 			noob = Node.make(pos, endPos, n)
-			if noob.costFromStart < 50 then toDoList.push noob
+			if noob.costFromStart < 64 then toDoList.push noob
 		end for
 		toDoList.sort "estTotalCost"
 	end while

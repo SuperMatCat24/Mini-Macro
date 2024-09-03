@@ -236,6 +236,9 @@ Kart.checkEnemies = function
         self.vy += dy * speed/dist * selfBounceFactor
         globals.player2.vx -= dx * speed/dist * enemyBounceFactor
         globals.player2.vy -= dy * speed/dist * enemyBounceFactor
+
+		self.onCarHit
+		globals.player2.onCarHit
     end if
 end function
 
@@ -273,6 +276,7 @@ Kart.checkCheckpoints = function
 				if self.currentCheckpoint == 0 then 
 					self.currentLap += 1
 					self.score += constants.lapScore
+					self.onCheckpointFound
 				end if
 				ui.update self
 			end if
@@ -464,6 +468,12 @@ Kart.tryAccelerate = function(tdx, tdy)
 	end if
 end function
 
+Kart.onCheckpointFound = function
+end function
+
+Kart.onCarHit = function
+end function
+
 PlayerKart = new Kart
 PlayerKart.lx = 480
 PlayerKart.ly = 320
@@ -599,6 +609,7 @@ EnemyKart.images = []
 EnemyKart.currentUpgrades = []
 EnemyKart.playerNum = 0
 EnemyKart.driftBoost = 0
+EnemyKart.maxDriftBoost = 0
 
 EnemyKart.init = function(playerTwo)
     super.init
@@ -606,23 +617,50 @@ EnemyKart.init = function(playerTwo)
 	self.playerNum = playerTwo
 end function
 
+EnemyKart.getPath = function
+	if level.checkpoints == [] then return
+	selfPos = {"x": floor(self.lx/ground.cellSize), "y": floor(self.ly/ground.cellSize)}
+	curCheckpoint = level.checkpoints[(self.currentCheckpoint+1)%level.checkpoints.len]
+	checkpointPos = {"x": curCheckpoint.x/ground.cellSize, "y": curCheckpoint.y/ground.cellSize}
+
+	path = pathfinding.find(selfPos, checkpointPos)
+	for p in path
+		p[0] *= 64; p[1] *= 64
+	end for
+
+	self.pathPoint.path = path
+
+	if self.pathPoint.isAtEnd or self.pathPoint.curIndex > path.len-1 then
+	    self.pathPoint.curIndex = 0
+	end if
+	self.pathPoint.updatePosition
+end function
+
+EnemyKart.onCheckpointFound = function
+	self.getPath
+end function
+
+EnemyKart.onCarHit = function
+	self.getPath
+end function
+
 moveTowardsAngle = function(angle, target, value)
-	    // Normalize angles to the range [0, 360)
-	    angle = (angle + 360) % 360
-	    target = (target + 360) % 360
-	    // Calculate the difference between the target and current angle
-	    delta = (target - angle + 360) % 360
-	    // Determine the shortest direction to move
-	    if delta > 180 then
-	        // Move counterclockwise
-	        delta -= 360
-	    end if
-	    // Clamp the movement to the maximum allowed value
-	    if abs(delta) <= value then
-	        return target  // If within the move range, return the target
-	    end if
-	    return (angle + sign(delta) * value + 360) % 360
-	end function
+    // Normalize angles to the range [0, 360)
+    angle = (angle + 360) % 360
+    target = (target + 360) % 360
+    // Calculate the difference between the target and current angle
+    delta = (target - angle + 360) % 360
+    // Determine the shortest direction to move
+    if delta > 180 then
+        // Move counterclockwise
+        delta -= 360
+    end if
+    // Clamp the movement to the maximum allowed value
+    if abs(delta) <= value then
+        return target  // If within the move range, return the target
+    end if
+    return (angle + sign(delta) * value + 360) % 360
+end function
 
 EnemyKart.update = function(dt = 0.0167)
 
@@ -737,18 +775,10 @@ EnemyKart.update = function(dt = 0.0167)
 	self.emitParticles false, angle_dif
 	super.update dt
 
-	selfPos = {"x": floor(self.lx/ground.cellSize), "y": floor(self.ly/ground.cellSize)}
-	checkpointPos = {"x": level.checkpoints[self.currentCheckpoint].x/ground.cellSize, "y": level.checkpoints[self.currentCheckpoint].y/ground.cellSize}
-	print [selfPos, checkpointPos]
-
-	path = pathfinding.find(selfPos, level.checkpoints[self.currentCheckpoint])
-
-	self.pathPoint.path = path
-
-	if mathUtil.distance(self, self.pathPoint.position) < 250 then
-	    self.pathPoint.advance(currentSpeed * dt)
+	if mathUtil.distance(self, self.pathPoint.position) < 50 then
+	    self.pathPoint.curIndex += 1
 	end if
-	if self.pathPoint.isAtEnd then
+	if self.pathPoint.isAtEnd or self.pathPoint.curIndex > path.len-1 then
 	    self.pathPoint.curIndex = 0
 	end if
 	self.pathPoint.updatePosition

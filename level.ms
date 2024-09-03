@@ -48,7 +48,6 @@ setup = function
 	processLevel
 
 	for c in constants.checkpoints[act-1][section-1]
-		print c
 		checkpoint = new Bounds
 		checkpoint.x = c[0] * ground.cellSize
 		checkpoint.y = c[1] * ground.cellSize
@@ -56,6 +55,9 @@ setup = function
 		checkpoint.height = c[3] * ground.cellSize
 		outer.checkpoints.push checkpoint
 	end for
+
+	if globals.twoplayer then player2.getPath
+
 	player.updateSprites
 	player2.updateSprites
 	ui.getUpgrades(player)
