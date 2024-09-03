@@ -15,7 +15,7 @@ end function
 
 Node.make = function(position, endPos, parentNode = null)
 	n = new Node
-	n.position = {"x": position.x/64, "y": position.y/64}
+	n.position = {"x": position.x, "y": position.y}
 	n.parent = parentNode
 	n.estCostToEnd = mathUtil.distance(n.position, endPos)
 	n.estTotalCost = n.estCostToEnd
@@ -40,21 +40,20 @@ end function
 // Main entry point: Find a path between two positions,
 // each specified as a map with "x" and "y" values.
 find = function(startPos, endPos)
-	toDoList = [ Node.make(startPos, endPos) ]
+	toDoList = [Node.make(startPos, endPos)]
 	doneSet = {}
-	globals.hack = []
 	while toDoList
 		n = toDoList.pull
 		if n.position.x == endPos.x and n.position.y == endPos.y then return n.path
+        print [n.position.x, n.position.y]
 		for pos in n.neighbors
 			if doneSet.hasIndex(pos) then continue
 			doneSet.push pos
-			t = ground.cell(pos.x, pos.y)
-			if t != null and not t.passable then continue
+			if not level.blocksWalking(pos.x, pos.y) then continue
 			noob = Node.make(pos, endPos, n)
 			if noob.costFromStart < 50 then toDoList.push noob
 		end for
 		toDoList.sort "estTotalCost"
 	end while
-    return doneSet
+    print "Cant Find Path!"
 end function

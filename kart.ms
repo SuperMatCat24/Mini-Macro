@@ -737,7 +737,13 @@ EnemyKart.update = function(dt = 0.0167)
 	self.emitParticles false, angle_dif
 	super.update dt
 
-	self.pathPoint.path = pathfinding.find(self, level.checkpoints[self.currentCheckpoint])
+	selfPos = {"x": floor(self.lx/ground.cellSize), "y": floor(self.ly/ground.cellSize)}
+	checkpointPos = {"x": level.checkpoints[self.currentCheckpoint].x/ground.cellSize, "y": level.checkpoints[self.currentCheckpoint].y/ground.cellSize}
+	print [selfPos, checkpointPos]
+
+	path = pathfinding.find(selfPos, level.checkpoints[self.currentCheckpoint])
+
+	self.pathPoint.path = path
 
 	if mathUtil.distance(self, self.pathPoint.position) < 250 then
 	    self.pathPoint.advance(currentSpeed * dt)
