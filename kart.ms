@@ -4,6 +4,7 @@ ensureImport "particles"
 ensureImport "stackedSprite"
 ensureImport "mathUtil"
 ensureImport "sound"
+ensureImport "pathfinding"
 
 findByType = function(lst, type)
     for item in lst
@@ -736,9 +737,9 @@ EnemyKart.update = function(dt = 0.0167)
 	self.emitParticles false, angle_dif
 	super.update dt
 
-	if level.wallRaycast([self.lx, self.ly], [self.pathPoint.position[0], self.pathPoint.position[1]]) != null then
-		self.pathPoint.advance(-100 * dt)
-	else if mathUtil.distance(self, self.pathPoint.position) < 250 then
+	self.pathPoint.path = pathfinding.find(self, level.checkpoints[self.currentCheckpoint])
+
+	if mathUtil.distance(self, self.pathPoint.position) < 250 then
 	    self.pathPoint.advance(currentSpeed * dt)
 	end if
 	if self.pathPoint.isAtEnd then
