@@ -273,10 +273,10 @@ Kart.checkCheckpoints = function
 			index = level.checkpoints.indexOf(c)
 			if index == (self.currentCheckpoint + 1)%level.checkpoints.len then 
 				self.currentCheckpoint = index
+				self.onCheckpointFound
 				if self.currentCheckpoint == 0 then 
 					self.currentLap += 1
 					self.score += constants.lapScore
-					self.onCheckpointFound
 				end if
 				ui.update self
 			end if
@@ -627,21 +627,17 @@ EnemyKart.getPath = function
 	for p in path
 		p[0] *= 64; p[1] *= 64
 	end for
-
 	self.pathPoint.path = path
-
-	if self.pathPoint.isAtEnd or self.pathPoint.curIndex > path.len-1 then
-	    self.pathPoint.curIndex = 0
-	end if
+	self.pathPoint.curIndex = 1
 	self.pathPoint.updatePosition
 end function
 
 EnemyKart.onCheckpointFound = function
-	self.getPath
+	//self.getPath
 end function
 
 EnemyKart.onCarHit = function
-	self.getPath
+	//self.getPath
 end function
 
 moveTowardsAngle = function(angle, target, value)
@@ -775,12 +771,13 @@ EnemyKart.update = function(dt = 0.0167)
 	self.emitParticles false, angle_dif
 	super.update dt
 
-	if mathUtil.distance(self, self.pathPoint.position) < 50 then
-	    self.pathPoint.curIndex += 1
+	if mathUtil.distance(self, self.pathPoint.position) < 100 then
+	    self.pathPoint.advance(currentSpeed*dt)
 	end if
 	if self.pathPoint.isAtEnd or self.pathPoint.curIndex > path.len-1 then
-	    self.pathPoint.curIndex = 0
+		//self.getPath
 	end if
+	self.getPath
 	self.pathPoint.updatePosition
 end function
 

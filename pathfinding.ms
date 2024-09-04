@@ -37,11 +37,22 @@ Node.path = function
 	return result
 end function
 
+hazards = []
 // Main entry point: Find a path between two positions,
 // each specified as a map with "x" and "y" values.
 find = function(startPos, endPos)
 	toDoList = [Node.make(startPos, endPos)]
 	doneSet = {}
+	
+	if hazards == [] then
+		for tileData in level.mud
+			hazards.push tileData[0]
+		end for
+		for tileData in level.water
+			hazards.push tileData[0]
+		end for
+	end if
+
 	while toDoList
 		n = toDoList.pull
 		if n.position.x == endPos.x and n.position.y == endPos.y then return n.path
@@ -51,12 +62,7 @@ find = function(startPos, endPos)
 			doneSet.push pos
 			groundCell = ground.cell(pos.x, pos.y)
 
-			for tileData in level.mud
-				if tileData[0] == groundCell then continue
-			end for
-			for tileData in level.water
-				if tileData[0] == groundCell then continue
-			end for
+			if hazards.hasIndex(groundCell) then continue
 
 			if level.blocksWalking(pos.x*ground.cellSize, pos.y*ground.cellSize) then continue
 			noob = Node.make(pos, endPos, n)

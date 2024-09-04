@@ -56,7 +56,7 @@ setup = function
 		outer.checkpoints.push checkpoint
 	end for
 
-	if globals.twoplayer then player2.getPath
+	if globals.twoplayer == false then player2.getPath
 
 	player.updateSprites
 	player2.updateSprites
