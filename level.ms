@@ -34,9 +34,11 @@ setup = function
 	
 	tileUtil.loadFromFile lvl, walls, ground
 	checkLevelTint
-	processLevel
 
+
+	// Update camera before processing level so objects are placed correctly
 	camera.update
+	processLevel
 
 	makeCheckpoints
 

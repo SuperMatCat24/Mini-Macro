@@ -25,17 +25,17 @@ mainMenu = function
     logo.x = 960/2; logo.y = 640/2; logo.scale = 4
     disp.sprites.push logo
 
-    play = new ui.Button
+    play = new uiElements.Button
     play.x = 960/3; play.y = 200
     play.text = "PLAY"
     play.init
 
-    help = new ui.Button
+    help = new uiElements.Button
     help.x = 960/3; help.y = 100
     help.text = "HELP"
     help.init
 
-	settings = new ui.Button
+	settings = new uiElements.Button
     settings.x = 960/1.5; settings.y = 200
     settings.text = "OPTIONS"
     settings.init
@@ -49,7 +49,7 @@ mainMenu = function
 
         if play.isClicked then
             gfx.clear
-			ui.Button.clear
+			uiElements.Button.clear
             disp.sprites = []
             playerMenu
             return
@@ -65,7 +65,7 @@ end function
 
 helpMenu = function
     gfx.clear
-    ui.Button.clear
+    uiElements.Button.clear
     bg = new Sprite
     bg.image = images.infoPanel
     bg.y = 320
@@ -73,7 +73,7 @@ helpMenu = function
     bg.scale = 4
     disp.sprites.push bg
     
-    exit = new ui.Button
+    exit = new uiElements.Button
     exit.x = 910; exit.y = 590
     exit.text = "X"
     exit.size = 0
@@ -94,7 +94,7 @@ helpMenu = function
 
     while true
         if exit.isClicked then
-            ui.Button.clear
+            uiElements.Button.clear
             gfx.clear
             disp.sprites = [bg]
             updatable.all = []
@@ -133,38 +133,38 @@ playerMenu = function
     enemySprite.init
     enemySprite.imageIndex = 1
     
-    playerRightButton = new ui.Button
+    playerRightButton = new uiElements.Button
     playerRightButton.size = 0
     playerRightButton.x = 960*(1/4)+150; playerRightButton.y = 350
     playerRightButton.text = ">"
     playerRightButton.init
 
-    playerLeftButton = new ui.Button
+    playerLeftButton = new uiElements.Button
     playerLeftButton.size = 0
     playerLeftButton.x = 960*(1/4)-150; playerLeftButton.y = 350
     playerLeftButton.text = "<"
     playerLeftButton.init
 
-    enemyRightButton = new ui.Button
+    enemyRightButton = new uiElements.Button
     enemyRightButton.size = 0
     enemyRightButton.x = 960*(3/4)+150; enemyRightButton.y = 350
     enemyRightButton.text = ">"
     enemyRightButton.init
 
-    enemyLeftButton = new ui.Button
+    enemyLeftButton = new uiElements.Button
     enemyLeftButton.size = 0
     enemyLeftButton.x = 960*(3/4)-150; enemyLeftButton.y = 350
     enemyLeftButton.text = "<"
     enemyLeftButton.init
 
-    playerReadyButton = new ui.Button
+    playerReadyButton = new uiElements.Button
     playerReadyButton.size = 1
     playerReadyButton.x = 960*(1/4); playerReadyButton.y = 150
     playerReadyButton.text = "READY"
     playerReadyButton.init
     playerReadyButton.ready = false
 
-    enemyReadyButton = new ui.Button
+    enemyReadyButton = new uiElements.Button
     enemyReadyButton.size = 1
     enemyReadyButton.x = 960*(3/4); enemyReadyButton.y = 150
     enemyReadyButton.text = "READY"
@@ -174,7 +174,7 @@ playerMenu = function
     txt = "Player 1"
     gfx.print txt, 960*(1/4)-txt.len*10, 590, color.white, "large"
 
-    twoPlayerButton = new ui.Button
+    twoPlayerButton = new uiElements.Button
     twoPlayerButton.size = 1
     twoPlayerButton.x = 960*(3/4); twoPlayerButton.y = 590
     twoPlayerButton.text = "AI Car"
@@ -246,7 +246,7 @@ playerMenu = function
         yield
     end while
     gfx.clear
-    ui.Button.clear
+    uiElements.Button.clear
     disp.sprites = [player, player2]
 
     globals.p1Images = playerSprite.images
@@ -255,7 +255,7 @@ end function
 
 optionsMenu = function
     gfx.clear
-    ui.Button.clear
+    uiElements.Button.clear
     bg = new Sprite
     bg.image = images.woodPanel
     bg.y = 320
@@ -263,13 +263,13 @@ optionsMenu = function
     bg.scale = 4
     disp.sprites.push bg
     
-    exit = new ui.Button
+    exit = new uiElements.Button
     exit.x = 910; exit.y = 590
     exit.text = "X"
     exit.size = 0
     exit.init
 
-    clearAchivements = new ui.Button
+    clearAchivements = new uiElements.Button
     clearAchivements.x = 960*(2/8); clearAchivements.y = 50
     clearAchivements.text = "Clear Achivements"
     clearAchivements.size = 2
@@ -277,7 +277,7 @@ optionsMenu = function
     clearAchivements.pressedColor = color.rgb(200, 0, 0)
     clearAchivements.init
 
-    clearSettings = new ui.Button
+    clearSettings = new uiElements.Button
     clearSettings.x = 960*(6/8); clearSettings.y = 50
     clearSettings.text = "Clear Settings"
     clearSettings.size = 2
@@ -285,14 +285,14 @@ optionsMenu = function
     clearSettings.pressedColor = color.rgb(200, 0, 0)
     clearSettings.init
 
-    mVolume = new ui.Slider
+    mVolume = new uiElements.Slider
     mVolume.x = 300
     mVolume.y = 550
     mVolume.width = 200
     mVolume.text = "Music Volume:"
     mVolume.value = globals.musicVol
 
-    sVolume = new ui.Slider
+    sVolume = new uiElements.Slider
     sVolume.x = 300
     sVolume.y = 500
     sVolume.width = 200
@@ -310,7 +310,7 @@ optionsMenu = function
         if exit.isClicked then
             sVolume.die
             mVolume.die
-            ui.Button.clear
+            uiElements.Button.clear
             gfx.clear
             disp.sprites = [bg]
             updatable.all = []
@@ -319,7 +319,7 @@ optionsMenu = function
         else if clearAchivements.isClicked then
             sVolume.die
             mVolume.die
-            ui.Button.clear
+            uiElements.Button.clear
             gfx.clear
             disp.sprites = [bg]
             updatable.all = []
@@ -328,7 +328,7 @@ optionsMenu = function
         else if clearSettings.isClicked then
             sVolume.die
             mVolume.die
-            ui.Button.clear
+            uiElements.Button.clear
             gfx.clear
             disp.sprites = [bg]
             updatable.all = []

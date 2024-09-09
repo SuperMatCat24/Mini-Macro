@@ -4,6 +4,8 @@
 import "importUtil"
 ensureImport "level"
 
+tileCellSize = 64
+
 camBox = {}
 camBox.left = 960/2.25
 camBox.right = 960/1.75
