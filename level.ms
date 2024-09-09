@@ -10,7 +10,7 @@ mud = [[0, 0.65], [1, 0.3], [4, 0.5]]
 water = [[12, 0.4]]
 
 levelType = 1
-race = 1
+race = 6
 
 started = false
 checkpoints = []
@@ -30,11 +30,10 @@ setup = function
 	updatable.all = [player, player2]
 
 	globals.path = []
-	globals.path = globals.get("path" + race)
+	globals.path = constants.paths[race-1]
 	
 	tileUtil.loadFromFile lvl, walls, ground
 	checkLevelTint
-
 
 	// Update camera before processing level so objects are placed correctly
 	camera.update
@@ -42,19 +41,14 @@ setup = function
 
 	makeCheckpoints
 
-	if globals.twoplayer == false then player2.getPath
-
-	player.updateSprites
-	player2.updateSprites
-	upgrades.getUpgrades(player)
-	upgrades.getUpgrades(player2)
+	player.updateSprites; player2.updateSprites
+	upgrades.getUpgrades(player); upgrades.getUpgrades(player2)
 
 	tryFadeIn
 	playStartAnim
 
 	gfx.clear
-	ui.update player2
-	ui.update player
+	ui.update player2; ui.update player
 end function
 
 blocksWalking = function(x, y)

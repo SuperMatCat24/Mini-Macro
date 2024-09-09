@@ -66,6 +66,7 @@ suspence.fadeIn = 0
 suspence.fadeOut = 0
 suspence.loop = true
 
+// Announcer sounds using FL Studio text to speech
 announce3 = file.loadSound("sfx/three.ogg")
 announce2 = file.loadSound("sfx/two.ogg")
 announce1 = file.loadSound("sfx/one.ogg")

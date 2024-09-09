@@ -51,48 +51,7 @@ updateSpritePositions = function
     end for
 end function
 
-path1 = [[6, 10], [7, 15], [10, 16], [15, 14], [18, 12], [22, 11], [23, 8], [21, 5], [18, 4], [9, 4], [6, 10]]
-for p in path1
-    p[0] *= 64; p[1] *= 64
-end for
-path2 = [[6, 12], [5, 18],  [7, 21], [10, 19], [15, 19], [23, 17], [29, 16], [29, 12], [25, 10], [20, 11], [13, 11], [6, 12]]
-for p in path2
-    p[0] *= 64; p[1] *= 64
-end for
-path3 = [[13, 15], [20, 15],  [28, 14], [30, 10], [36, 14], [41, 10], [45, 14], [44, 21], [42, 25], [36, 22], [32, 24], [26, 22], [6, 23], [6, 17], [10, 16], [13, 15]]
-for p in path3
-    p[0] *= 64; p[1] *= 64
-end for
-path4 = [[6, 12], [5, 17],  [7, 20], [10, 21], [17, 19], [17, 16], [21, 16], [29, 20], [33, 16], [31, 11], [24, 9], [15, 11], [12, 13], [6, 12]]
-for p in path4
-    p[0] *= 64; p[1] *= 64
-end for
-path5 = [[5, 10], [4, 17], [6, 19], [10, 19], [14, 21], [20, 19], [27, 19], [33, 21], [37, 17], [34, 11], [31, 6], [23, 8], [15, 11], [5, 10]]
-for p in path5
-    p[0] *= 64; p[1] *= 64
-end for
-path6 = [[3, 15], [6, 20], [11, 21], [18, 20], [20, 18], [26, 15], [29, 13], [31, 9], [24, 5], [19, 9], [11, 11], [9, 14], [3, 15]]
-for p in path6
-    p[0] *= 64; p[1] *= 64
-end for
-path7 = [[6, 15], [9, 20], [18, 20], [26, 19], [26, 15], [29, 16], [31, 9], [24, 5], [19, 9], [11, 11], [9, 14], [3, 15]]
-for p in path7
-    p[0] *= 64; p[1] *= 64
-end for
-path8 = [[7, 8], [5, 11], [6, 17], [9, 20], [18, 21], [24, 19], [31, 21], [35, 19], [38, 15], [37, 10], [31, 8], [23, 5], [7, 4]]
-for p in path8
-    p[0] *= 64; p[1] *= 64
-end for
-path9 = [[6, 7], [6, 12], [3, 17], [3, 20], [7, 21], [10, 21], [17, 24], [24, 19], [30, 20], [37, 18], [35, 8], [28, 6], [18, 5], [8, 3]]
-for p in path9
-    p[0] *= 64; p[1] *= 64
-end for
-path10 = [[4, 8], [7, 11], [12, 7], [16, 8], [15, 16], [4, 16], [3, 21], [11, 22], [18, 22], [22, 18], [28, 22], [32, 23], [33, 17], [36, 15], [33, 7], [20, 2], [10, 2], [4, 4]]
-for p in path10
-    p[0] *= 64; p[1] *= 64
-end for
-
-path = path1
+path = constants.paths[0]
 
 clear
 
@@ -134,17 +93,14 @@ else
 	player2 = new kart.EnemyKart
 end if
 
-player.images = p1Images
-player2.images = p2Images
+player.images = p1Images; player2.images = p2Images
 
-player.init 0
-player2.init 1
+player.init 0; player2.init 1
 
 level.setup
 
 gfx.clear
-ui.update player
-ui.update player2
+ui.update player; ui.update player2
 
 coinTimer = 0
 
@@ -166,6 +122,8 @@ while true
     end if
 
     if time > lastTileUpdate + 0.15 then
+        // Change the ground tileset every 0.15 seconds for an
+        // animated water effect.
         lastTileUpdate = time
         curTileFrame += 1
         curTileFrame = (curTileFrame + images.tileset2.len) % images.tileset2.len

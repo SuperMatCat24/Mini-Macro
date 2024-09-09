@@ -30,6 +30,8 @@ StackedSprite.init = function
 end function
 
 StackedSprite.changeImages = function(images)
+	// Loops through all of the given images,
+	// and creates a sprite for each one.
 	self.images = images
 	for sprite in self.sprites
 		disp.sprites.removeVal sprite
@@ -65,11 +67,14 @@ StackedSprite.update = function(dt=0.0167)
 end function
 
 StackedSprite.updateSprites = function
-for i in range(0, self.sprites.len-1)
-	s = self.sprites[i]
-	s.x = self.x; s.y = self.y + i*self.scale
-	s.scale = self.scale
-	s.rotation = self.rotation + 90
-	s.tint = self.tint
-end for
+	// Loop through all of our sprites,
+	// and make sure its position and scale is the same as ours. 
+	// Adds i*self.scale to the y position for a pseudo-3d effect.
+	for i in range(0, self.sprites.len-1)
+		s = self.sprites[i]
+		s.x = self.x; s.y = self.y + i*self.scale
+		s.scale = self.scale
+		s.rotation = self.rotation + 90
+		s.tint = self.tint
+	end for
 end function

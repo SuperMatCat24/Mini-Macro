@@ -165,7 +165,7 @@ levelComplete = function
 
 	gfx.clear
 	sound.skid.adjust 0
-	bg = new Sprite
+	outer.bg = new Sprite
     bg.image = images.woodPanel
     bg.y = -320 + disp.scrollY
     bg.x = 960/2 + disp.scrollX
@@ -217,7 +217,7 @@ chooseUpgrades = function
 	upgradeButtons = []
 	possibleUpgrades = upgrades.getUpgrades(player)
 	for i in range(0, 2)
-		b = new uiElements.upgradeButton 
+		b = new uiElements.UpgradeButton 
 		nextUpgrade = possibleUpgrades[possibleUpgrades.len*rnd]
 		b.upgrade = nextUpgrade
 		possibleUpgrades.removeVal nextUpgrade
@@ -246,7 +246,7 @@ chooseUpgrades = function
 				end for
 			end if
 			setEnemyUpgrade
-			disp.sprites = [player, player2]
+			disp.sprites.removeVal outer.bg
 			gfx.clear
 			level.race += 1
 			level.setup
