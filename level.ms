@@ -10,7 +10,7 @@ mud = [[0, 0.65], [1, 0.3], [4, 0.5]]
 water = [[12, 0.4]]
 
 levelType = 1
-race = 6
+race = 1
 
 started = false
 checkpoints = []
@@ -19,7 +19,6 @@ laps = 3
 levelPath = "/usr/levels/"
 
 setup = function
-	if globals.twoplayer == true then levelType = 2 else levelType = 1
 	lvl = levelPath + levelType + "-" + race + ".dat"
 	outer.name = levelType + "-" + race
 

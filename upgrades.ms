@@ -46,11 +46,13 @@ possibleUpgrades = [Compact, Grip, ShrinkRay, Defence, Juggernaut, Drift]
 
 getUpgrades = function(obj)
 	if not obj isa kart.Kart then return null
+    
 	if obj.currentUpgrades == [] then 
 		for pu in upgrades.possibleUpgrades
 			obj.currentUpgrades.push new pu
 		end for
 	end if
+
 	currentUpgrades = obj.currentUpgrades
 	possibleUpgrades = []
 

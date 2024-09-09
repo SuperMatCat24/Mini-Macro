@@ -56,13 +56,10 @@ find = function(startPos, endPos)
 	while toDoList
 		n = toDoList.pull
 		if n.position.x == endPos.x and n.position.y == endPos.y then return n.path
-		//walls.setCellTint(n.position.x, n.position.y, color.red)
 		for pos in n.neighbors
 			if doneSet.hasIndex(pos) then continue
 			doneSet.push pos
 			groundCell = ground.cell(pos.x, pos.y)
-
-			//if hazards.hasIndex(groundCell) then continue
 
 			if level.blocksWalking(pos.x*camera.tileCellSize, pos.y*camera.tileCellSize) then continue
 			noob = Node.make(pos, endPos, n)

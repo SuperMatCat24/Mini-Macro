@@ -232,8 +232,7 @@ chooseUpgrades = function
 	chosenUpgrade = null
 	while true  // (press Control-C to exit)
 	    yield
-	    // The mouse uiElements.Button is down.  Check each of our buttons, 
-	    // and do whatever they should do if clicked.
+
 	    if next.isClicked then
 	        uiElements.Button.clear
 			if chosenUpgrade != null then 
@@ -253,6 +252,7 @@ chooseUpgrades = function
 			globals.lastTime = time
 			return
 	    end if
+		
 		for u in upgradeButtons
 			if u.isClicked then 
 				chosenUpgrade = u.upgrade

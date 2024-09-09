@@ -77,88 +77,62 @@ Kart.reset = function(x, y)
 	self.handleModifiers
 end function
 
-Kart.checkWalls = function
-	if level.blocksWalking(self.x + (12*(self.scale/4)), self.y) then
-		if self.checkCrate(self.x + (12*(self.scale/4)), self.y) == true then return
-		self.lx = floor((self.lx + (12*(self.scale/4))) / camera.tileCellSize) * camera.tileCellSize - (12*(self.scale/4))
-		// if self.angle_degrees > 30 or self.angle_degrees < -30 then self.velocity *= -0.5
+Kart.onWallHit = function(hitHorizontal)
+	if hitHorizontal == true then
 		self.vx *= -0.6
 		self.bx *= -0.6
 		if abs(self.vx) > 70 then 
 			sound.bump.play
 			sound.bump.adjust 0.2 * globals.soundVol
 		end if
-	end if
-	if level.blocksWalking(self.x - (12*(self.scale/4)), self.y) then
-		if self.checkCrate(self.x - (12*(self.scale/4)), self.y) == true then return
-		self.lx = ceil((self.lx - (12*(self.scale/4))) / camera.tileCellSize) * camera.tileCellSize + (12*(self.scale/4))
-		self.vx *= -0.6
-		self.bx *= -0.6
-		if abs(self.vx) > 70 then 
-			sound.bump.play
-			sound.bump.adjust 0.2 * globals.soundVol
-		end if
-	end if
-	if level.blocksWalking(self.x, self.y + (12*(self.scale/4))) then
-		if self.checkCrate(self.x, self.y + (12*(self.scale/4))) == true then return
-		self.ly = floor((self.ly + (12*(self.scale/4))) / camera.tileCellSize) * camera.tileCellSize - (12*(self.scale/4))
+	else
 		self.vy *= -0.6
 		self.by *= -0.6
 		if abs(self.vy) > 70 then 
-			sound.bump.play
-			sound.bump.adjust 0.2 * globals.soundVol
-		end if
-	end if
-	if level.blocksWalking(self.x, self.y - (12*(self.scale/4))) then
-		if self.checkCrate(self.x, self.y - (12*(self.scale/4))) == true then return
-		self.ly = ceil((self.ly - (12*(self.scale/4))) / camera.tileCellSize) * camera.tileCellSize + (12*(self.scale/4))
-		self.vy *= -0.6
-		self.by *= -0.6
-		if abs(self.vy) > 70 then 
-			sound.bump.play
-			sound.bump.adjust 0.2 * globals.soundVol
-		end if
-	end if
-	if self.lx * camera.tileCellSize / 64 < 0 then
-        self.lx = 0
-        self.vx *= -0.6
-        self.bx *= -0.6
-        if abs(self.vx) > 70 then 
-			sound.bump.play
-			sound.bump.adjust 0.2 * globals.soundVol
-		end if
-    end if
-	if self.ly * camera.tileCellSize / 64 < 0 then
-        self.ly = 0 
-        self.vy *= -0.6
-        self.by *= -0.6
-        if abs(self.vy) > 70 then 
-			sound.bump.play
-			sound.bump.adjust 0.2 * globals.soundVol
-		end if
-    end if
-	if self.lx * camera.tileCellSize / 64 > ground.extent[0] * camera.tileCellSize then 
-		self.lx = ground.extent[0] * camera.tileCellSize 
-		self.vx *= -0.6
-        self.bx *= -0.6
-        if abs(self.vx) > 70 then 
-			sound.bump.play
-			sound.bump.adjust 0.2 * globals.soundVol
-		end if
-	end if
-	if self.ly * camera.tileCellSize / 64 > ground.extent[1] * camera.tileCellSize then 
-		self.ly = ground.extent[1] * camera.tileCellSize
-		self.vy *= -0.6
-        self.by *= -0.6
-        if abs(self.vy) > 70 then 
 			sound.bump.play
 			sound.bump.adjust 0.2 * globals.soundVol
 		end if
 	end if
 end function
 
+Kart.checkWalls = function
+	playerHitbox = (12*(self.scale/4))
+	if level.blocksWalking(self.x + playerHitbox, self.y) then
+		if self.checkCrate(self.x + playerHitbox, self.y) == true then return
+		self.lx = floor((self.lx + playerHitbox) / camera.tileCellSize) * camera.tileCellSize - playerHitbox
+		self.onWallHit true
+	else if level.blocksWalking(self.x - playerHitbox, self.y) then
+		if self.checkCrate(self.x - playerHitbox, self.y) == true then return
+		self.lx = ceil((self.lx - playerHitbox) / camera.tileCellSize) * camera.tileCellSize + playerHitbox
+		self.onWallHit true
+	end if
+	if level.blocksWalking(self.x, self.y + playerHitbox) then
+		if self.checkCrate(self.x, self.y + playerHitbox) == true then return
+		self.ly = floor((self.ly + playerHitbox) / camera.tileCellSize) * camera.tileCellSize - playerHitbox
+		self.onWallHit false
+	else if level.blocksWalking(self.x, self.y - playerHitbox) then
+		if self.checkCrate(self.x, self.y - playerHitbox) == true then return
+		self.ly = ceil((self.ly - playerHitbox) / camera.tileCellSize) * camera.tileCellSize + playerHitbox
+		self.onWallHit false
+	end if
+	if self.lx * camera.tileCellSize / 64 < 0 then
+        self.lx = 0
+        self.onWallHit true
+    else if self.lx * camera.tileCellSize / 64 > ground.extent[0] * camera.tileCellSize then 
+		self.lx = ground.extent[0] * camera.tileCellSize 
+		self.onWallHit false
+	end if
+	if self.ly * camera.tileCellSize / 64 < 0 then
+        self.ly = 0 
+        self.onWallHit true
+	else if self.ly * camera.tileCellSize / 64 > ground.extent[1] * camera.tileCellSize then 
+		self.ly = ground.extent[1] * camera.tileCellSize
+		self.onWallHit false
+	end if
+end function
+
 Kart.checkCrate = function(x, y)
-	if abs(self.vx) + abs(self.vy) < 100 then return
+	if abs(self.vx) + abs(self.vy) < 50 then return
 	col = floor(x / camera.tileCellSize)
 	row = floor(y / camera.tileCellSize)
 	tile = walls.cell(col, row)
@@ -626,6 +600,8 @@ EnemyKart.currentUpgrades = []
 EnemyKart.playerNum = 0
 EnemyKart.driftBoost = 0
 EnemyKart.maxDriftBoost = 0
+
+EnemyKart.turnSpeed = 150
 
 EnemyKart.init = function(playerTwo)
     super.init
