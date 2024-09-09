@@ -43,11 +43,11 @@ update = function
 		scrollTo sx, sy
 	else
 		// Calculate the cell size to ensure square tiles that fit within both dimensions
-		cellSize = mathUtil.min(960 / ground.extent[0], 640 / ground.extent[1])
+		outer.tileCellSize = mathUtil.min(960 / ground.extent[0], 640 / ground.extent[1])
 
 		// Apply the same cellSize to both ground and walls
-		ground.cellSize = cellSize
-		walls.cellSize = cellSize
+		ground.cellSize = tileCellSize
+		walls.cellSize = tileCellSize
 
 		scrollTo 0, 0
 	end if

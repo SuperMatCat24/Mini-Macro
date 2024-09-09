@@ -43,3 +43,19 @@ Drift.descriptions = ["Turning while drifting increases drift charge, and boosts
 Drift.prices = [65, 20]
 
 possibleUpgrades = [Compact, Grip, ShrinkRay, Defence, Juggernaut, Drift]
+
+getUpgrades = function(obj)
+	if not obj isa kart.Kart then return null
+	if obj.currentUpgrades == [] then 
+		for pu in upgrades.possibleUpgrades
+			obj.currentUpgrades.push new pu
+		end for
+	end if
+	currentUpgrades = obj.currentUpgrades
+	possibleUpgrades = []
+
+	for u in currentUpgrades
+		if u.level < 2 then possibleUpgrades.push u
+	end for
+	return possibleUpgrades
+end function

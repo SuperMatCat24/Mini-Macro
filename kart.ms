@@ -62,10 +62,25 @@ Kart.init = function
 	super.init
 end function
 
+Kart.reset = function(x, y)
+	self.lx = x*64 + 32
+	self.ly = y*64 + 32
+	self.vx = 0
+	self.vy = 0
+	self.bx = 0
+	self.by = 0
+	self.angle_degrees = 0
+	self.rotation = 0
+	self.driftBoost = 0
+	self.currentLap = 1
+	self.currentCheckpoint = 0
+	self.handleModifiers
+end function
+
 Kart.checkWalls = function
 	if level.blocksWalking(self.x + (12*(self.scale/4)), self.y) then
 		if self.checkCrate(self.x + (12*(self.scale/4)), self.y) == true then return
-		self.lx = floor((self.lx + (12*(self.scale/4))) / ground.cellSize) * ground.cellSize - (12*(self.scale/4))
+		self.lx = floor((self.lx + (12*(self.scale/4))) / camera.tileCellSize) * camera.tileCellSize - (12*(self.scale/4))
 		// if self.angle_degrees > 30 or self.angle_degrees < -30 then self.velocity *= -0.5
 		self.vx *= -0.6
 		self.bx *= -0.6
@@ -76,7 +91,7 @@ Kart.checkWalls = function
 	end if
 	if level.blocksWalking(self.x - (12*(self.scale/4)), self.y) then
 		if self.checkCrate(self.x - (12*(self.scale/4)), self.y) == true then return
-		self.lx = ceil((self.lx - (12*(self.scale/4))) / ground.cellSize) * ground.cellSize + (12*(self.scale/4))
+		self.lx = ceil((self.lx - (12*(self.scale/4))) / camera.tileCellSize) * camera.tileCellSize + (12*(self.scale/4))
 		self.vx *= -0.6
 		self.bx *= -0.6
 		if abs(self.vx) > 70 then 
@@ -86,7 +101,7 @@ Kart.checkWalls = function
 	end if
 	if level.blocksWalking(self.x, self.y + (12*(self.scale/4))) then
 		if self.checkCrate(self.x, self.y + (12*(self.scale/4))) == true then return
-		self.ly = floor((self.ly + (12*(self.scale/4))) / ground.cellSize) * ground.cellSize - (12*(self.scale/4))
+		self.ly = floor((self.ly + (12*(self.scale/4))) / camera.tileCellSize) * camera.tileCellSize - (12*(self.scale/4))
 		self.vy *= -0.6
 		self.by *= -0.6
 		if abs(self.vy) > 70 then 
@@ -96,7 +111,7 @@ Kart.checkWalls = function
 	end if
 	if level.blocksWalking(self.x, self.y - (12*(self.scale/4))) then
 		if self.checkCrate(self.x, self.y - (12*(self.scale/4))) == true then return
-		self.ly = ceil((self.ly - (12*(self.scale/4))) / ground.cellSize) * ground.cellSize + (12*(self.scale/4))
+		self.ly = ceil((self.ly - (12*(self.scale/4))) / camera.tileCellSize) * camera.tileCellSize + (12*(self.scale/4))
 		self.vy *= -0.6
 		self.by *= -0.6
 		if abs(self.vy) > 70 then 
@@ -104,7 +119,7 @@ Kart.checkWalls = function
 			sound.bump.adjust 0.2 * globals.soundVol
 		end if
 	end if
-	if self.lx * ground.cellSize / 64 < 0 then
+	if self.lx * camera.tileCellSize / 64 < 0 then
         self.lx = 0
         self.vx *= -0.6
         self.bx *= -0.6
@@ -113,7 +128,7 @@ Kart.checkWalls = function
 			sound.bump.adjust 0.2 * globals.soundVol
 		end if
     end if
-	if self.ly * ground.cellSize / 64 < 0 then
+	if self.ly * camera.tileCellSize / 64 < 0 then
         self.ly = 0 
         self.vy *= -0.6
         self.by *= -0.6
@@ -122,8 +137,8 @@ Kart.checkWalls = function
 			sound.bump.adjust 0.2 * globals.soundVol
 		end if
     end if
-	if self.lx * ground.cellSize / 64 > ground.extent[0] * ground.cellSize then 
-		self.lx = ground.extent[0] * ground.cellSize 
+	if self.lx * camera.tileCellSize / 64 > ground.extent[0] * camera.tileCellSize then 
+		self.lx = ground.extent[0] * camera.tileCellSize 
 		self.vx *= -0.6
         self.bx *= -0.6
         if abs(self.vx) > 70 then 
@@ -131,8 +146,8 @@ Kart.checkWalls = function
 			sound.bump.adjust 0.2 * globals.soundVol
 		end if
 	end if
-	if self.ly * ground.cellSize / 64 > ground.extent[1] * ground.cellSize then 
-		self.ly = ground.extent[1] * ground.cellSize
+	if self.ly * camera.tileCellSize / 64 > ground.extent[1] * camera.tileCellSize then 
+		self.ly = ground.extent[1] * camera.tileCellSize
 		self.vy *= -0.6
         self.by *= -0.6
         if abs(self.vy) > 70 then 
@@ -144,8 +159,8 @@ end function
 
 Kart.checkCrate = function(x, y)
 	if abs(self.vx) + abs(self.vy) < 100 then return
-	col = floor(x / ground.cellSize)
-	row = floor(y / ground.cellSize)
+	col = floor(x / camera.tileCellSize)
+	row = floor(y / camera.tileCellSize)
 	tile = walls.cell(col, row)
 	if tile == 45 then
 		if self.lScale >= 5 then
@@ -243,8 +258,8 @@ Kart.checkEnemies = function
 end function
 
 Kart.checkMud = function
-	col = floor(self.x / ground.cellSize)
-	row = floor(self.y / ground.cellSize)
+	col = floor(self.x / camera.tileCellSize)
+	row = floor(self.y / camera.tileCellSize)
 	tile = ground.cell(col, row)
 	for tileData in level.mud
 		if tileData[0] == tile then return tileData[1]
@@ -253,8 +268,8 @@ Kart.checkMud = function
 end function
 
 Kart.checkWater = function
-	col = floor(self.x / ground.cellSize)
-	row = floor(self.y / ground.cellSize)
+	col = floor(self.x / camera.tileCellSize)
+	row = floor(self.y / camera.tileCellSize)
 	tile = ground.cell(col, row)
 	for tileData in level.water
 		if tileData[0] == tile then return tileData[1]
@@ -454,8 +469,8 @@ Kart.tryAccelerate = function(tdx, tdy)
 	// Accelerate or decelerate based on user input
 	accelInput = self.forwardInput
 	mudAccel = 1
-	col = floor(self.lx / ground.cellSize)
-	row = floor(self.ly / ground.cellSize)
+	col = floor(self.lx / camera.tileCellSize)
+	row = floor(self.ly / camera.tileCellSize)
 	tile = ground.cell(col, row)
 	if tile != null then mudAccel = 0.7
 	if accelInput != 0 then
@@ -617,11 +632,16 @@ EnemyKart.init = function(playerTwo)
 	self.playerNum = playerTwo
 end function
 
+EnemyKart.reset = function(x, y)
+	super.reset x, y
+	player2.pathPoint = pathUtil.PathPoint.make(globals.path, 0)
+end function
+
 EnemyKart.getPath = function
 	if level.checkpoints == [] then return
-	selfPos = {"x": floor(self.lx/ground.cellSize), "y": floor(self.ly/ground.cellSize)}
+	selfPos = {"x": floor(self.lx/camera.tileCellSize), "y": floor(self.ly/camera.tileCellSize)}
 	curCheckpoint = level.checkpoints[(self.currentCheckpoint+1)%level.checkpoints.len]
-	checkpointPos = {"x": curCheckpoint.x/ground.cellSize, "y": curCheckpoint.y/ground.cellSize}
+	checkpointPos = {"x": curCheckpoint.x/camera.tileCellSize, "y": curCheckpoint.y/camera.tileCellSize}
 
 	path = pathfinding.find(selfPos, checkpointPos)
 	for p in path
@@ -691,8 +711,8 @@ EnemyKart.update = function(dt = 0.0167)
 
 	self.boostTime = 0
 	mudAccel = 1
-	col = floor(self.lx / ground.cellSize)
-	row = floor(self.ly / ground.cellSize)
+	col = floor(self.lx / camera.tileCellSize)
+	row = floor(self.ly / camera.tileCellSize)
 	tile = ground.cell(col, row)
 	if tile != null then mudAccel = 0.7
 	accelFactor = self.accel * mudAccel * self.accelModifier * dt

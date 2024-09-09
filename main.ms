@@ -39,6 +39,17 @@ Sprite.lx = 0
 Sprite.ly = 0
 Sprite.lScale = 1
 
+updateSpritePositions = function
+    // Loop though all updatableSprites and change positions and scale
+    // to act as a dynamic camera.
+    for a in updatable.all
+        if not (a isa Sprite or a isa UpdatableSprite or a isa StackedSprite) then continue
+        a.x = a.lx * camera.tileCellSize / 64
+        a.y = a.ly * camera.tileCellSize / 64
+        a.scale = a.lScale * camera.tileCellSize / 64
+    end for
+end function
+
 path1 = [[6, 10], [7, 15], [10, 16], [15, 14], [18, 12], [22, 11], [23, 8], [21, 5], [18, 4], [9, 4], [6, 10]]
 for p in path1
     p[0] *= 64; p[1] *= 64
@@ -146,12 +157,7 @@ while true
     lastTime = time
     coinTimer += dt
 
-    for a in updatable.all
-        if not (a isa Sprite or a isa UpdatableSprite or a isa StackedSprite) then continue
-        a.x = a.lx * ground.cellSize / 64
-        a.y = a.ly * ground.cellSize / 64
-        a.scale = a.lScale * ground.cellSize / 64
-    end for
+    updateSpritePositions
 
     if coinTimer > 25 then
         objects.regenCoins

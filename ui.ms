@@ -27,29 +27,13 @@ update = function(kart)
 	    gfx.print txt, 960-txt.len*20-10, 520, color.red, "large"
 	    gfx.line 960, 520, 960-txt.len*20-10, 520, color.red, 5
 	end if
-	txt = "Round: " + level.section + " / 10" 
+	txt = "Round: " + level.race + " / 10" 
 	gfx.print txt, 960/2-txt.len*10, 600, color.white, "large"
 	gfx.line 960/2-txt.len*10, 600, 960/2+txt.len*10, 600, color.white, 5
 end function
 
-getUpgrades = function(obj)
-	if not obj isa kart.Kart then return null
-	if obj.currentUpgrades == [] then 
-		for pu in upgrades.possibleUpgrades
-			obj.currentUpgrades.push new pu
-		end for
-	end if
-	currentUpgrades = obj.currentUpgrades
-	possibleUpgrades = []
-
-	for u in currentUpgrades
-		if u.level < 2 then possibleUpgrades.push u
-	end for
-	return possibleUpgrades
-end function
-
 setEnemyUpgrade = function
-	possibleUpgrades = getUpgrades(player2)
+	possibleUpgrades = upgrades.getUpgrades(player2)
 
 	for i in range(possibleUpgrades.len-1, 0, -1)  // Loop through itemList in reverse
 	    if possibleUpgrades[i].prices[possibleUpgrades[i].level] > player2.coins then possibleUpgrades.remove(i)
@@ -69,7 +53,92 @@ setEnemyUpgrade = function
 	end for
 end function
 
-trophyImg = file.loadImage("pics/trophy.png")
+playLossAnimation = function
+
+	player.score += constants.lossScore
+
+	medals = []
+
+	// Add the correct medals depending on the player losses
+
+	bronze = new Sprite
+	bronze.image = images.bronzeMedal
+	bronze.x = 960*(3/8) + disp.scrollX; bronze.y = 640/2 + disp.scrollY; bronze.scale = 4
+	disp.sprites.push bronze
+	medals.push bronze
+
+	if player.losses < 2 then
+		silver = new Sprite
+		silver.image = images.silverMedal
+		silver.x = 960*(4/8) + disp.scrollX; silver.y = 640/2 + disp.scrollY; silver.scale = 4
+		disp.sprites.push silver
+		medals.push silver
+	end if
+
+	if player.losses == 0 then
+		gold = new Sprite
+		gold.image = images.goldMedal
+		gold.x = 960*(5/8) + disp.scrollX; gold.y = 640/2 + disp.scrollY; gold.scale = 4
+		disp.sprites.push gold
+		medals.push gold
+	end if
+
+	// Fade UI in
+
+	for a in range(0, 255, 5)
+		for m in medals
+			m.tint = color.rgba(255, 255, 255, a)
+		end for
+		yield
+		txt = "Losses: " + player.losses + " / 3"
+		gfx.print txt, 960/2 - txt.len*10, 400, color.rgba(255, 255, 255, a), "large"
+	end for
+
+	chosenMedal = medals[-1]
+
+	animStart = time
+	startX = chosenMedal.x 
+	startY = chosenMedal.y
+	sound.suspence.play
+	sound.suspence.adjust 0
+
+	// Shake medal and play suspence sound for 2 seconds
+
+	while time < animStart + 2
+		chosenMedal.x = startX + (mathUtil.randRange(-10, 10) * (time - animStart))
+		chosenMedal.y = startY + (mathUtil.randRange(-10, 10) * (time - animStart))
+		sound.suspence.adjust (time - animStart) / 4.5
+	end while
+
+	disp.sprites.removeVal chosenMedal
+	sound.suspence.stop
+	sound.crack.play
+	player.losses += 1
+	gfx.fillRect 0, 0, 960, 640, color.clear
+	txt = "Losses: " + player.losses + " / 3"
+	gfx.print txt, 960/2 - txt.len*10, 400, color.rgba(255, 255, 255, 255), "large"
+
+	wait 0.5
+
+	// Fade ui out
+
+	for a in range(255, 0, -5)
+		for m in medals
+			m.tint = color.rgba(255, 255, 255, a)
+		end for
+		txt = "Losses: " + player.losses + " / 3"
+		gfx.print txt, 960/2 - txt.len*10, 400, color.rgba(255, 255, 255, a), "large"
+		yield
+	end for
+	gfx.fillRect 0, 0, 960, 640, color.clear
+
+	for m in medals
+		disp.sprites.removeVal m
+	end for
+
+	playerLost = false
+	if player.losses >= 3 then endGame
+end function
 
 levelComplete = function
 
@@ -79,15 +148,19 @@ levelComplete = function
 		yield
 		dt=time-lastTime
 		lastTime = time
-		player.vx = mathUtil.moveTowards(player.vx, 0, 300 * dt)
-		player2.vx = mathUtil.moveTowards(player2.vx, 0, 300 * dt)
-		player.vy = mathUtil.moveTowards(player.vy, 0, 300 * dt)
-		player2.vy = mathUtil.moveTowards(player2.vy, 0, 300 * dt)
-		player.x += player.vx * dt; player.y += player.vy * dt
-		player2.x += player2.vx * dt; player2.y += player2.vy * dt
+
+		player.vx = mathUtil.moveTowards(player.vx, 0, 400 * dt)
+		player2.vx = mathUtil.moveTowards(player2.vx, 0, 400 * dt)
+		player.vy = mathUtil.moveTowards(player.vy, 0, 400 * dt)
+		player2.vy = mathUtil.moveTowards(player2.vy, 0, 400 * dt)
+		player.lx += player.vx * dt; player.ly += player.vy * dt
+		player2.lx += player2.vx * dt; player2.ly += player2.vy * dt
+
+		globals.updateSpritePositions
 		player.updateSprites; player2.updateSprites
 		camera.update
 	end while
+
 	wait 0.5
 
 	gfx.clear
@@ -107,165 +180,85 @@ levelComplete = function
 	bg.y = 320
 	bg.x = 960/2
 
-	if winner != player then
+	if winner != player then playLossAnimation
 
-		player.score += constants.lossScore
-
-		medals = []
-
-		bronze = new Sprite
-		bronze.image = images.bronzeMedal
-		bronze.x = 960*(3/8) + disp.scrollX; bronze.y = 640/2 + disp.scrollY; bronze.scale = 4
-		disp.sprites.push bronze
-		medals.push bronze
-
-		if player.losses < 2 then
-			silver = new Sprite
-			silver.image = images.silverMedal
-			silver.x = 960*(4/8) + disp.scrollX; silver.y = 640/2 + disp.scrollY; silver.scale = 4
-			disp.sprites.push silver
-			medals.push silver
-		end if
-
-		if player.losses == 0 then
-			gold = new Sprite
-			gold.image = images.goldMedal
-			gold.x = 960*(5/8) + disp.scrollX; gold.y = 640/2 + disp.scrollY; gold.scale = 4
-			disp.sprites.push gold
-			medals.push gold
-		end if
-
-		for a in range(0, 255, 5)
-			for m in medals
-		    	m.tint = color.rgba(255, 255, 255, a)
-			end for
-		    yield
-			txt = "Losses: " + player.losses + " / 3"
-			gfx.print txt, 960/2 - txt.len*10, 400, color.rgba(255, 255, 255, a), "large"
-		end for
-
-		chosenMedal = medals[-1]
-
-		animStart = time
-		startX = chosenMedal.x 
-		startY = chosenMedal.y
-		sound.suspence.play
-		sound.suspence.adjust 0
-		while time < animStart + 2
-			chosenMedal.x = startX + (mathUtil.randRange(-10, 10) * (time - animStart))
-			chosenMedal.y = startY + (mathUtil.randRange(-10, 10) * (time - animStart))
-			sound.suspence.adjust (time - animStart) / 4
-		end while
-		disp.sprites.removeVal chosenMedal
-		sound.suspence.stop
-		sound.crack.play
-		player.losses += 1
-		gfx.fillRect 0, 0, 960, 640, color.clear
-		txt = "Losses: " + player.losses + " / 3"
-		gfx.print txt, 960/2 - txt.len*10, 400, color.rgba(255, 255, 255, 255), "large"
-
-		wait 0.5
-
-		for a in range(255, 0, -5)
-			for m in medals
-		    	m.tint = color.rgba(255, 255, 255, a)
-			end for
-			txt = "Losses: " + player.losses + " / 3"
-			gfx.print txt, 960/2 - txt.len*10, 400, color.rgba(255, 255, 255, a), "large"
-		    yield
-		end for
-		gfx.fillRect 0, 0, 960, 640, color.clear
-		for m in medals
-			disp.sprites.removeVal m
-		end for
-		playerLost = false
-		if player.losses >= 3 then endGame
-	end if
-
-	if file.exists(level.levelPath + "1-"  + (level.section+1) + ".dat") then
-		txt = "Level Complete! Choose an upgrade."
-		gfx.print txt, 960/2 - txt.len*20/2, 580, color.white, "large"
-
-		txt = "Player wins: " + player.wins
-		gfx.print txt, 10, 10+90, color.white, "large"
-		txt = "Player coins: " + player.coins
-		gfx.print txt, 10, 10+60, color.yellow, "large"
-		txt = "player2 wins: " + player2.wins
-		gfx.print txt, 10, 10+30, color.white, "large"
-		txt = "player2 coins: " + player2.coins
-		gfx.print txt, 10, 10, color.yellow, "large"
-
-		if winner == player then
-			txt = "Player gets 10 coins for winning!"
-			gfx.print txt, 960/2 - txt.len*11/2, 560, color.yellow, "medium"
-		else if winner == player2 then
-			txt = "player2 gets 10 coins for winning!"
-			gfx.print txt, 960/2 - txt.len*11/2, 560, color.yellow, "medium"
-		end if
-		
-		next = new Button
-    	next.x = 880; next.y = 100
-		next.text = "NEXT"
-		next.init
-
-		objects.clear
-		camera.update
-
-		upgradeButtons = []
-		possibleUpgrades = getUpgrades(player)
-
-		for i in range(0, 2)
-			b = new UpgradeButton 
-			nextUpgrade = possibleUpgrades[possibleUpgrades.len*rnd]
-			b.upgrade = nextUpgrade
-			possibleUpgrades.removeVal nextUpgrade
-			b.x = 170 + 310 * i
-			b.y = 350
-			if b.upgrade == null then continue
-			b.text = b.upgrade.descriptions[nextUpgrade.level]
-			if nextUpgrade.icons != [] then b.bigImage = nextUpgrade.icons[nextUpgrade.level]
-			b.init
-			upgradeButtons.push b
-		end for
-
-		chosenUpgrade = null
-
-    	while true  // (press Control-C to exit)
-    	    yield
-    	    // The mouse button is down.  Check each of our buttons, 
-    	    // and do whatever they should do if clicked.
-    	    if next.isClicked then
-    	        Button.clear
-
-				if chosenUpgrade != null then 
-					for upgrade in player.currentUpgrades
-						if upgrade.name == chosenUpgrade.name then
-							player.coins -= chosenUpgrade.prices[chosenUpgrade.level]
-							player.score += constants.upgradeScore
-							upgrade.level += 1
-						end if
-					end for
-				end if
-
-				setEnemyUpgrade
-
-				disp.sprites.removeVal bg
-				gfx.clear
-				level.section += 1
-				level.setup
-				globals.lastTime = time
-				return
-    	    end if
-
-			for u in upgradeButtons
-				if u.isClicked then 
-					chosenUpgrade = u.upgrade
-				end if
-			end for
-    	end while
+	if file.exists(level.levelPath + "1-"  + (level.race+1) + ".dat") then
+		chooseUpgrades
 	else
 		endGame
 	end if
+end function
+
+chooseUpgrades = function
+	txt = "Level Complete! Choose an upgrade."
+	gfx.print txt, 960/2 - txt.len*20/2, 580, color.white, "large"
+	txt = "Player wins: " + player.wins
+	gfx.print txt, 10, 10+90, color.white, "large"
+	txt = "Player coins: " + player.coins
+	gfx.print txt, 10, 10+60, color.yellow, "large"
+	txt = "Player 2 wins: " + player2.wins
+	gfx.print txt, 10, 10+30, color.white, "large"
+	txt = "Player 2 coins: " + player2.coins
+	gfx.print txt, 10, 10, color.yellow, "large"
+	if winner == player then
+		txt = "Player gets 10 coins for winning!"
+		gfx.print txt, 960/2 - txt.len*11/2, 560, color.yellow, "medium"
+	else if winner == player2 then
+		txt = "Player 2 gets 10 coins for winning!"
+		gfx.print txt, 960/2 - txt.len*11/2, 560, color.yellow, "medium"
+	end if
+	
+	next = new Button
+	next.x = 880; next.y = 100
+	next.text = "NEXT"
+	next.init
+	objects.clear
+	camera.update
+	upgradeButtons = []
+	possibleUpgrades = upgrades.getUpgrades(player)
+	for i in range(0, 2)
+		b = new UpgradeButton 
+		nextUpgrade = possibleUpgrades[possibleUpgrades.len*rnd]
+		b.upgrade = nextUpgrade
+		possibleUpgrades.removeVal nextUpgrade
+		b.x = 170 + 310 * i
+		b.y = 350
+		if b.upgrade == null then continue
+		b.text = b.upgrade.descriptions[nextUpgrade.level]
+		if nextUpgrade.icons != [] then b.bigImage = nextUpgrade.icons[nextUpgrade.level]
+		b.init
+		upgradeButtons.push b
+	end for
+	chosenUpgrade = null
+	while true  // (press Control-C to exit)
+	    yield
+	    // The mouse button is down.  Check each of our buttons, 
+	    // and do whatever they should do if clicked.
+	    if next.isClicked then
+	        Button.clear
+			if chosenUpgrade != null then 
+				for upgrade in player.currentUpgrades
+					if upgrade.name == chosenUpgrade.name then
+						player.coins -= chosenUpgrade.prices[chosenUpgrade.level]
+						player.score += constants.upgradeScore
+						upgrade.level += 1
+					end if
+				end for
+			end if
+			setEnemyUpgrade
+			disp.sprites = [player, player2]
+			gfx.clear
+			level.race += 1
+			level.setup
+			globals.lastTime = time
+			return
+	    end if
+		for u in upgradeButtons
+			if u.isClicked then 
+				chosenUpgrade = u.upgrade
+			end if
+		end for
+	end while
 end function
 
 endGame = function
@@ -283,7 +276,7 @@ endGame = function
 	menu.text = "RESTART"
 	menu.init
 	trophy = new Sprite
-	trophy.image = trophyImg
+	trophy.image = images.trophyImg
 	trophy.x = 960/2
 	trophy.y = 440
 	trophy.scale = 4
@@ -306,7 +299,7 @@ endGame = function
 			txt += "BRONZE Trophy!"
 		end if
 		gfx.print txt, 960/2 - txt.len*10, 230, color.white, "large"
-		txt = "And lasted " + level.section + " Rounds."
+		txt = "And lasted " + level.race + " Rounds."
 		gfx.print txt, 960/2 - txt.len*10, 200, color.white, "large"
 		txt = "Play again?"
 		gfx.print txt, 960/2 - txt.len*10, 170, color.white, "large"
@@ -314,7 +307,7 @@ endGame = function
 	else
 		txt = "You got " + player.wins + " wins..."
 		gfx.print txt, 960/2 - txt.len*10, 260, color.white, "large"
-		txt = "And lasted " + level.section + " Rounds."
+		txt = "And lasted " + level.race + " Rounds."
 		gfx.print txt, 960/2 - txt.len*10, 230, color.white, "large"
 		txt = "Try again?"
 		gfx.print txt, 960/2 - txt.len*10, 200, color.white, "large"

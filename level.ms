@@ -9,8 +9,8 @@ end for
 mud = [[0, 0.65], [1, 0.3], [4, 0.5]]
 water = [[12, 0.4]]
 
-act = 1
-section = 1
+levelType = 1
+race = 1
 
 started = false
 checkpoints = []
@@ -19,67 +19,37 @@ laps = 3
 levelPath = "/usr/levels/"
 
 setup = function
-	if globals.twoplayer == true then act = 2 else act = 1
-	lvl = levelPath + act + "-" + section + ".dat"
-	outer.name = act + "-" + section
+	if globals.twoplayer == true then levelType = 2 else levelType = 1
+	lvl = levelPath + levelType + "-" + race + ".dat"
+	outer.name = levelType + "-" + race
+
 	walls.clear
 	ground.clear
-	globals.path = []
-	globals.path = globals.get("path" + section)
 	objects.clear
 	kart.clear
+	updatable.all = [player, player2]
+
+	globals.path = []
+	globals.path = globals.get("path" + race)
 	
 	tileUtil.loadFromFile lvl, walls, ground
-
-	if section == 10 then
-		tintLevel color.rgb(120, 70, 150)
-	else if section > 7 then
-		tintLevel color.rgb(170, 90, 150)
-	else if section > 3 then
-		tintLevel color.rgb(255, 200, 200)
-	else
-		tintLevel color.rgb(255, 255, 255)
-	end if
-
-	updatable.all = [player, player2]
-	outer.checkpoints = []
-
-	camera.update
+	checkLevelTint
 	processLevel
 
-	for c in constants.checkpoints[act-1][section-1]
-		checkpoint = new Bounds
-		checkpoint.x = c[0] * ground.cellSize
-		checkpoint.y = c[1] * ground.cellSize
-		checkpoint.width = c[2] * ground.cellSize
-		checkpoint.height = c[3] * ground.cellSize
-		outer.checkpoints.push checkpoint
-	end for
+	camera.update
+
+	makeCheckpoints
 
 	if globals.twoplayer == false then player2.getPath
 
 	player.updateSprites
 	player2.updateSprites
-	ui.getUpgrades(player)
-	ui.getUpgrades(player2)
-	if section == 1 then
-		display(0).mode = displayMode.solidColor
-		d = display(0)
-		d.color = color.black
-		for a in range(255, 0, -5)
-		    d.color = color.rgba(0, 0, 0, a)
-		    yield
-		end for
-	end if
-	for i in range(3, 0, -1)
-		txt = str(i)
-		if i == 0 then txt = "GO!"
-		gfx.clear
-		gfx.print txt, 960/2, (640/2)-txt.len*10, color.white, "large"
-		sound["announce"+i].play
-		sound["announce"+i].adjust 0.2 * globals.soundVol
-		wait 0.5
-	end for
+	upgrades.getUpgrades(player)
+	upgrades.getUpgrades(player2)
+
+	tryFadeIn
+	playStartAnim
+
 	gfx.clear
 	ui.update player2
 	ui.update player
@@ -125,43 +95,71 @@ wallRaycast = function(start, target)
 	end while
 end function
 
-
 processLevel = function
+	// Loops throught the entire level, placing objects when needed
 	for y in range(0, walls.extent[1]-1)
 		for x in range(0, walls.extent[0]-1)
 			c = walls.cell(x, y)
 			if c == 37 then
-				player.lx = x*64 + 32
-				player.ly = y*64 + 32
-				player.vx = 0
-				player.vy = 0
-				player.bx = 0
-				player.by = 0
-				player.angle_degrees = 0
-				player.rotation = 0
-				player.driftBoost = 0
+				player.reset x, y
 				walls.setCell x, y, 9
-				player.currentLap = 1
-				player.currentCheckpoint = 0
-				player.handleModifiers
 			else if c == 38 then
-				player2.lx = x*64 + 32
-				player2.ly = y*64 + 32
-				player2.vx = 0
-				player2.vy = 0
-				player2.bx = 0
-				player2.by = 0
-				player2.angle_degrees = 0
-				player2.rotation = 0
-				player2.currentLap = 1
-				player2.currentCheckpoint = 0
-				player2.handleModifiers
-				player2.pathPoint = pathUtil.PathPoint.make(globals.path, 0)
+				player2.reset x, y
 				walls.setCell x, y, 9
 			else if c == 39 then
 				objects.Coin.place x, y
 			end if
 		end for
+	end for
+end function
+
+checkLevelTint = function
+	if race == 10 then
+		tintLevel color.rgb(120, 70, 150)
+	else if race > 7 then
+		tintLevel color.rgb(170, 90, 150)
+	else if race > 3 then
+		tintLevel color.rgb(255, 200, 200)
+	else
+		tintLevel color.rgb(255, 255, 255)
+	end if
+end function
+
+playStartAnim = function
+	for i in range(3, 0, -1)
+		txt = str(i)
+		if i == 0 then txt = "GO!"
+		gfx.clear
+		gfx.print txt, 960/2, (640/2)-txt.len*10, color.white, "large"
+
+		// Play the correct anouncer sound
+		sound["announce"+i].play
+		sound["announce"+i].adjust 0.2 * globals.soundVol
+		wait 0.5
+	end for
+end function
+
+tryFadeIn = function
+	if race == 1 then
+		display(0).mode = displayMode.solidColor
+		d = display(0)
+		d.color = color.black
+		for a in range(255, 0, -5)
+			d.color = color.rgba(0, 0, 0, a)
+			yield
+		end for
+	end if
+end function
+
+makeCheckpoints = function
+	outer.checkpoints = []
+	for c in constants.checkpoints[levelType-1][race-1]
+		checkpoint = new Bounds
+		checkpoint.x = c[0] * ground.cellSize
+		checkpoint.y = c[1] * ground.cellSize
+		checkpoint.width = c[2] * ground.cellSize
+		checkpoint.height = c[3] * ground.cellSize
+		outer.checkpoints.push checkpoint
 	end for
 end function
 

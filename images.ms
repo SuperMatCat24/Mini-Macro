@@ -43,3 +43,5 @@ tileset2.push file.loadImage("pics/tileset2e.png")
 bronzeMedal = file.loadImage("pics/bronzeMedal.png")
 silverMedal = file.loadImage("pics/silverMedal.png")
 goldMedal = file.loadImage("pics/goldMedal.png")
+
+trophyImg = file.loadImage("pics/trophy.png")
