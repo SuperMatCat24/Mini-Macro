@@ -616,6 +616,7 @@ end function
 
 EnemyKart = new Kart
 EnemyKart.pathPoint = null
+EnemyKart.stuckPathPoint = null
 EnemyKart.lx = 480
 EnemyKart.ly = 320
 EnemyKart.maxSpeed = 420
@@ -628,7 +629,7 @@ EnemyKart.maxDriftBoost = 0
 
 EnemyKart.init = function(playerTwo)
     super.init
-    self.pathPoint = pathUtil.PathPoint.nearPoint(globals.path, [self.lx, self.ly])
+    self.pathPoint = pathUtil.PathPoint.make(globals.path, 0)
 	self.playerNum = playerTwo
 end function
 
@@ -637,18 +638,17 @@ EnemyKart.reset = function(x, y)
 	player2.pathPoint = pathUtil.PathPoint.make(globals.path, 0)
 end function
 
-EnemyKart.getPath = function
-	if level.checkpoints == [] then return
-	selfPos = {"x": floor(self.lx/camera.tileCellSize), "y": floor(self.ly/camera.tileCellSize)}
-	curCheckpoint = level.checkpoints[(self.currentCheckpoint+1)%level.checkpoints.len]
-	checkpointPos = {"x": curCheckpoint.x/camera.tileCellSize, "y": curCheckpoint.y/camera.tileCellSize}
+EnemyKart.getStuckPath = function
+	if level.blocksWalking(self.x, self.y) then return
 
-	path = pathfinding.find(selfPos, checkpointPos)
+	selfPos = {"x": round(self.lx/camera.tileCellSize), "y": round(self.ly/camera.tileCellSize)}
+	targetPos = {"x": floor(self.pathPoint.position[0]/camera.tileCellSize+camera.tileCellSize/2), "y": floor(self.pathPoint.position[1]/camera.tileCellSize+camera.tileCellSize/2)}
+
+	path = pathfinding.find(selfPos, targetPos)
 	for p in path
 		p[0] *= 64; p[1] *= 64
 	end for
-	self.pathPoint.path = path
-	self.pathPoint.curIndex = 1
+	self.stuckPathPoint = pathUtil.PathPoint.nearPoint(path, [self.lx, self.ly])
 	self.pathPoint.updatePosition
 end function
 
@@ -730,12 +730,14 @@ EnemyKart.update = function(dt = 0.0167)
 
 	turnSpeed = self.turnSpeed
 	// Calculate turn influence based on current speed
-    dir = ((atan(self.ly - self.pathPoint.position[1], self.lx - self.pathPoint.position[0]))*180/pi+90) 
+	targetAngle = atan(self.ly - self.pathPoint.position[1], self.lx - self.pathPoint.position[0])
+	if self.stuckPathPoint != null then targetAngle = atan(self.ly - self.stuckPathPoint.position[1], self.lx - self.stuckPathPoint.position[0])
+    dir = (targetAngle*180/pi+90) 
 	self.angle_degrees = moveTowardsAngle(self.angle_degrees, -dir, turnSpeed*dt)
 
 	// Update position
 	self.lx += (self.vx + self.bx) * dt
-	self.ly += (self.vy + self.by) * dt
+	self.ly += (self.vy + self.by) * dt 
 
 	// Ensure the angle is within 0 to 360 degrees
 	self.angle_degrees %= 360
@@ -791,13 +793,26 @@ EnemyKart.update = function(dt = 0.0167)
 	self.emitParticles false, angle_dif
 	super.update dt
 
-	if mathUtil.distance(self, self.pathPoint.position) < 100 then
-	    self.pathPoint.advance(currentSpeed*dt)
+	if self.stuckPathPoint == null then
+		if mathUtil.distance(self, self.pathPoint.position) < 250 then
+		    self.pathPoint.advance currentSpeed*dt
+		end if
+		if self.pathPoint.isAtEnd or self.pathPoint.curIndex > path.len-1 then
+			self.pathPoint.curIndex = 0
+		end if
+		if level.wallRaycast([self.x, self.y], [self.pathPoint.position[0], self.pathPoint.position[1]]) != null then
+			self.getStuckPath
+		end if
+	else
+		if mathUtil.distance(self, self.stuckPathPoint.position) < 250 then
+		    self.stuckPathPoint.advance currentSpeed*dt
+		end if
+		if self.stuckPathPoint.isAtEnd or self.stuckPathPoint.curIndex > path.len-1 then
+			self.stuckPathPoint = null
+			self.pathPoint = pathUtil.PathPoint.nearPoint(globals.path, [self.lx, self.ly])
+			self.pathPoint.advance currentSpeed*dt
+		end if
 	end if
-	if self.pathPoint.isAtEnd or self.pathPoint.curIndex > path.len-1 then
-		//self.getPath
-	end if
-	self.getPath
 	self.pathPoint.updatePosition
 end function
 

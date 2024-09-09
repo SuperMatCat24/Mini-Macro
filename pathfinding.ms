@@ -62,9 +62,9 @@ find = function(startPos, endPos)
 			doneSet.push pos
 			groundCell = ground.cell(pos.x, pos.y)
 
-			if hazards.hasIndex(groundCell) then continue
+			//if hazards.hasIndex(groundCell) then continue
 
-			if level.blocksWalking(pos.x*ground.cellSize, pos.y*ground.cellSize) then continue
+			if level.blocksWalking(pos.x*camera.tileCellSize, pos.y*camera.tileCellSize) then continue
 			noob = Node.make(pos, endPos, n)
 			if noob.costFromStart < 64 then toDoList.push noob
 		end for
