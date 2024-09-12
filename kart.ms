@@ -176,7 +176,7 @@ Kart.handleModifiers = function
 			end if
 			if u.level >=2 then
 				accelMod += 0.2
-				mudMod -= 0.7
+				mudMod -= 0.5
 			end if
 		else if u.name == "Juggernaut" then
 			if u.level >= 1 then
@@ -290,7 +290,7 @@ Kart.update = function(dt=0.0167)
 			b = new Shot
 			if self isa PlayerKart then b.target = player2
 			if self isa EnemyKart then b.target = player
-			b.lx = self.lx; b.y = self.ly
+			b.lx = self.lx; b.ly = self.ly
 			b.rotation = self.rotation
 			b.init
 			self.shootTimer = self.shootTime
@@ -302,7 +302,7 @@ Kart.update = function(dt=0.0167)
 				b = new Shot
 				if self isa PlayerKart then b.target = player2
 				if self isa EnemyKart then b.target = player
-				b.lx = self.lx; b.y = self.ly
+				b.lx = self.lx; b.ly = self.ly
 				b.rotation = self.rotation + i
 				b.init
 				self.shootTimer = self.shootTime
