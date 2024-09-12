@@ -319,6 +319,10 @@ Kart.turnInput = function
 	return key.axis("Horizontal")
 end function
 
+Kart.driftInput = function
+	return key.pressed("left shift")
+end function
+
 Kart.updateUpgrades = function(opponent)
 	if findByType(self.currentUpgrades, upgrades.Juggernaut).level >= 2 then
 		if self.worldBounds.overlaps(opponent.worldBounds) then
@@ -520,12 +524,12 @@ PlayerKart.update = function(dt = 0.0167)
 	self.clampSpeed currentSpeed, shrinkMod
 
 	turnSpeed = self.turnSpeed
-	if key.pressed("left shift") then turnSpeed *= 0.8
+	if self.driftInput then turnSpeed *= 0.8
 	// Calculate turn influence based on current speed
 	turnInfluence = self.turnInput * mathUtil.clamp(currentSpeed / (self.currentMaxSpeed * self.speedModifier * shrinkMod) * turnSpeed, -turnSpeed, turnSpeed) * dt
 
 	self.lScale = 4 * self.scaleModifier * spdSclMod * shrinkMod + self.defenceTimer
-	if key.pressed("left shift") then
+	if self.driftInput then
 		driftUpgrade = findByType(self.currentUpgrades, upgrades.Drift)
 		if driftUpgrade != null then
 			if driftUpgrade.level == 1 then
@@ -610,6 +614,18 @@ end function
 EnemyKart.reset = function(x, y)
 	super.reset x, y
 	self.pathPoint = pathUtil.PathPoint.make(globals.path, 0)
+end function
+
+EnemyKart.forwardInput = function
+	return 1
+end function
+
+EnemyKart.turnInput = function
+	return 0
+end function
+
+EnemyKart.driftInput = function
+	return 0
 end function
 
 EnemyKart.getStuckPath = function

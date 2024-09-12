@@ -34,6 +34,6 @@ paths = [
 
 for p in paths
     for pos in p
-        pos[0] *= 64; pos[2] *= 64
+        pos[0] *= 64; pos[1] *= 64
     end for
 end for
