@@ -13,6 +13,7 @@
 
 - Add controls to the options menu
 - Finish two player mode
+- Rework old levels (7/10}
 - Add saving for player options
 - Display high scores at the end of the game
 - Add saving for high scores
@@ -23,4 +24,5 @@
 - Add rewards for getting high scores
 - Add new music to the game
 - Add some more particles
+- Add a secret 11th level
   
