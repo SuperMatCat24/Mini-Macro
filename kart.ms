@@ -446,7 +446,7 @@ Kart.tryAccelerate = function(tdx, tdy)
 	col = floor(self.lx / camera.tileCellSize)
 	row = floor(self.ly / camera.tileCellSize)
 	tile = ground.cell(col, row)
-	if tile != null then mudAccel = 0.7
+	if tile != null then mudAccel = 0.75
 	if accelInput != 0 then
 		accelFactor = self.accel * self.accelModifier * mudAccel * accelInput * dt
 		self.vx += tdx * accelFactor
@@ -616,15 +616,20 @@ EnemyKart.getStuckPath = function
 	if level.blocksWalking(self.x, self.y) then return
 
 	selfPos = {"x": round(self.lx/camera.tileCellSize), "y": round(self.ly/camera.tileCellSize)}
-	targetPos = {"x": floor(self.pathPoint.position[0]/camera.tileCellSize), "y": floor(self.pathPoint.position[1]/camera.tileCellSize)}
+	targetPos = {"x": ceil(self.pathPoint.position[0]/camera.tileCellSize), "y": ceil(self.pathPoint.position[1]/camera.tileCellSize)}
 
 	path = pathfinding.find(selfPos, targetPos)
 	for p in path
 		p[0] *= 64; p[1] *= 64
 		p[0] += 32; p[1] += 32
 	end for
-	self.stuckPathPoint = pathUtil.PathPoint.nearPoint(path, [self.lx, self.ly])
-	self.pathPoint.updatePosition
+	if path.len == 1 then 
+		self.stuckPathPoint = null
+		self.pathPoint.updatePosition
+		return
+	end if
+	self.stuckPathPoint = pathUtil.PathPoint.make(path, 0)
+	self.stuckPathPoint.updatePosition
 end function
 
 moveTowardsAngle = function(angle, target, value)
@@ -681,7 +686,7 @@ EnemyKart.update = function(dt = 0.0167)
 	col = floor(self.lx / camera.tileCellSize)
 	row = floor(self.ly / camera.tileCellSize)
 	tile = ground.cell(col, row)
-	if tile != null then mudAccel = 0.7
+	if tile != null then mudAccel = 0.75
 	accelFactor = self.accel * mudAccel * self.accelModifier * dt
 	self.vx += tdx * accelFactor
 	self.vy += tdy * accelFactor
@@ -806,17 +811,17 @@ Shot.die = function
 end function
 
 Shot.update = function(dt=0.0167)
-if self.isOnScreen == false then self.die
-if self.target.worldBounds == null then return
-	if self.overlaps(self.target.worldBounds) then
-		self.target.shrinkTimer = self.target.shrinkTime
-		self.die
-	end if
-	angle_radians = -self.rotation * ((pi * 2) / 360)
-	dx = sin(angle_radians)
-	dy = cos(angle_radians)
-	self.lx += dx * self.speed * dt
-	self.ly += dy * self.speed * dt
+	if self.isOnScreen == false then self.die
+	if self.target.worldBounds == null then return
+		if self.overlaps(self.target.worldBounds) then
+			self.target.shrinkTimer = self.target.shrinkTime
+			self.die
+		end if
+		angle_radians = -self.rotation * ((pi * 2) / 360)
+		dx = sin(angle_radians)
+		dy = cos(angle_radians)
+		self.lx += dx * self.speed * dt
+		self.ly += dy * self.speed * dt
 end function
 
 clear = function

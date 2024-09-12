@@ -5,6 +5,7 @@
 
 - ~~Laps are sometimes not counted correctly~~
 - ~~Enemy AI can get stuck on walls~~
+- Enemy pathfinding sometimes randomly crashes
 - Collisions with walls are broken
 - Some particles are scaled too big
 - Some particles are spawned incorrectly
@@ -25,4 +26,5 @@
 - Add new music to the game
 - Add some more particles
 - Add a secret 11th level
+- Add some new objects (Score multiplier / Speed boost)
   

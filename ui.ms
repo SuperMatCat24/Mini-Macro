@@ -271,7 +271,7 @@ endGame = function
 
 	txt = "Thank you for playing!"
 	gfx.print txt, 960/2 - txt.len*20/2, 580, color.white, "large"
-	menu = new ui.uiElements.Button
+	menu = new uiElements.Button
 	menu.x = 960/2; menu.y = 100
 	menu.text = "RESTART"
 	menu.init

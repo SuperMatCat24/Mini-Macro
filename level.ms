@@ -6,11 +6,11 @@ solid = []
 for i in range(32, 64)
 	solid.push i
 end for
-mud = [[0, 0.65], [1, 0.3], [4, 0.5]]
+mud = [[0, 0.8], [1, 0.55], [4, 0.7]]
 water = [[12, 0.4]]
 
 levelType = 1
-race = 7
+race = 1
 
 started = false
 checkpoints = []
