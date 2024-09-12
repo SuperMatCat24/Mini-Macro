@@ -5,16 +5,16 @@
 
 - ~~Laps are sometimes not counted correctly~~
 - ~~Enemy AI can get stuck on walls~~
-- Enemy pathfinding sometimes randomly crashes
+- ~~Enemy pathfinding sometimes randomly crashes~~
 - Collisions with walls are broken
-- Some particles are scaled too big
+- ~~Some particles are scaled too big~~
 - Some particles are spawned incorrectly
 
 # TODO
 
 - Add controls to the options menu
 - Finish two player mode
-- Rework old levels (7/10}
+- ~~Rework old levels~~
 - Add saving for player options
 - Display high scores at the end of the game
 - Add saving for high scores
