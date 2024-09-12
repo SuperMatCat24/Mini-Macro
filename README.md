@@ -1,23 +1,28 @@
 # Mini-Macro
-1v1 racing game made in mini micro
+1v1 racing game made in mini micro.
 
+# Known bugs
 
-Known bugs:
+- ~~Laps are sometimes not counted correctly~~
+- ~~Enemy AI can get stuck on walls~~
+- Collisions with walls are broken
+- Some particles are scaled too big
+- Some particles are spawned incorrectly
 
+# TODO
 
-Ai opponent can get stuck on walls when hit backwards.
+- Add controls to the options menu
+- Finish two player mode
+- Rework old levels (7/10}
+- Add saving for player options
+- Display high scores at the end of the game
+- Add saving for high scores
+- Refactor code
 
-Laps are sometimes not counted correctly.
+# OTHER FEATURES
 
-Collisions with walls are broken
-
-
-
-To do:
-
-
-Two player upgrades screen
-Score saving
-Highscore screen
-Remake all levels to better fit two player
-Refactor old code
+- Add rewards for getting high scores
+- Add new music to the game
+- Add some more particles
+- Add a secret 11th level
+  
