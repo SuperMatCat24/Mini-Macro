@@ -55,6 +55,7 @@ find = function(startPos, endPos)
 
 	while toDoList
 		n = toDoList.pull
+		//walls.setCellTint(n.position.x, n.position.y, color.red)
 		if n.position.x == endPos.x and n.position.y == endPos.y then return n.path
 		for pos in n.neighbors
 			if doneSet.hasIndex(pos) then continue

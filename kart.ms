@@ -601,8 +601,6 @@ EnemyKart.playerNum = 0
 EnemyKart.driftBoost = 0
 EnemyKart.maxDriftBoost = 0
 
-EnemyKart.turnSpeed = 150
-
 EnemyKart.init = function(playerTwo)
     super.init
     self.pathPoint = pathUtil.PathPoint.make(globals.path, 0)
@@ -611,29 +609,22 @@ end function
 
 EnemyKart.reset = function(x, y)
 	super.reset x, y
-	player2.pathPoint = pathUtil.PathPoint.make(globals.path, 0)
+	self.pathPoint = pathUtil.PathPoint.make(globals.path, 0)
 end function
 
 EnemyKart.getStuckPath = function
 	if level.blocksWalking(self.x, self.y) then return
 
 	selfPos = {"x": round(self.lx/camera.tileCellSize), "y": round(self.ly/camera.tileCellSize)}
-	targetPos = {"x": floor(self.pathPoint.position[0]/camera.tileCellSize+camera.tileCellSize/2), "y": floor(self.pathPoint.position[1]/camera.tileCellSize+camera.tileCellSize/2)}
+	targetPos = {"x": floor(self.pathPoint.position[0]/camera.tileCellSize), "y": floor(self.pathPoint.position[1]/camera.tileCellSize)}
 
 	path = pathfinding.find(selfPos, targetPos)
 	for p in path
 		p[0] *= 64; p[1] *= 64
+		p[0] += 32; p[1] += 32
 	end for
 	self.stuckPathPoint = pathUtil.PathPoint.nearPoint(path, [self.lx, self.ly])
 	self.pathPoint.updatePosition
-end function
-
-EnemyKart.onCheckpointFound = function
-	//self.getPath
-end function
-
-EnemyKart.onCarHit = function
-	//self.getPath
 end function
 
 moveTowardsAngle = function(angle, target, value)

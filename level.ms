@@ -10,7 +10,7 @@ mud = [[0, 0.65], [1, 0.3], [4, 0.5]]
 water = [[12, 0.4]]
 
 levelType = 1
-race = 1
+race = 7
 
 started = false
 checkpoints = []
@@ -34,14 +34,19 @@ setup = function
 	tileUtil.loadFromFile lvl, walls, ground
 	checkLevelTint
 
-	// Update camera before processing level so objects are placed correctly
+	// Update camera before processing level so objects are placed correctly.
 	camera.update
 	processLevel
 
 	makeCheckpoints
 
+	// Updates sprites and positions so they can be seen before the race starts.
+	globals.updateSpritePositions
 	player.updateSprites; player2.updateSprites
 	upgrades.getUpgrades(player); upgrades.getUpgrades(player2)
+
+	// Update the camera again, so that it moves to the starting position.
+	camera.update
 
 	tryFadeIn
 	playStartAnim
@@ -148,7 +153,7 @@ end function
 
 makeCheckpoints = function
 	outer.checkpoints = []
-	for c in constants.checkpoints[levelType-1][race-1]
+	for c in constants.checkpoints[race-1]
 		checkpoint = new Bounds
 		checkpoint.x = c[0] * ground.cellSize
 		checkpoint.y = c[1] * ground.cellSize
