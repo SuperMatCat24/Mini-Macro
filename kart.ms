@@ -83,14 +83,14 @@ Kart.onWallHit = function(hitHorizontal)
 		self.bx *= -0.6
 		if abs(self.vx) > 70 then 
 			sound.bump.play
-			sound.bump.adjust 0.2 * globals.soundVol
+			sound.bump.adjust 0.2 * settings.soundVol
 		end if
 	else
 		self.vy *= -0.6
 		self.by *= -0.6
 		if abs(self.vy) > 70 then 
 			sound.bump.play
-			sound.bump.adjust 0.2 * globals.soundVol
+			sound.bump.adjust 0.2 * settings.soundVol
 		end if
 	end if
 end function
@@ -328,7 +328,7 @@ Kart.updateUpgrades = function(opponent)
 		if self.worldBounds.overlaps(opponent.worldBounds) then
 			if abs(self.bx) + abs(self.by) < 220 then 
 				sound.boost.play
-				sound.boost.adjust 0.2 * globals.soundVol
+				sound.boost.adjust 0.2 * settings.soundVol
 			end if
 			angle_radians = (self.rotation + 90) % 360 * ((pi * 2) / 360)
 			self.bx = cos(angle_radians) * 220
@@ -544,7 +544,7 @@ PlayerKart.update = function(dt = 0.0167)
 	else if self.driftBoost != 0 then
 		if abs(self.bx) + abs(self.by) < 220 then 
 			sound.boost.play
-			sound.boost.adjust 0.2 * globals.soundVol
+			sound.boost.adjust 0.2 * settings.soundVol
 		end if
 		angle_radians = (self.rotation + 90) % 360 * ((pi * 2) / 360)
 		self.bx = cos(angle_radians) * self.driftBoost
@@ -582,7 +582,7 @@ PlayerKart.update = function(dt = 0.0167)
 	end if
 
 	if self.vx + self.vy != 0 then
-		sound.skid.adjust mathUtil.clamp(angle_dif / 180, 0, 0.7) * globals.soundVol
+		sound.skid.adjust mathUtil.clamp(angle_dif / 180, 0, 0.7) * settings.soundVol
 	else
 		sound.skid.adjust 0
 	end if
@@ -677,7 +677,7 @@ EnemyKart.update = function(dt = 0.0167)
 		if self.worldBounds.overlaps(globals.player.worldBounds) then
 			if abs(self.bx) + abs(self.by) < 220 then 
 				sound.boost.play
-				sound.boost.adjust 0.2 * globals.soundVol
+				sound.boost.adjust 0.2 * settings.soundVol
 			end if
 			angle_radians = (self.rotation + 90) % 360 * ((pi * 2) / 360)
 			self.bx = cos(angle_radians) * 220
@@ -773,7 +773,7 @@ EnemyKart.update = function(dt = 0.0167)
 	end if
 
 	if self.vx + self.vy != 0 then
-		sound.skid.adjust mathUtil.clamp(angle_dif / 180, 0, 0.7) * globals.soundVol
+		sound.skid.adjust mathUtil.clamp(angle_dif / 180, 0, 0.7) * settings.soundVol
 	else
 		sound.skid.adjust 0
 	end if

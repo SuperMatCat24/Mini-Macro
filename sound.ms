@@ -5,7 +5,7 @@ ding = new Sound
 ding.init 0.2, noteFreq(90), [0.15, 0], Sound.sineWave
 
 blip = new Sound
-blip.init 0.1, noteFreq(66), [0.15, 0], Sound.sineWave
+blip.init 0.1, noteFreq(66), [0.1, 0], Sound.sineWave
 
 daDing = new Sound
 daDing.init 0.05, noteFreq(84), [0.2, 0.2, 0]

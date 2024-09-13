@@ -37,7 +37,7 @@ Coin.collect = function(racer=null)
     ui.update racer
 	sound.daDing.stop
 	sound.daDing.play
-	sound.daDing.adjust 0.2 * globals.soundVol, 0, mathUtil.randRange(0.9, 1.2)
+	sound.daDing.adjust 0.2 * settings.soundVol, 0, mathUtil.randRange(0.9, 1.2)
 end function
 
 clear = function

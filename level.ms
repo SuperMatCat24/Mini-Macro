@@ -134,7 +134,7 @@ playStartAnim = function
 
 		// Play the correct anouncer sound
 		sound["announce"+i].play
-		sound["announce"+i].adjust 0.2 * globals.soundVol
+		sound["announce"+i].adjust 0.2 * settings.soundVol
 		wait 0.5
 	end for
 end function

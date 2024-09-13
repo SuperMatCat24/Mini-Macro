@@ -297,7 +297,7 @@ optionsMenu = function
     sVolume.y = 500
     sVolume.width = 200
     sVolume.text = "Sound Volume:"
-    sVolume.value = settings.soundVol / 3
+    sVolume.value = settings.soundVol / 2
 
     while true
         mVolume.update
@@ -305,7 +305,7 @@ optionsMenu = function
         globals.mus.adjust mVolume.value
 
         sVolume.update
-        settings.soundVol = sVolume.value * 3
+        settings.soundVol = sVolume.value * 2
 
         settings.saveSettings
 

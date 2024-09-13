@@ -62,6 +62,7 @@ Button.isClicked = function
 		self.tint = self.pressedColor
         if self.wasDown and not isDown then 
             sound.blip.play
+			sound.blip.adjust settings.soundVol
 			self.wasDown = isDown
             return true
         end if
@@ -210,8 +211,10 @@ Slider.update = function(dt=0.0167)
     if mouse.button then
         if self.isKnobClicked then self.dragging = true
         if self.dragging then self.updateSlider
-    else
+    else if self.dragging == true then
         self.dragging = false
+		sound.blip.play
+		sound.blip.adjust settings.soundVol
     end if
 end function
 
