@@ -1,5 +1,6 @@
 
 import "importUtil"
+ensureImport "settings"
 ensureImport "constants"
 ensureImport "inputs"
 ensureImport "mapUtil"
@@ -18,14 +19,13 @@ ensureImport "ui"
 ensureImport "menu"
 ensureImport "highscore"
 
-musicVol = 0.2
-soundVol = 2
+settings.loadSettings
 
 print "Loading music..."
 mus = file.loadSound("mus.ogg")
 mus.loop = true
 mus.play
-mus.adjust musicVol
+mus.adjust settings.musicVol
 print "Music loaded!"
 
 Sprite.isOnScreen = function

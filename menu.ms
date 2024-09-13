@@ -290,22 +290,24 @@ optionsMenu = function
     mVolume.y = 550
     mVolume.width = 200
     mVolume.text = "Music Volume:"
-    mVolume.value = globals.musicVol
+    mVolume.value = settings.musicVol
 
     sVolume = new uiElements.Slider
     sVolume.x = 300
     sVolume.y = 500
     sVolume.width = 200
     sVolume.text = "Sound Volume:"
-    sVolume.value = globals.soundVol / 3
+    sVolume.value = settings.soundVol / 3
 
     while true
         mVolume.update
-        globals.musicVol = mVolume.value
+        settings.musicVol = mVolume.value
         globals.mus.adjust mVolume.value
 
         sVolume.update
-        globals.soundVol = sVolume.value * 3
+        settings.soundVol = sVolume.value * 3
+
+        settings.saveSettings
 
         if exit.isClicked then
             sVolume.die
@@ -317,23 +319,7 @@ optionsMenu = function
             mainMenu
             return
         else if clearAchivements.isClicked then
-            sVolume.die
-            mVolume.die
-            uiElements.Button.clear
-            gfx.clear
-            disp.sprites = [bg]
-            updatable.all = []
-            mainMenu
-            return
         else if clearSettings.isClicked then
-            sVolume.die
-            mVolume.die
-            uiElements.Button.clear
-            gfx.clear
-            disp.sprites = [bg]
-            updatable.all = []
-            mainMenu
-            return
         end if
         yield
     end while
