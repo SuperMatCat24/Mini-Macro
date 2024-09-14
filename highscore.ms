@@ -15,16 +15,16 @@ end function
 
 resetScores = function
 	outer.scores = []
-	addScore 10000, "BBJ"
-	addScore 9850, "AAA"
-	addScore 7660, "LEE"
-	addScore 5850, "MS"
-	addScore 4500, "FPS"
-	addScore 3250, "BOT"
-	addScore 2050, "MMO"
-	addScore 1550, "CPP"
-	addScore 750, "PYT"
-	addScore 550, "LUA"
+	addScore 18000, "SMC"
+	addScore 15850, "AAA"
+	addScore 12000, "LEE"
+	addScore 9500, "MIN"
+	addScore 7500, "FPS"
+	addScore 6000, "BOT"
+	addScore 5200, "MMO"
+	addScore 4500, "CPP"
+	addScore 3800, "PYT"
+	addScore 2500, "LUA"
 end function
 
 scoresFilePath = function
