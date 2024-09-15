@@ -87,10 +87,10 @@ helpMenu = function
     gfx.print txt, 550, 372, color.black, "normal"
     txt = "Lap Score: " + constants.lapScore
     gfx.print txt, 550, 314, color.black, "normal"
-    txt = "Coin Score: " + constants.coinGetScore
+    txt = "Checkpoint Score: " + constants.checkpointScore
     gfx.print txt, 550, 260, color.black, "normal"
-    txt = "Loss Score: " + constants.lossScore
-    gfx.print txt, 550, 204, color.black, "normal"
+    txt = "Coin Score: " + constants.coinGetScore
+    gfx.print txt, 550, 205, color.black, "normal"
 
     while true
         if exit.isClicked then

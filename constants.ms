@@ -1,10 +1,10 @@
 
 // SCORE TABLE
 coinGetScore = 20
-lossScore = -400
 winScore = 1000
 lapScore = 150
 upgradeScore = 300
+checkpointScore = 50
 
 checkpoints = [
     [[6, 9, 7, 2], [17, 14, 2, 9], [24, 9, 9, 2], [15, 5, 2, 7]],

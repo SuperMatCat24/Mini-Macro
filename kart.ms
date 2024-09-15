@@ -266,6 +266,8 @@ Kart.checkCheckpoints = function
 				if self.currentCheckpoint == 0 then 
 					self.currentLap += 1
 					self.score += constants.lapScore
+				else
+					self.score += constants.checkpointScore
 				end if
 				ui.update self
 			end if
