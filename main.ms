@@ -132,4 +132,6 @@ while true
 
     updatable.update dt
     camera.update 
+
+    key.clear // Clear key buffer in case of a crash.
 end while

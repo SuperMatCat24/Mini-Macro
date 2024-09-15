@@ -55,8 +55,6 @@ end function
 
 playLossAnimation = function
 
-	player.score += constants.lossScore
-
 	medals = []
 
 	// Add the correct medals depending on the player losses
@@ -313,7 +311,7 @@ endGame = function
 		gfx.print txt, 960/2 - txt.len*10, 200, color.white, "large"
 	end if
 	objects.clear
-	camera.update(0, 0)
+	camera.reset
 	while true  // (press Control-C to exit)
 	    yield
 	    // The mouse button is down.  Check each of our buttons, 
