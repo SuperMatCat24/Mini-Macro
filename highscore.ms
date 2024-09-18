@@ -1,6 +1,7 @@
 
 import "importUtil"
 ensureImport "textUtil"
+ensureImport "chars"
 
 scores = []
 
@@ -60,26 +61,60 @@ isHighScore = function(newScore)
 	return (newScore > scores[-1].points)
 end function
 
+textForRow = function(row)
+	s = str(row+1)
+	if row < 3 then
+		s = s + ["ST", "ND", "RD"][row]
+	else
+		s = s + "TH"
+	end if
+	if row < 9 then s = " " + s
+	s = s + "   "
+	sc = scores[row]
+	s = s + ("      " + sc.points)[-7:]
+	s = s + " . . . . . " + (sc.name + "   ")[:3]
+	return s
+end function
+
+showScores = function
+	
+	top = 20
+	//text.color = color.yellow
+	//textUtil.printCenteredAt 34, top, "TOP 10 HIGH SCORES"
+	//img = file.loadImage("pics/highScoresTitle.png")
+	s = "TOP 10 HIGH SCORES"
+	gfx.print s, 480 - s.len*10, top*24+10, color.yellow, "large"
+	//g.drawImage img, 480 - img.width/2, top*24 + img.height/2
+	
+	text.color = "#880000"
+	textUtil.printCenteredAt 34, top-2, " RANK     SCORE           NAME"
+	gfx.print " ____     _____           ____", 19*14-2, (top-2)*24-3, text.color
+	gfx.print " ____     _____           ____", 19*14+5, (top-2)*24-3, text.color
+	
+	text.color = color.aqua
+	for i in scores.indexes
+		//text.color = colorForRow(i)
+		textUtil.printCenteredAt 34, top-4-i, textForRow(i)
+	end for
+end function
+
 postNewScoreDialog = function(tint="#FFFFFF")
 	// Post the "new high score" dialog.  We'll do all our drawing
 	// in displays.overlayGfxLayer.
+
+	key.clear // Clear key buffer 
 
 	g = gfx
 
 	dlogX = 480; dlogY = 400
 	g.clear
-	g.scale = 0.1
 	g.scrollX = (dlogX*g.scale) - dlogX
 	g.scrollY = (dlogY*g.scale) - dlogY
 	txt = "New High Score!"
 	g.print txt, 960/2-txt.len*10, 600, color.white, "large"
-	while g.scale < 1.1
-		yield
-		g.scale = g.scale + 0.1
-		g.scrollX = (dlogX*g.scale) - dlogX
-		g.scrollY = (dlogY*g.scale) - dlogY
-	end while
-	g.scale = 1
+	txt = "Press Enter to save."
+	g.print txt, 960/2-txt.len*10, 500, color.white, "large"
+
 	g.scrollX = 0; g.scrollY = 0
 
 	drawChar = function(g, c, pos, charColor="#FFFF00")
@@ -106,14 +141,7 @@ postNewScoreDialog = function(tint="#FFFFFF")
 		while not key.available
 			yield
 			waitFrames = waitFrames + 1
-			if waitFrames < 200 then continue
-			if waitFrames % 800 >= 600 then
-				if waitFrames % 800 == 600 then drawInitials g, chars.figureAkimbo
-			else if waitFrames % 40 == 20 then
-				drawInitials g, chars.figureWaitingToeUp
-			else if waitFrames % 40 == 0 then
-				drawInitials g, chars.figureWaitingToeDown
-			end if
+			drawInitials g, chars.bullet
 		end while
 		k = key.get
 		if k.code == 8 or k.code == 127 then

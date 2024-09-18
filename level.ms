@@ -10,11 +10,11 @@ mud = [[0, 0.8], [1, 0.55], [4, 0.7]]
 water = [[12, 0.4]]
 
 levelType = 1
-race = 1
+race = 10
 
 started = false
 checkpoints = []
-laps = 3
+laps = 0
 
 levelPath = "/usr/levels/"
 

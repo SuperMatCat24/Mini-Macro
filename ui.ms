@@ -261,11 +261,15 @@ end function
 
 endGame = function
 
+	highscore.loadScores
+
 	if highscore.isHighScore(player.score) then
-		name = "BRU"//highscore.postNewScoreDialog
+		name = highscore.postNewScoreDialog
 		highscore.addScore player.score, name
 		highscore.saveScores
 	end if
+
+	highscore.showScores
 
 	txt = "Thank you for playing!"
 	gfx.print txt, 960/2 - txt.len*20/2, 580, color.white, "large"
