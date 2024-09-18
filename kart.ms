@@ -618,7 +618,7 @@ EnemyKart.reset = function(x, y)
 	self.pathPoint = pathUtil.PathPoint.make(globals.path, 0)
 	imageIndex = mathUtil.randRange(0, images.carFrames.len)
     indexMod = (imageIndex + images.carFrames.len) % (images.carFrames.len)
-    if indexMod == images.carFrames.indexOf(player.images) then imageIndex += 1
+    if indexMod == images.carFrames.indexOf(globals.p1Images) then imageIndex += 1
     imageIndex = (imageIndex + images.carFrames.len) % (images.carFrames.len)
     self.changeImages(images.carFrames[imageIndex])
 end function

@@ -188,7 +188,7 @@ onePlayerMenu = function
 
     imageIndex = mathUtil.randRange(0, images.carFrames.len)
     indexMod = (imageIndex + images.carFrames.len) % (images.carFrames.len)
-    if indexMod == images.carFrames.indexOf(player.images) then imageIndex += 1
+    if indexMod == images.carFrames.indexOf(playerSprite.images) then imageIndex += 1
     imageIndex = (imageIndex + images.carFrames.len) % (images.carFrames.len)
 
     globals.p1Images = playerSprite.images
