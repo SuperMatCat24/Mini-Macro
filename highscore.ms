@@ -76,28 +76,6 @@ textForRow = function(row)
 	return s
 end function
 
-showScores = function
-	
-	top = 20
-	//text.color = color.yellow
-	//textUtil.printCenteredAt 34, top, "TOP 10 HIGH SCORES"
-	//img = file.loadImage("pics/highScoresTitle.png")
-	s = "TOP 10 HIGH SCORES"
-	gfx.print s, 480 - s.len*10, top*24+10, color.yellow, "large"
-	//g.drawImage img, 480 - img.width/2, top*24 + img.height/2
-	
-	text.color = "#880000"
-	textUtil.printCenteredAt 34, top-2, " RANK     SCORE           NAME"
-	gfx.print " ____     _____           ____", 19*14-2, (top-2)*24-3, text.color
-	gfx.print " ____     _____           ____", 19*14+5, (top-2)*24-3, text.color
-	
-	text.color = color.aqua
-	for i in scores.indexes
-		//text.color = colorForRow(i)
-		textUtil.printCenteredAt 34, top-4-i, textForRow(i)
-	end for
-end function
-
 postNewScoreDialog = function(tint="#FFFFFF")
 	// Post the "new high score" dialog.  We'll do all our drawing
 	// in displays.overlayGfxLayer.

@@ -269,23 +269,23 @@ endGame = function
 		highscore.saveScores
 	end if
 
-	highscore.showScores
+	showScores
 
 	txt = "Thank you for playing!"
 	gfx.print txt, 960/2 - txt.len*20/2, 580, color.white, "large"
 	menu = new uiElements.Button
-	menu.x = 960/2; menu.y = 100
+	menu.x = 960/4; menu.y = 100
 	menu.text = "RESTART"
 	menu.init
 	trophy = new Sprite
 	trophy.image = images.trophyImg
-	trophy.x = 960/2
+	trophy.x = 960/4
 	trophy.y = 440
 	trophy.scale = 4
 
 	if player.wins >= 5 then
 		txt = "You got " + player.wins + " wins!"
-		gfx.print txt, 960/2 - txt.len*10, 260, color.white, "large"
+		gfx.print txt, 960/4 - txt.len*10, 260, color.white, "large"
 		txt = "And won a "
 		if player.wins == 10 then
 			trophy.tint = color.aqua
@@ -300,19 +300,19 @@ endGame = function
 			trophy.tint = color.orange
 			txt += "BRONZE Trophy!"
 		end if
-		gfx.print txt, 960/2 - txt.len*10, 230, color.white, "large"
+		gfx.print txt, 960/4 - txt.len*10, 230, color.white, "large"
 		txt = "And lasted " + level.race + " Rounds."
-		gfx.print txt, 960/2 - txt.len*10, 200, color.white, "large"
+		gfx.print txt, 960/4 - txt.len*10, 200, color.white, "large"
 		txt = "Play again?"
-		gfx.print txt, 960/2 - txt.len*10, 170, color.white, "large"
+		gfx.print txt, 960/4 - txt.len*10, 170, color.white, "large"
 		disp.sprites.push trophy
 	else
 		txt = "You got " + player.wins + " wins..."
-		gfx.print txt, 960/2 - txt.len*10, 260, color.white, "large"
+		gfx.print txt, 960/4 - txt.len*10, 260, color.white, "large"
 		txt = "And lasted " + level.race + " Rounds."
-		gfx.print txt, 960/2 - txt.len*10, 230, color.white, "large"
+		gfx.print txt, 960/4 - txt.len*10, 230, color.white, "large"
 		txt = "Try again?"
-		gfx.print txt, 960/2 - txt.len*10, 200, color.white, "large"
+		gfx.print txt, 960/4 - txt.len*10, 200, color.white, "large"
 	end if
 	objects.clear
 	camera.reset
@@ -325,4 +325,23 @@ endGame = function
 			return
 	    end if
 	end while
+end function
+
+showScores = function
+	
+	top = 20
+
+	s = "HIGH SCORES"
+	gfx.print s, 960*(3/4) - s.len*10, top*24+10, color.yellow, "large"
+	
+	text.color = "#FF5555"
+	textUtil.printCenteredAt 50, top-2, " RANK     SCORE           NAME"
+	gfx.print " ____     _____           ____", 35*14-2, (top-2)*24-3, text.color
+	gfx.print " ____     _____           ____", 35*14+5, (top-2)*24-3, text.color
+	
+	text.color = color.aqua
+	for i in highscore.scores.indexes
+		//text.color = colorForRow(i)
+		textUtil.printCenteredAt 50, top-4-i, highscore.textForRow(i)
+	end for
 end function
