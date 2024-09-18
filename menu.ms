@@ -27,8 +27,12 @@ mainMenu = function
 
     play = new uiElements.Button
     play.x = 960/3; play.y = 200
-    play.text = "PLAY"
+    play.text = "1 PLAYER"
     play.init
+    play2 = new uiElements.Button
+    play2.x = 960/1.5; play2.y = 200
+    play2.text = "2 PLAYER"
+    play2.init
 
     help = new uiElements.Button
     help.x = 960/3; help.y = 100
@@ -36,7 +40,7 @@ mainMenu = function
     help.init
 
 	settings = new uiElements.Button
-    settings.x = 960/1.5; settings.y = 200
+    settings.x = 960/1.5; settings.y = 100
     settings.text = "OPTIONS"
     settings.init
 
@@ -46,12 +50,17 @@ mainMenu = function
         bg.x = bg.image.width*2+((time*-200)%bg.image.width/2*bg.scale)
 		car.x =  960/2 + sin(time*0.6)*300
         logo.rotation = sin(time*3) * 2
-
         if play.isClicked then
             gfx.clear
 			uiElements.Button.clear
             disp.sprites = []
-            playerMenu
+            onePlayerMenu
+            return
+        else if play2.isClicked then
+            gfx.clear
+			uiElements.Button.clear
+            disp.sprites = []
+            twoPlayerMenu
             return
         else if settings.isClicked then
             optionsMenu
@@ -105,7 +114,88 @@ helpMenu = function
     end while
 end function
 
-playerMenu = function
+onePlayerMenu = function
+    bg = new Sprite
+    bg.image = images.woodPanel
+    bg.y = 320
+    bg.x = 960/2
+    bg.scale = 4
+    disp.sprites.push bg
+    gfx.line 960/2, 0, 960/2, 640, color.black, 20
+    gfx.line 960/2, 0, 960/2, 640, color.red, 10
+
+    playerSprite = new StackedSprite
+    playerSprite.images = images.carFrames[0]
+    playerSprite.sprites = []
+    playerSprite.scale = 10
+    playerSprite.x = 960*(1/4)
+    playerSprite.y = 350
+    playerSprite.init
+    playerSprite.imageIndex = 0
+
+    playerRightButton = new uiElements.Button
+    playerRightButton.size = 0
+    playerRightButton.x = 960*(1/4)+150; playerRightButton.y = 350
+    playerRightButton.text = ">"
+    playerRightButton.init
+
+    playerLeftButton = new uiElements.Button
+    playerLeftButton.size = 0
+    playerLeftButton.x = 960*(1/4)-150; playerLeftButton.y = 350
+    playerLeftButton.text = "<"
+    playerLeftButton.init
+
+    playerReadyButton = new uiElements.Button
+    playerReadyButton.size = 1
+    playerReadyButton.x = 960*(1/4); playerReadyButton.y = 150
+    playerReadyButton.text = "Play"
+    playerReadyButton.init
+    playerReadyButton.ready = false
+    
+    txt = "Choose your car"
+    gfx.print txt, 960*(1/4)-txt.len*10, 590, color.white, "large"
+    
+    while true
+        playerSprite.rotation += 1
+        playerSprite.updateSprites
+
+        if playerLeftButton.isClicked then
+            playerSprite.imageIndex -= 1
+            playerSprite.imageIndex = (playerSprite.imageIndex + images.carFrames.len) % (images.carFrames.len)
+            playerSprite.changeImages(images.carFrames[playerSprite.imageIndex])
+        else if playerRightButton.isClicked then
+            playerSprite.imageIndex += 1
+            playerSprite.imageIndex = (playerSprite.imageIndex + images.carFrames.len) % (images.carFrames.len)
+            playerSprite.changeImages(images.carFrames[playerSprite.imageIndex])
+        else if playerReadyButton.isClicked then
+            playerReadyButton.ready = not playerReadyButton.ready
+            if playerReadyButton.ready == true then
+                playerReadyButton.color = color.lime
+                playerReadyButton.pressedColor = color.red
+            else
+                playerReadyButton.color = color.white
+                playerReadyButton.pressedColor = color.silver
+            end if
+        end if
+
+        if playerReadyButton.ready == true then break
+
+        yield
+    end while
+    gfx.clear
+    uiElements.Button.clear
+    disp.sprites = [player, player2]
+
+    imageIndex = mathUtil.randRange(0, images.carFrames.len)
+    indexMod = (imageIndex + images.carFrames.len) % (images.carFrames.len)
+    if indexMod == images.carFrames.indexOf(player.images) then imageIndex += 1
+    imageIndex = (imageIndex + images.carFrames.len) % (images.carFrames.len)
+
+    globals.p1Images = playerSprite.images
+    globals.p2Images = images.carFrames[imageIndex]
+end function
+
+twoPlayerMenu = function
     bg = new Sprite
     bg.image = images.woodPanel
     bg.y = 320
@@ -174,12 +264,8 @@ playerMenu = function
     txt = "Player 1"
     gfx.print txt, 960*(1/4)-txt.len*10, 590, color.white, "large"
 
-    twoPlayerButton = new uiElements.Button
-    twoPlayerButton.size = 1
-    twoPlayerButton.x = 960*(3/4); twoPlayerButton.y = 590
-    twoPlayerButton.text = "AI Car"
-    twoPlayerButton.init
-    twoPlayerButton.ai = true
+    txt = "Player 2"
+    gfx.print txt, 960*(3/4)-txt.len*10, 590, color.white, "large"
     
     while true
         playerSprite.rotation += 1
@@ -229,22 +315,13 @@ playerMenu = function
                 enemyReadyButton.color = color.white
                 enemyReadyButton.pressedColor = color.silver
             end if
-        else if twoPlayerButton.isClicked then
-            twoPlayerButton.ai = not twoPlayerButton.ai
-            if twoPlayerButton.ai == false then
-                twoPlayerButton.text = "Player 2"
-                globals.numPlayers = 2
-            else
-                twoPlayerButton.text = "AI Car"
-                globals.numPlayers = 1
-            end if
-            twoPlayerButton.printText
         end if
 
         if enemyReadyButton.ready == true and playerReadyButton.ready == true then break
 
         yield
     end while
+    globals.numPlayers = 2
     gfx.clear
     uiElements.Button.clear
     disp.sprites = [player, player2]
