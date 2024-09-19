@@ -9,6 +9,7 @@
 - Collisions with walls are broken
 - ~~Some particles are scaled too big~~
 - Some particles are spawned incorrectly
+- The enemy sometimes uses the same car as the player
 
 # TODO
 
