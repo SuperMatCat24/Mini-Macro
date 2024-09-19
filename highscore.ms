@@ -142,3 +142,22 @@ postNewScoreDialog = function(tint="#FFFFFF")
 	g.scale = 1; g.scrollX = 0; g.scrollY = 0
 	return initials
 end function
+
+showScores = function
+	
+	top = 20
+
+	s = "HIGH SCORES"
+	gfx.print s, 960*(3/4) - s.len*10, top*24+10, color.yellow, "large"
+	
+	text.color = "#FF5555"
+	textUtil.printCenteredAt 50, top-2, " RANK     SCORE           NAME"
+	gfx.print " ____     _____           ____", 35*14-2, (top-2)*24-3, text.color
+	gfx.print " ____     _____           ____", 35*14+5, (top-2)*24-3, text.color
+	
+	text.color = color.aqua
+	for i in highscore.scores.indexes
+		//text.color = colorForRow(i)
+		textUtil.printCenteredAt 50, top-4-i, highscore.textForRow(i)
+	end for
+end function

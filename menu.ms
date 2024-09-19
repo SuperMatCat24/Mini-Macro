@@ -154,6 +154,9 @@ onePlayerMenu = function
     
     txt = "Choose your car"
     gfx.print txt, 960*(1/4)-txt.len*10, 590, color.white, "large"
+
+    highscore.loadScores
+	highscore.showScores
     
     while true
         playerSprite.rotation += 1
@@ -183,6 +186,7 @@ onePlayerMenu = function
         yield
     end while
     gfx.clear
+    text.clear
     uiElements.Button.clear
     disp.sprites = [player, player2]
 
