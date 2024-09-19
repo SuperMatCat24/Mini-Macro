@@ -17,8 +17,8 @@
 - Finish two player mode
 - ~~Rework old levels~~
 - ~~Add saving for player options~~
-- Display high scores at the end of the game
-- Add saving for high scores
+- ~~Display high scores at the end of the game~~
+- ~~Add saving for high scores~~
 - Refactor code
 
 # OTHER FEATURES
