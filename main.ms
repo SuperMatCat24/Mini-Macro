@@ -122,8 +122,7 @@ while true
     end if
 
     if time > lastTileUpdate + 0.15 then
-        // Change the ground tileset every 0.15 seconds for an
-        // animated water effect.
+        // Change the ground tileset every 0.15 seconds 
         lastTileUpdate = time
         curTileFrame += 1
         curTileFrame = (curTileFrame + images.tileset2.len) % images.tileset2.len

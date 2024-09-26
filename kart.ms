@@ -445,23 +445,46 @@ Kart.calculateVelocityAngle = function
 end function
 
 Kart.tryAccelerate = function(tdx, tdy)
-	self.boostTime = 0
-	// Accelerate or decelerate based on user input
-	accelInput = self.forwardInput
-	mudAccel = 1
-	col = floor(self.lx / camera.tileCellSize)
-	row = floor(self.ly / camera.tileCellSize)
-	tile = ground.cell(col, row)
-	if tile != null then mudAccel = 0.75
-	if accelInput != 0 then
-		accelFactor = self.accel * self.accelModifier * mudAccel * accelInput * dt
-		self.vx += tdx * accelFactor
-		self.vy += tdy * accelFactor
-	else
-		self.vx = mathUtil.moveTowards(self.vx, 0, self.decel * dt)
-		self.vy = mathUtil.moveTowards(self.vy, 0, self.decel * dt)
-	end if
+    self.boostTime = 0
+    // Accelerate or decelerate based on user input
+    accelInput = self.forwardInput
+    mudAccel = 1
+
+    // Get the current tile under the kart to check for mud
+    col = floor(self.lx / camera.tileCellSize)
+    row = floor(self.ly / camera.tileCellSize)
+    tile = ground.cell(col, row)
+
+    // If the kart is on mud, reduce the acceleration and deceleration
+    if tile != null then
+        mudAccel = 0.7
+    end if
+    
+    // If there is forward or backward acceleration input, accelerate
+    if accelInput != 0 then
+        accelFactor = self.accel * self.accelModifier * mudAccel * accelInput * dt
+        self.vx += tdx * accelFactor
+        self.vy += tdy * accelFactor
+    else
+        // Decelerate when there is no input
+        decelFactor = self.decel * self.accelModifier * mudAccel * dt
+        
+        // Calculate the current speed (magnitude of the velocity vector)
+        speed = sqrt(self.vx^2 + self.vy^2)
+        
+        // If the speed is greater than 0, decelerate proportionally
+        if speed > 0 then
+            decelAmount = speed  // Ensure decel doesn't overshoot
+			if decelFactor < speed then decelAmount = decelFactor
+            reductionFactor = decelAmount / speed  // Ratio to reduce vx and vy proportionally
+            
+            // Apply the reduction to both vx and vy
+            self.vx *= (1 - reductionFactor)
+            self.vy *= (1 - reductionFactor)
+        end if
+    end if
 end function
+
 
 Kart.onCheckpointFound = function
 end function
