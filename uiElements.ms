@@ -79,14 +79,15 @@ end function
 
 UpgradeButton = new Button
 UpgradeButton.bigImage = file.loadImage("pics/abilities/paper.png")
+UpgradeButton.regImage = file.loadImage("pics/abilities/paper_small.png")
 UpgradeButton.upgrade = null
 UpgradeButton.size = 3
 UpgradeButton.highlighted = false
 UpgradeButton.instances = []
 
-lastIndexOf = function(s, char)
+lastIndexOf = function(s, chr)
     for i in range(s.len-1, 0, -1)
-        if s[i] == char then return i
+        if s[i] == chr then return i
     end for
     return null  // Return null if the character is not found
 end function
@@ -94,6 +95,11 @@ end function
 UpgradeButton.init = function
 	super.init
 	UpgradeButton.instances.push self
+	//if self.size == 3 then 
+	//	self.image = self.bigImage
+	//else
+	//	self.image = self.smallImage
+	//end if
 end function
 
 UpgradeButton.die = function
@@ -102,9 +108,54 @@ UpgradeButton.die = function
 end function 	
 
 UpgradeButton.printText = function
-	maxLength = 18
+	if self.size == 3 then 
+		self.printTextBig
+	else
+		self.printTextSmall
+	end if
+end function
+
+UpgradeButton.printTextSmall = function
+	maxLength = 20
 	chunks = []
 
+	while self.text.len > 0
+		// Find the largest substring that fits within maxLength
+		if self.text.len <= maxLength then
+			chunk = self.text  // If the remaining text is short enough, take it all
+			self.text = ""  // Clear the remaining text
+		else
+			// Look for the last space within the maxLength boundary
+			chunk = self.text[:maxLength]
+			spaceIndex = lastIndexOf(chunk, " ")
+			if spaceIndex == null then
+				spaceIndex = maxLength  // No space found, so take the max length
+			end if
+
+			chunk = self.text[:spaceIndex]  // Take up to the space
+			self.text = self.text[spaceIndex+1:]  // Remove the chunk (plus the space) from text
+		end if
+
+		chunks.push(chunk)  // Add the chunk to the list
+	end while
+
+	for i in range(0, chunks.len-1)
+		gfx.print chunks[i], self.x+16, self.y+30+19*-i, color.black, "medium"
+	end for
+	txt = "Price: " + self.upgrade.prices[self.upgrade.level]
+	if self.upgrade.prices[self.upgrade.level] > player.coins then 
+		txt = "Too Expensive!"
+		self.disabled = true
+	end if
+	gfx.print txt, self.x+16, self.y-self.image.height*1.65, color.black, "medium"
+	txt = self.upgrade.name
+	gfx.print txt, self.x+16, self.y+self.image.height*1.4, color.black, "medium"
+end function
+
+UpgradeButton.printTextBig = function
+	maxLength = 18
+	chunks = []
+	
 	while self.text.len > 0
 		// Find the largest substring that fits within maxLength
 		if self.text.len <= maxLength then
@@ -124,7 +175,7 @@ UpgradeButton.printText = function
 		
 		chunks.push(chunk)  // Add the chunk to the list
 	end while
-
+	
 	for i in range(0, chunks.len-1)
 		gfx.print chunks[i], self.x-self.image.width*1.6, self.y-32/2+7+24*-i, color.black, "normal"
 	end for

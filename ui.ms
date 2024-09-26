@@ -181,13 +181,17 @@ levelComplete = function
 	if winner != player then playLossAnimation
 
 	if file.exists(level.levelPath + "1-"  + (level.race+1) + ".dat") then
-		chooseUpgrades
+		if globals.twoplayer == true then
+			chooseUpgradeMulti
+		else
+			chooseUpgradeSingle
+		end if
 	else
 		endGame
 	end if
 end function
 
-chooseUpgrades = function
+chooseUpgradeSingle = function
 	txt = "Level Complete! Choose an upgrade."
 	gfx.print txt, 960/2 - txt.len*20/2, 580, color.white, "large"
 	txt = "Player wins: " + player.wins
@@ -223,7 +227,7 @@ chooseUpgrades = function
 		b.y = 350
 		if b.upgrade == null then continue
 		b.text = b.upgrade.descriptions[nextUpgrade.level]
-		if nextUpgrade.icons != [] then b.bigImage = nextUpgrade.icons[nextUpgrade.level]
+		if nextUpgrade.icons != [] then b.bigImage = nextUpgrade.icons[0][nextUpgrade.level]
 		b.init
 		upgradeButtons.push b
 	end for
@@ -242,7 +246,7 @@ chooseUpgrades = function
 					end if
 				end for
 			end if
-			setEnemyUpgrade
+			if globals.twoplayer == false then thensetEnemyUpgrade
 			disp.sprites.removeVal outer.bg
 			gfx.clear
 			level.race += 1
@@ -251,6 +255,68 @@ chooseUpgrades = function
 			return
 	    end if
 		
+		for u in upgradeButtons
+			if u.isClicked then 
+				chosenUpgrade = u.upgrade
+			end if
+		end for
+	end while
+end function
+
+chooseUpgradeMulti = function
+	if winner == player then
+		txt = "Player 1 gets 10 coins for winning!"
+		gfx.print txt, 960/2 - txt.len*20/2, 590, color.white, "large"
+	else if winner == player2 then
+		txt = "Player 2 gets 10 coins for winning!"
+		gfx.print txt, 960/2 - txt.len*20/2, 590, color.white, "large"
+	end if
+
+	next = new uiElements.Button
+	next.x = 880; next.y = 100
+	next.text = "NEXT"
+	next.init
+	objects.clear
+	camera.update
+
+	upgradeButtons = []
+	possibleUpgrades = upgrades.getUpgrades(player)
+	for i in range(0, 2)
+		b = new uiElements.UpgradeButton 
+		nextUpgrade = possibleUpgrades[possibleUpgrades.len*rnd]
+		b.upgrade = nextUpgrade
+		possibleUpgrades.removeVal nextUpgrade
+		b.x = 240; b.y = 150 + 170 * i; b.size = 1
+		if b.upgrade == null then continue
+		b.text = b.upgrade.descriptions[nextUpgrade.level]
+		if nextUpgrade.icons != [] then b.regImage = nextUpgrade.icons[1][nextUpgrade.level]
+		b.init
+		upgradeButtons.push b
+	end for
+	chosenUpgrade = null
+	while true  // (press Control-C to exit)
+		yield
+
+		if next.isClicked then
+			uiElements.Button.clear
+			if chosenUpgrade != null then 
+				for upgrade in player.currentUpgrades
+					if upgrade.name == chosenUpgrade.name then
+						player.coins -= chosenUpgrade.prices[chosenUpgrade.level]
+						player.score += constants.upgradeScore
+						upgrade.level += 1
+					end if
+				end for
+			end if
+			if globals.twoplayer == false then thensetEnemyUpgrade
+			disp.sprites.removeVal outer.bg
+			gfx.clear
+			level.race += 1
+			level.setup
+			globals.lastTime = time
+			return
+		end if
+
 		for u in upgradeButtons
 			if u.isClicked then 
 				chosenUpgrade = u.upgrade
@@ -284,9 +350,9 @@ endGame = function
 	trophy.scale = 4
 
 	if player.wins >= 5 then
-		txt = "You got " + player.wins + " wins!"
+		txt = "You got " + player.wins + " wins and"
 		gfx.print txt, 960/4 - txt.len*10, 260, color.white, "large"
-		txt = "And won a "
+		txt = "won a "
 		if player.wins == 10 then
 			trophy.tint = color.aqua
 			txt += "PLATINUM Trophy!"
@@ -301,7 +367,7 @@ endGame = function
 			txt += "BRONZE Trophy!"
 		end if
 		gfx.print txt, 960/4 - txt.len*10, 230, color.white, "large"
-		txt = "And lasted " + level.race + " Rounds."
+		txt = "You lasted " + level.race + " Rounds."
 		gfx.print txt, 960/4 - txt.len*10, 200, color.white, "large"
 		txt = "Play again?"
 		gfx.print txt, 960/4 - txt.len*10, 170, color.white, "large"
@@ -309,7 +375,7 @@ endGame = function
 	else
 		txt = "You got " + player.wins + " wins..."
 		gfx.print txt, 960/4 - txt.len*10, 260, color.white, "large"
-		txt = "And lasted " + level.race + " Rounds."
+		txt = "You lasted " + level.race + " Rounds."
 		gfx.print txt, 960/4 - txt.len*10, 230, color.white, "large"
 		txt = "Try again?"
 		gfx.print txt, 960/4 - txt.len*10, 200, color.white, "large"

@@ -115,11 +115,11 @@ end function
 
 checkLevelTint = function
 	if race == 10 then
-		tintLevel color.rgb(120, 70, 150)
+		tintLevel color.rgb(120, 120, 120)
 	else if race > 7 then
-		tintLevel color.rgb(170, 90, 150)
+		tintLevel color.rgb(150, 150, 150)
 	else if race > 3 then
-		tintLevel color.rgb(255, 200, 200)
+		tintLevel color.rgb(200, 200, 200)
 	else
 		tintLevel color.rgb(255, 255, 255)
 	end if
