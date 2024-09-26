@@ -516,6 +516,10 @@ PlayerKart.turnInput = function
 	return self.inputs.horizontal
 end function
 
+PlayerKart.driftInput = function
+	return self.inputs.drift
+end function
+
 PlayerKart.update = function(dt = 0.0167)
 
 	shrinkMod = 1.0 - (self.shrinkTimer / self.shrinkTime) * (1.0 - 0.6)

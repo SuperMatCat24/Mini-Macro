@@ -2,7 +2,7 @@
 // keyboard/gamepad inputs for one player.
 
 // Function names: indexed by [functionNum]
-functions = ["Up", "Down", "Left", "Right", "Fire"]
+functions = ["Up", "Down", "Left", "Right", "Drift"]
 
 // Function index constants
 kUp = 0
@@ -17,7 +17,7 @@ p1Inputs = [
 	["s", "Joy1Axis2 -"],
 	["a", "Joy1Axis1 -"],
 	["d", "Joy1Axis1 +"],
-	["space", "joystick 1 button 1"]]
+	["left shift", "joystick 1 button 1"]]
 
 p2Inputs = [
 	["up", "Joy2Axis2 -"],
