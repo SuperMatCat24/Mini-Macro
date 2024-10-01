@@ -264,6 +264,8 @@ chooseUpgradeSingle = function
 end function
 
 chooseUpgradeMulti = function
+	gfx.line 960/2, 0, 960/2, 640, color.black, 20
+    gfx.line 960/2, 0, 960/2, 640, color.red, 10
 	if winner == player then
 		txt = "Player 1 gets 10 coins for winning!"
 		gfx.print txt, 960/2 - txt.len*20/2, 590, color.white, "large"
@@ -273,27 +275,43 @@ chooseUpgradeMulti = function
 	end if
 
 	next = new uiElements.Button
-	next.x = 880; next.y = 100
+	next.x = 880; next.y = 50
 	next.text = "NEXT"
 	next.init
 	objects.clear
 	camera.update
 
-	upgradeButtons = []
-	possibleUpgrades = upgrades.getUpgrades(player)
-	for i in range(0, 2)
-		b = new uiElements.UpgradeButton 
-		nextUpgrade = possibleUpgrades[possibleUpgrades.len*rnd]
-		b.upgrade = nextUpgrade
-		possibleUpgrades.removeVal nextUpgrade
-		b.x = 240; b.y = 150 + 170 * i; b.size = 1
-		if b.upgrade == null then continue
-		b.text = b.upgrade.descriptions[nextUpgrade.level]
-		if nextUpgrade.icons != [] then b.regImage = nextUpgrade.icons[1][nextUpgrade.level]
-		b.init
-		upgradeButtons.push b
+	possibleUpgrades = {
+	    "player1": upgrades.getUpgrades(player),
+	    "player2": upgrades.getUpgrades(player2),
+	}
+
+	upgradeButtons = {
+	    "player1": [],
+	    "player2": [],
+	}
+	playerNum = 0
+	for p in ["player1", "player2"]
+		for i in range(0, 2)
+			b = new uiElements.UpgradeButton 
+			possible = possibleUpgrades[p]
+			buttons = upgradeButtons[p]
+			nextUpgrade = possible[possible.len*rnd]
+			b.upgrade = nextUpgrade
+			possible.removeVal nextUpgrade
+			b.x = 240 + 960*playerNum/2; b.y = 170 + 170 * i; b.size = 1
+			if b.upgrade == null then continue
+			b.text = b.upgrade.descriptions[nextUpgrade.level]
+			if nextUpgrade.icons != [] then b.regImage = nextUpgrade.icons[1][nextUpgrade.level]
+			b.init
+			buttons.push b
+		end for
+		playerNum += 1
 	end for
-	chosenUpgrade = null
+	chosenUpgrade = {
+	    "player1": null,
+	    "player2": null,
+	}
 	while true  // (press Control-C to exit)
 		yield
 
@@ -317,10 +335,12 @@ chooseUpgradeMulti = function
 			return
 		end if
 
-		for u in upgradeButtons
-			if u.isClicked then 
-				chosenUpgrade = u.upgrade
-			end if
+		for p in ["player1", "player2"]
+			for u in upgradeButtons[p]
+				if u.isClicked then 
+					chosenUpgrade[p] = u.upgrade
+				end if
+			end for
 		end for
 	end while
 end function

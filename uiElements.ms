@@ -147,9 +147,9 @@ UpgradeButton.printTextSmall = function
 		txt = "Too Expensive!"
 		self.disabled = true
 	end if
-	gfx.print txt, self.x+16, self.y-self.image.height*1.65, color.black, "medium"
+	gfx.print txt, self.x+16, self.y-self.image.height*1.67, color.black, "medium"
 	txt = self.upgrade.name
-	gfx.print txt, self.x+16, self.y+self.image.height*1.4, color.black, "medium"
+	gfx.print txt, self.x+16, self.y+self.image.height*1.37, color.black, "medium"
 end function
 
 UpgradeButton.printTextBig = function
