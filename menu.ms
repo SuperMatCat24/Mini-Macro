@@ -188,7 +188,7 @@ onePlayerMenu = function
     gfx.clear
     text.clear
     uiElements.Button.clear
-    disp.sprites = [player, player2]
+    disp.sprites = [player1, player2]
 
     imageIndex = mathUtil.randRange(0, images.carFrames.len)
     indexMod = (imageIndex + images.carFrames.len) % (images.carFrames.len)
@@ -328,7 +328,7 @@ twoPlayerMenu = function
     globals.numPlayers = 2
     gfx.clear
     uiElements.Button.clear
-    disp.sprites = [player, player2]
+    disp.sprites = [player1, player2]
 
     globals.p1Images = playerSprite.images
     globals.p2Images = enemySprite.images

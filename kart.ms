@@ -291,7 +291,7 @@ Kart.update = function(dt=0.0167)
 		if self.shootTimer <= 0 then
 			b = new Shot
 			if self isa PlayerKart then b.target = player2
-			if self isa EnemyKart then b.target = player
+			if self isa EnemyKart then b.target = player1
 			b.lx = self.lx; b.ly = self.ly
 			b.rotation = self.rotation
 			b.init
@@ -303,7 +303,7 @@ Kart.update = function(dt=0.0167)
 			for i in range(-25, 25, 25)
 				b = new Shot
 				if self isa PlayerKart then b.target = player2
-				if self isa EnemyKart then b.target = player
+				if self isa EnemyKart then b.target = player1
 				b.lx = self.lx; b.ly = self.ly
 				b.rotation = self.rotation + i
 				b.init
@@ -708,7 +708,7 @@ EnemyKart.update = function(dt = 0.0167)
 	if self.shrinkTimer < 0 then self.shrinkTimer = 0
 
 	if findByType(self.currentUpgrades, upgrades.Juggernaut).level >= 2 then
-		if self.worldBounds.overlaps(globals.player.worldBounds) then
+		if self.worldBounds.overlaps(globals.player1.worldBounds) then
 			if abs(self.bx) + abs(self.by) < 220 then 
 				sound.boost.play
 				sound.boost.adjust 0.2 * settings.soundVol
@@ -721,7 +721,7 @@ EnemyKart.update = function(dt = 0.0167)
 	if findByType(self.currentUpgrades, upgrades.Defence).level >= 1 then
 		if self.defenceTimer > 0 then self.defenceTimer -= dt
 		if self.defenceTimer < 0 then self.defenceTimer = 0
-		if self.worldBounds.overlaps(globals.player.worldBounds) then self.defenceTimer = self.defenceTime
+		if self.worldBounds.overlaps(globals.player1.worldBounds) then self.defenceTimer = self.defenceTime
 	end if
 
 	self.lScale = 4 * self.scaleModifier* shrinkMod

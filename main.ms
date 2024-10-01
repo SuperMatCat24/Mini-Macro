@@ -76,7 +76,7 @@ walls.clear
 p1Images = []
 p2Images = []
 
-player = new kart.PlayerKart
+player1 = new kart.PlayerKart
 player2 = null
 
 menu.mainMenu
@@ -84,23 +84,23 @@ menu.mainMenu
 twoplayer = false
 
 if globals.hasIndex("numPlayers") and numPlayers == 2 then
-	player.inputs = inputs.inputsForPlayer(1)
+	player1.inputs = inputs.inputsForPlayer(1)
 	player2 = new kart.PlayerKart
 	player2.inputs = inputs.inputsForPlayer(2)
     twoplayer = true
 else
-	player.inputs = inputs.inputsForPlayer(0)
+	player1.inputs = inputs.inputsForPlayer(0)
 	player2 = new kart.EnemyKart
 end if
 
-player.images = p1Images; player2.images = p2Images
+player1.images = p1Images; player2.images = p2Images
 
-player.init 0; player2.init 1
+player1.init 0; player2.init 1
 
 level.setup
 
 gfx.clear
-ui.update player; ui.update player2
+ui.update player1; ui.update player2
 
 coinTimer = 0
 

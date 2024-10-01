@@ -26,7 +26,7 @@ setup = function
 	ground.clear
 	objects.clear
 	kart.clear
-	updatable.all = [player, player2]
+	updatable.all = [player1, player2]
 
 	globals.path = []
 	globals.path = constants.paths[race-1]
@@ -42,8 +42,8 @@ setup = function
 
 	// Updates sprites and positions so they can be seen before the race starts.
 	globals.updateSpritePositions
-	player.updateSprites; player2.updateSprites
-	upgrades.getUpgrades(player); upgrades.getUpgrades(player2)
+	player1.updateSprites; player2.updateSprites
+	upgrades.getUpgrades(player1); upgrades.getUpgrades(player2)
 
 	// Update the camera again, so that it moves to the starting position.
 	camera.update
@@ -52,7 +52,7 @@ setup = function
 	playStartAnim
 
 	gfx.clear
-	ui.update player2; ui.update player
+	ui.update player2; ui.update player1
 end function
 
 blocksWalking = function(x, y)
@@ -101,7 +101,7 @@ processLevel = function
 		for x in range(0, walls.extent[0]-1)
 			c = walls.cell(x, y)
 			if c == 37 then
-				player.reset x, y
+				player1.reset x, y
 				walls.setCell x, y, 9
 			else if c == 38 then
 				player2.reset x, y

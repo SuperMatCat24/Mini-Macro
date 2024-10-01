@@ -18,8 +18,8 @@ update = function
 	if globals.twoplayer == false then
 		ground.cellSize = 64
 		walls.cellSize = 64
-		x = player.x
-		y = player.y
+		x = player1.x
+		y = player1.y
 		sx = ground.scrollX
 		sy = ground.scrollY
 		if x - sx < camBox.left then

@@ -2,15 +2,15 @@
 winner = null
 
 update = function(kart)
-	if kart == globals.player then
+	if kart == globals.player1 then
 	    gfx.fillRect 0, 640/2, 960/2, 640/2, color.clear
-	    txt = "Lap: " + player.currentLap + " / " + level.laps
+	    txt = "Lap: " + player1.currentLap + " / " + level.laps
 	    gfx.print txt, 10, 600, color.white, "large"
 	    gfx.line 0, 600, txt.len*20+20, 600, color.white, 5
-	    txt = "Coins: " + player.coins
+	    txt = "Coins: " + player1.coins
 	    gfx.print txt, 10, 560, color.white, "large"
 	    gfx.line 0, 560, txt.len*20+20, 560, color.white, 5
-		score = "000000" + player.score
+		score = "000000" + player1.score
 		txt = "Score: " + score[-6:]
 	    gfx.print txt, 10, 520, color.white, "large"
 	    gfx.line 0, 520, txt.len*20+20, 520, color.white, 5
@@ -65,7 +65,7 @@ playLossAnimation = function
 	disp.sprites.push bronze
 	medals.push bronze
 
-	if player.losses < 2 then
+	if player1.losses < 2 then
 		silver = new Sprite
 		silver.image = images.silverMedal
 		silver.x = 960*(4/8) + disp.scrollX; silver.y = 640/2 + disp.scrollY; silver.scale = 4
@@ -73,7 +73,7 @@ playLossAnimation = function
 		medals.push silver
 	end if
 
-	if player.losses == 0 then
+	if player1.losses == 0 then
 		gold = new Sprite
 		gold.image = images.goldMedal
 		gold.x = 960*(5/8) + disp.scrollX; gold.y = 640/2 + disp.scrollY; gold.scale = 4
@@ -88,7 +88,7 @@ playLossAnimation = function
 			m.tint = color.rgba(255, 255, 255, a)
 		end for
 		yield
-		txt = "Losses: " + player.losses + " / 3"
+		txt = "Losses: " + player1.losses + " / 3"
 		gfx.print txt, 960/2 - txt.len*10, 400, color.rgba(255, 255, 255, a), "large"
 	end for
 
@@ -111,9 +111,9 @@ playLossAnimation = function
 	disp.sprites.removeVal chosenMedal
 	sound.suspence.stop
 	sound.crack.play
-	player.losses += 1
+	player1.losses += 1
 	gfx.fillRect 0, 0, 960, 640, color.clear
-	txt = "Losses: " + player.losses + " / 3"
+	txt = "Losses: " + player1.losses + " / 3"
 	gfx.print txt, 960/2 - txt.len*10, 400, color.rgba(255, 255, 255, 255), "large"
 
 	wait 0.5
@@ -124,7 +124,7 @@ playLossAnimation = function
 		for m in medals
 			m.tint = color.rgba(255, 255, 255, a)
 		end for
-		txt = "Losses: " + player.losses + " / 3"
+		txt = "Losses: " + player1.losses + " / 3"
 		gfx.print txt, 960/2 - txt.len*10, 400, color.rgba(255, 255, 255, a), "large"
 		yield
 	end for
@@ -135,27 +135,27 @@ playLossAnimation = function
 	end for
 
 	playerLost = false
-	if player.losses >= 3 then endGame
+	if player1.losses >= 3 then endGame
 end function
 
 levelComplete = function
 
 	particles.clear
 	lastTime = time
-	while player.vx + player.vy + player2.vy + player2.vx != 0
+	while player1.vx + player1.vy + player2.vy + player2.vx != 0
 		yield
 		dt=time-lastTime
 		lastTime = time
 
-		player.vx = mathUtil.moveTowards(player.vx, 0, 400 * dt)
+		player1.vx = mathUtil.moveTowards(player1.vx, 0, 400 * dt)
 		player2.vx = mathUtil.moveTowards(player2.vx, 0, 400 * dt)
-		player.vy = mathUtil.moveTowards(player.vy, 0, 400 * dt)
+		player1.vy = mathUtil.moveTowards(player1.vy, 0, 400 * dt)
 		player2.vy = mathUtil.moveTowards(player2.vy, 0, 400 * dt)
-		player.lx += player.vx * dt; player.ly += player.vy * dt
+		player1.lx += player1.vx * dt; player1.ly += player1.vy * dt
 		player2.lx += player2.vx * dt; player2.ly += player2.vy * dt
 
 		globals.updateSpritePositions
-		player.updateSprites; player2.updateSprites
+		player1.updateSprites; player2.updateSprites
 		camera.update
 	end while
 
@@ -173,12 +173,12 @@ levelComplete = function
         bg.y = y  + disp.scrollY
         yield
     end for
-	player.x = 0; player.y = 0
+	player1.x = 0; player1.y = 0
 	camera.update
 	bg.y = 320
 	bg.x = 960/2
 
-	if winner != player then playLossAnimation
+	if winner != player1 and globals.twoplayer == false then playLossAnimation
 
 	if file.exists(level.levelPath + "1-"  + (level.race+1) + ".dat") then
 		if globals.twoplayer == true then
@@ -194,15 +194,15 @@ end function
 chooseUpgradeSingle = function
 	txt = "Level Complete! Choose an upgrade."
 	gfx.print txt, 960/2 - txt.len*20/2, 580, color.white, "large"
-	txt = "Player wins: " + player.wins
+	txt = "Player wins: " + player1.wins
 	gfx.print txt, 10, 10+90, color.white, "large"
-	txt = "Player coins: " + player.coins
+	txt = "Player coins: " + player1.coins
 	gfx.print txt, 10, 10+60, color.yellow, "large"
 	txt = "Player 2 wins: " + player2.wins
 	gfx.print txt, 10, 10+30, color.white, "large"
 	txt = "Player 2 coins: " + player2.coins
 	gfx.print txt, 10, 10, color.yellow, "large"
-	if winner == player then
+	if winner == player1 then
 		txt = "Player gets 10 coins for winning!"
 		gfx.print txt, 960/2 - txt.len*11/2, 560, color.yellow, "medium"
 	else if winner == player2 then
@@ -217,7 +217,7 @@ chooseUpgradeSingle = function
 	objects.clear
 	camera.update
 	upgradeButtons = []
-	possibleUpgrades = upgrades.getUpgrades(player)
+	possibleUpgrades = upgrades.getUpgrades(player1)
 	for i in range(0, 2)
 		b = new uiElements.UpgradeButton 
 		nextUpgrade = possibleUpgrades[possibleUpgrades.len*rnd]
@@ -238,15 +238,15 @@ chooseUpgradeSingle = function
 	    if next.isClicked then
 	        uiElements.Button.clear
 			if chosenUpgrade != null then 
-				for upgrade in player.currentUpgrades
+				for upgrade in player1.currentUpgrades
 					if upgrade.name == chosenUpgrade.name then
-						player.coins -= chosenUpgrade.prices[chosenUpgrade.level]
-						player.score += constants.upgradeScore
+						player1.coins -= chosenUpgrade.prices[chosenUpgrade.level]
+						player1.score += constants.upgradeScore
 						upgrade.level += 1
 					end if
 				end for
 			end if
-			if globals.twoplayer == false then thensetEnemyUpgrade
+			setEnemyUpgrade
 			disp.sprites.removeVal outer.bg
 			gfx.clear
 			level.race += 1
@@ -266,30 +266,33 @@ end function
 chooseUpgradeMulti = function
 	gfx.line 960/2, 0, 960/2, 640, color.black, 20
     gfx.line 960/2, 0, 960/2, 640, color.red, 10
-	if winner == player then
-		txt = "Player 1 gets 10 coins for winning!"
-		gfx.print txt, 960/2 - txt.len*20/2, 590, color.white, "large"
-	else if winner == player2 then
-		txt = "Player 2 gets 10 coins for winning!"
-		gfx.print txt, 960/2 - txt.len*20/2, 590, color.white, "large"
-	end if
 
-	next = new uiElements.Button
-	next.x = 880; next.y = 50
-	next.text = "NEXT"
-	next.init
 	objects.clear
 	camera.update
 
+	txt = "Player 1"
+    gfx.print txt, 960*(1/4)-txt.len*10, 595, color.white, "large"
+    txt = "Player 2"
+    gfx.print txt, 960*(3/4)-txt.len*10, 595, color.white, "large"
+
+	txt = "Coins: " + player1.coins
+	gfx.print txt, 10, 10, color.yellow, "large"
+	txt = "Coins: " + player2.coins
+	gfx.print txt, 650, 10, color.yellow, "large"
+
 	possibleUpgrades = {
-	    "player1": upgrades.getUpgrades(player),
+	    "player1": upgrades.getUpgrades(player1),
 	    "player2": upgrades.getUpgrades(player2),
 	}
-
 	upgradeButtons = {
 	    "player1": [],
 	    "player2": [],
 	}
+	readyButtons = {
+		"player1": null,
+		"player2": null,
+	}
+
 	playerNum = 0
 	for p in ["player1", "player2"]
 		for i in range(0, 2)
@@ -306,27 +309,52 @@ chooseUpgradeMulti = function
 			b.init
 			buttons.push b
 		end for
+		ready = new uiElements.Button
+		ready.x = 360 + 960*playerNum/4; ready.y = 45
+		ready.text = "READY"
+		ready.init
+		ready.ready = false
+		readyButtons[p] = ready
 		playerNum += 1
 	end for
-	chosenUpgrade = {
+	chosenUpgrades = {
 	    "player1": null,
 	    "player2": null,
 	}
 	while true  // (press Control-C to exit)
 		yield
 
-		if next.isClicked then
-			uiElements.Button.clear
-			if chosenUpgrade != null then 
-				for upgrade in player.currentUpgrades
-					if upgrade.name == chosenUpgrade.name then
-						player.coins -= chosenUpgrade.prices[chosenUpgrade.level]
-						player.score += constants.upgradeScore
-						upgrade.level += 1
-					end if
-				end for
+		ready = true
+		for p in ["player1", "player2"]
+			button = @readyButtons[p]
+			if button.isClicked then
+            	button.ready = not button.ready
+            	if button.ready == true then
+            	    button.color = color.lime
+            	    button.pressedColor = color.red
+            	else
+            	    button.color = color.white
+            	    button.pressedColor = color.silver
+            	end if
 			end if
-			if globals.twoplayer == false then thensetEnemyUpgrade
+			if button.ready == false then ready = false
+        end for
+
+        if ready == true then
+			uiElements.Button.clear
+			
+			for p in ["player1", "player2"]
+				chosenUpgrade = chosenUpgrades[p]
+				if chosenUpgrade != null then 
+					for upgrade in globals[p].currentUpgrades
+						if upgrade.name == chosenUpgrade.name then
+							globals[p].coins -= chosenUpgrade.prices[chosenUpgrade.level]
+							globals[p].score += constants.upgradeScore
+							upgrade.level += 1
+						end if
+					end for
+				end if
+			end for
 			disp.sprites.removeVal outer.bg
 			gfx.clear
 			level.race += 1
@@ -338,7 +366,7 @@ chooseUpgradeMulti = function
 		for p in ["player1", "player2"]
 			for u in upgradeButtons[p]
 				if u.isClicked then 
-					chosenUpgrade[p] = u.upgrade
+					chosenUpgrades[p] = u.upgrade
 				end if
 			end for
 		end for
@@ -349,9 +377,9 @@ endGame = function
 
 	highscore.loadScores
 
-	if highscore.isHighScore(player.score) then
+	if highscore.isHighScore(player1.score) then
 		name = highscore.postNewScoreDialog
-		highscore.addScore player.score, name
+		highscore.addScore player1.score, name
 		highscore.saveScores
 	end if
 
@@ -369,20 +397,20 @@ endGame = function
 	trophy.y = 440
 	trophy.scale = 4
 
-	if player.wins >= 5 then
-		txt = "You got " + player.wins + " wins and"
+	if player1.wins >= 5 then
+		txt = "You got " + player1.wins + " wins and"
 		gfx.print txt, 960/4 - txt.len*10, 260, color.white, "large"
 		txt = "won a "
-		if player.wins == 10 then
+		if player1.wins == 10 then
 			trophy.tint = color.aqua
 			txt += "PLATINUM Trophy!"
-		else if player.wins >= 8 then
+		else if player1.wins >= 8 then
 			trophy.tint = color.yellow
 			txt += "GOLD Trophy!"
-		else if player.wins >= 6 then
+		else if player1.wins >= 6 then
 			trophy.tint = color.silver
 			txt += "SILVER Trophy!"
-		else if player.wins >= 3 then
+		else if player1.wins >= 3 then
 			trophy.tint = color.orange
 			txt += "BRONZE Trophy!"
 		end if
@@ -393,7 +421,7 @@ endGame = function
 		gfx.print txt, 960/4 - txt.len*10, 170, color.white, "large"
 		disp.sprites.push trophy
 	else
-		txt = "You got " + player.wins + " wins..."
+		txt = "You got " + player1.wins + " wins..."
 		gfx.print txt, 960/4 - txt.len*10, 260, color.white, "large"
 		txt = "You lasted " + level.race + " Rounds."
 		gfx.print txt, 960/4 - txt.len*10, 230, color.white, "large"

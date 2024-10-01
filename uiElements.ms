@@ -143,7 +143,7 @@ UpgradeButton.printTextSmall = function
 		gfx.print chunks[i], self.x+16, self.y+30+19*-i, color.black, "medium"
 	end for
 	txt = "Price: " + self.upgrade.prices[self.upgrade.level]
-	if self.upgrade.prices[self.upgrade.level] > player.coins then 
+	if self.upgrade.prices[self.upgrade.level] > player1.coins then 
 		txt = "Too Expensive!"
 		self.disabled = true
 	end if
@@ -180,7 +180,7 @@ UpgradeButton.printTextBig = function
 		gfx.print chunks[i], self.x-self.image.width*1.6, self.y-32/2+7+24*-i, color.black, "normal"
 	end for
 	txt = "Price: " + self.upgrade.prices[self.upgrade.level]
-	if self.upgrade.prices[self.upgrade.level] > player.coins then 
+	if self.upgrade.prices[self.upgrade.level] > player1.coins then 
 		txt = "Too Expensive!"
 		self.disabled = true
 	end if
