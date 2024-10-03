@@ -25,24 +25,10 @@ mainMenu = function
     logo.x = 960/2; logo.y = 640/2; logo.scale = 4
     disp.sprites.push logo
 
-    play = new uiElements.Button
-    play.x = 960/3; play.y = 200
-    play.text = "1 PLAYER"
-    play.init
-    play2 = new uiElements.Button
-    play2.x = 960/1.5; play2.y = 200
-    play2.text = "2 PLAYER"
-    play2.init
-
-    help = new uiElements.Button
-    help.x = 960/3; help.y = 100
-    help.text = "HELP"
-    help.init
-
-	settings = new uiElements.Button
-    settings.x = 960/1.5; settings.y = 100
-    settings.text = "OPTIONS"
-    settings.init
+    play = uiElements.Button.make(960/3, 200, "1 PLAYER")
+    play2 = uiElements.Button.make(960/1.5, 200, "2 PLAYER")
+    help = uiElements.Button.make(960/3, 100, "HELP")
+    settings = uiElements.Button.make(960/1.5, 100, "OPTIONS")
 
     while true  // (press Control-C to exit)
         yield
@@ -82,11 +68,7 @@ helpMenu = function
     bg.scale = 4
     disp.sprites.push bg
     
-    exit = new uiElements.Button
-    exit.x = 910; exit.y = 590
-    exit.text = "X"
-    exit.size = 0
-    exit.init
+    exit = uiElements.Button.make(910, 590, "X", 0)
 
     txt = "Score Table:"
     gfx.print txt, 550, 505, color.black, "normal"
@@ -133,24 +115,9 @@ onePlayerMenu = function
     playerSprite.init
     playerSprite.imageIndex = 0
 
-    playerRightButton = new uiElements.Button
-    playerRightButton.size = 0
-    playerRightButton.x = 960*(1/4)+150; playerRightButton.y = 350
-    playerRightButton.text = ">"
-    playerRightButton.init
-
-    playerLeftButton = new uiElements.Button
-    playerLeftButton.size = 0
-    playerLeftButton.x = 960*(1/4)-150; playerLeftButton.y = 350
-    playerLeftButton.text = "<"
-    playerLeftButton.init
-
-    playerReadyButton = new uiElements.Button
-    playerReadyButton.size = 1
-    playerReadyButton.x = 960*(1/4); playerReadyButton.y = 150
-    playerReadyButton.text = "Play"
-    playerReadyButton.init
-    playerReadyButton.ready = false
+    playerRightButton = uiElements.Button.make(960*(1/4)+150, 350, ">", 0)
+    playerLeftButton = uiElements.Button.make(960*(1/4)-150, 350, "<", 0)
+    playerReadyButton = uiElements.Button.make(960*(1/4), 150, "PLAY", 1)
     
     txt = "Choose your car"
     gfx.print txt, 960*(1/4)-txt.len*10, 590, color.white, "large"
@@ -171,18 +138,8 @@ onePlayerMenu = function
             playerSprite.imageIndex = (playerSprite.imageIndex + images.carFrames.len) % (images.carFrames.len)
             playerSprite.changeImages(images.carFrames[playerSprite.imageIndex])
         else if playerReadyButton.isClicked then
-            playerReadyButton.ready = not playerReadyButton.ready
-            if playerReadyButton.ready == true then
-                playerReadyButton.color = color.lime
-                playerReadyButton.pressedColor = color.red
-            else
-                playerReadyButton.color = color.white
-                playerReadyButton.pressedColor = color.silver
-            end if
+            break
         end if
-
-        if playerReadyButton.ready == true then break
-
         yield
     end while
     gfx.clear
@@ -226,81 +183,45 @@ twoPlayerMenu = function
     enemySprite.y = 350
     enemySprite.init
     enemySprite.imageIndex = 1
-    
-    playerRightButton = new uiElements.Button
-    playerRightButton.size = 0
-    playerRightButton.x = 960*(1/4)+150; playerRightButton.y = 350
-    playerRightButton.text = ">"
-    playerRightButton.init
 
-    playerLeftButton = new uiElements.Button
-    playerLeftButton.size = 0
-    playerLeftButton.x = 960*(1/4)-150; playerLeftButton.y = 350
-    playerLeftButton.text = "<"
-    playerLeftButton.init
-
-    enemyRightButton = new uiElements.Button
-    enemyRightButton.size = 0
-    enemyRightButton.x = 960*(3/4)+150; enemyRightButton.y = 350
-    enemyRightButton.text = ">"
-    enemyRightButton.init
-
-    enemyLeftButton = new uiElements.Button
-    enemyLeftButton.size = 0
-    enemyLeftButton.x = 960*(3/4)-150; enemyLeftButton.y = 350
-    enemyLeftButton.text = "<"
-    enemyLeftButton.init
-
-    playerReadyButton = new uiElements.Button
-    playerReadyButton.size = 1
-    playerReadyButton.x = 960*(1/4); playerReadyButton.y = 150
-    playerReadyButton.text = "READY"
-    playerReadyButton.init
+    playerRightButton = uiElements.Button.make(960*(1/4)+150, 350, ">", 0)
+    playerLeftButton = uiElements.Button.make(960*(1/4)-150, 350, "<", 0)
+    playerReadyButton = uiElements.Button.make(960*(1/4), 150, "PLAY", 1)
     playerReadyButton.ready = false
 
-    enemyReadyButton = new uiElements.Button
-    enemyReadyButton.size = 1
-    enemyReadyButton.x = 960*(3/4); enemyReadyButton.y = 150
-    enemyReadyButton.text = "READY"
-    enemyReadyButton.init
+    enemyRightButton = uiElements.Button.make(960*(3/4)+150, 350, ">", 0)
+    enemyLeftButton = uiElements.Button.make(960*(3/4)-150, 350, "<", 0)
+    enemyReadyButton = uiElements.Button.make(960*(3/4), 150, "PLAY", 1)
     enemyReadyButton.ready = false
     
     txt = "Player 1"
     gfx.print txt, 960*(1/4)-txt.len*10, 590, color.white, "large"
-
     txt = "Player 2"
     gfx.print txt, 960*(3/4)-txt.len*10, 590, color.white, "large"
+
+    changeCarSprite = function(amt, sprite, enemySprite)
+        sprite.imageIndex -= 1
+        indexMod = (sprite.imageIndex + images.carFrames.len) % (images.carFrames.len)
+        if indexMod == enemySprite.imageIndex then sprite.imageIndex -= 1
+        sprite.imageIndex = (sprite.imageIndex + images.carFrames.len) % (images.carFrames.len)
+        sprite.changeImages(images.carFrames[sprite.imageIndex])
+    end function
     
     while true
+        // Dont need to use delta time because the menu page will almost never lag
         playerSprite.rotation += 1
         playerSprite.updateSprites
         enemySprite.rotation += 1
         enemySprite.updateSprites
 
         if playerLeftButton.isClicked then
-            playerSprite.imageIndex -= 1
-            indexMod = (playerSprite.imageIndex + images.carFrames.len) % (images.carFrames.len)
-            if indexMod == enemySprite.imageIndex then playerSprite.imageIndex -= 1
-            playerSprite.imageIndex = (playerSprite.imageIndex + images.carFrames.len) % (images.carFrames.len)
-            playerSprite.changeImages(images.carFrames[playerSprite.imageIndex])
+            changeCarSprite -1, playerSprite, enemySprite
         else if playerRightButton.isClicked then
-            playerSprite.imageIndex += 1
-            indexMod = (playerSprite.imageIndex + images.carFrames.len) % (images.carFrames.len)
-            if indexMod == enemySprite.imageIndex then playerSprite.imageIndex += 1
-            playerSprite.imageIndex = (playerSprite.imageIndex + images.carFrames.len) % (images.carFrames.len)
-            playerSprite.changeImages(images.carFrames[playerSprite.imageIndex])
+            changeCarSprite 1, playerSprite, enemySprite
         else if enemyLeftButton.isClicked then
-            enemySprite.imageIndex -= 1
-            indexMod = (enemySprite.imageIndex + images.carFrames.len) % (images.carFrames.len)
-            if indexMod == playerSprite.imageIndex then enemySprite.imageIndex -= 1
-            enemySprite.imageIndex = (enemySprite.imageIndex + images.carFrames.len) % (images.carFrames.len)
-            enemySprite.changeImages(images.carFrames[enemySprite.imageIndex])
+            changeCarSprite -1, enemySprite, playerSprite
         else if enemyRightButton.isClicked then
-            enemySprite.imageIndex += 1
-            indexMod = (enemySprite.imageIndex + images.carFrames.len) % (images.carFrames.len)
-            if indexMod == playerSprite.imageIndex then enemySprite.imageIndex += 1
-            enemySprite.imageIndex = (enemySprite.imageIndex + images.carFrames.len) % (images.carFrames.len)
-            enemySprite.changeImages(images.carFrames[enemySprite.imageIndex])
+            changeCarSprite 1, enemySprite, playerSprite
         else if playerReadyButton.isClicked then
             playerReadyButton.ready = not playerReadyButton.ready
             if playerReadyButton.ready == true then

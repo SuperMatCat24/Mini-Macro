@@ -28,6 +28,15 @@ Button.init = function
     Button.instances.push self
 end function
 
+Button.make = function(x, y, txt, size=1)
+	b = new self
+	b.x = x; b.y = y
+	b.text = txt
+	b.size = size
+	b.init
+	return b
+end function
+
 Button.printText = function
 	gfx.fillRect self.x-self.image.width*self.scale/2, self.y-self.image.height*self.scale/2, self.image.width*self.scale, self.image.height*self.scale, color.clear
 	gfx.print self.text, self.x-self.text.len*10, self.y-32/2+5, color.black, "large"

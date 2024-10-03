@@ -55,6 +55,8 @@ end function
 
 // ---------- Init Displays ----------
 
+clear
+
 display(2).mode = displayMode.text
 text = display(2)
 text.clear
@@ -78,8 +80,6 @@ walls.clear
 twoplayer = false
 
 path = constants.paths[0]
-
-clear
 
 p1Images = []
 p2Images = []
