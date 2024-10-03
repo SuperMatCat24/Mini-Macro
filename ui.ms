@@ -278,7 +278,7 @@ chooseUpgradeMulti = function
 	txt = "Coins: " + player1.coins
 	gfx.print txt, 10, 10, color.yellow, "large"
 	txt = "Coins: " + player2.coins
-	gfx.print txt, 650, 10, color.yellow, "large"
+	gfx.print txt, 720, 10, color.yellow, "large"
 
 	possibleUpgrades = {
 	    "player1": upgrades.getUpgrades(player1),
@@ -296,14 +296,17 @@ chooseUpgradeMulti = function
 	playerNum = 0
 	for p in ["player1", "player2"]
 		for i in range(0, 2)
-			b = new uiElements.UpgradeButton 
 			possible = possibleUpgrades[p]
 			buttons = upgradeButtons[p]
 			nextUpgrade = possible[possible.len*rnd]
-			b.upgrade = nextUpgrade
-			possible.removeVal nextUpgrade
+			if nextUpgrade == null then continue
+
+			b = new uiElements.UpgradeButton 
 			b.x = 240 + 960*playerNum/2; b.y = 170 + 170 * i; b.size = 1
-			if b.upgrade == null then continue
+			b.upgrade = nextUpgrade
+			b.channel = playerNum
+			possible.removeVal nextUpgrade
+			b.targetPlayer = globals[p]
 			b.text = b.upgrade.descriptions[nextUpgrade.level]
 			if nextUpgrade.icons != [] then b.regImage = nextUpgrade.icons[1][nextUpgrade.level]
 			b.init
@@ -326,7 +329,7 @@ chooseUpgradeMulti = function
 
 		ready = true
 		for p in ["player1", "player2"]
-			button = @readyButtons[p]
+			button = readyButtons[p]
 			if button.isClicked then
             	button.ready = not button.ready
             	if button.ready == true then
@@ -350,7 +353,7 @@ chooseUpgradeMulti = function
 						if upgrade.name == chosenUpgrade.name then
 							globals[p].coins -= chosenUpgrade.prices[chosenUpgrade.level]
 							globals[p].score += constants.upgradeScore
-							upgrade.level += 1
+							globals[p].currentUpgrades[globals[p].currentUpgrades.indexOf(upgrade)].level += 1
 						end if
 					end for
 				end if

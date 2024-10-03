@@ -84,6 +84,8 @@ UpgradeButton.upgrade = null
 UpgradeButton.size = 3
 UpgradeButton.highlighted = false
 UpgradeButton.instances = []
+UpgradeButton.channel = 0
+UpgradeButton.targetPlayer = null
 
 lastIndexOf = function(s, chr)
     for i in range(s.len-1, 0, -1)
@@ -143,7 +145,7 @@ UpgradeButton.printTextSmall = function
 		gfx.print chunks[i], self.x+16, self.y+30+19*-i, color.black, "medium"
 	end for
 	txt = "Price: " + self.upgrade.prices[self.upgrade.level]
-	if self.upgrade.prices[self.upgrade.level] > player1.coins then 
+	if self.upgrade.prices[self.upgrade.level] > self.targetPlayer.coins then 
 		txt = "Too Expensive!"
 		self.disabled = true
 	end if
@@ -180,7 +182,7 @@ UpgradeButton.printTextBig = function
 		gfx.print chunks[i], self.x-self.image.width*1.6, self.y-32/2+7+24*-i, color.black, "normal"
 	end for
 	txt = "Price: " + self.upgrade.prices[self.upgrade.level]
-	if self.upgrade.prices[self.upgrade.level] > player1.coins then 
+	if self.upgrade.prices[self.upgrade.level] > self.targetPlayer.coins then 
 		txt = "Too Expensive!"
 		self.disabled = true
 	end if
@@ -214,6 +216,7 @@ UpgradeButton.isClicked = function
 			sound.blip.play
 			for b in UpgradeButton.instances
 				if b == self then continue
+				if b.channel != self.channel then continue
 				b.highlighted = false
 			end for
 			self.highlighted = true

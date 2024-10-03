@@ -290,8 +290,8 @@ Kart.update = function(dt=0.0167)
 		self.shootTimer -= dt
 		if self.shootTimer <= 0 then
 			b = new Shot
-			if self isa PlayerKart then b.target = player2
-			if self isa EnemyKart then b.target = player1
+			if self == player1 then b.target = player2
+			if self == player2 then b.target = player1
 			b.lx = self.lx; b.ly = self.ly
 			b.rotation = self.rotation
 			b.init
@@ -302,8 +302,8 @@ Kart.update = function(dt=0.0167)
 		if self.shootTimer <= 0 then
 			for i in range(-25, 25, 25)
 				b = new Shot
-				if self isa PlayerKart then b.target = player2
-				if self isa EnemyKart then b.target = player1
+				if self == player1 then b.target = player2
+				if self == player2 then b.target = player1
 				b.lx = self.lx; b.ly = self.ly
 				b.rotation = self.rotation + i
 				b.init
