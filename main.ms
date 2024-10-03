@@ -28,6 +28,8 @@ mus.play
 mus.adjust settings.musicVol
 print "Music loaded!"
 
+// ---------- Utility functions ----------
+
 Sprite.isOnScreen = function
 	if self.x + 64 - disp.scrollX <= 0 then return false
 	if self.x - 64 - disp.scrollX >= 960 then return false
@@ -51,9 +53,7 @@ updateSpritePositions = function
     end for
 end function
 
-path = constants.paths[0]
-
-clear
+// ---------- Init Displays ----------
 
 display(2).mode = displayMode.text
 text = display(2)
@@ -73,15 +73,22 @@ display(5).mode = displayMode.tile
 walls = display(5)
 walls.clear
 
+// ---------- Init Game ----------
+
+twoplayer = false
+
+path = constants.paths[0]
+
+clear
+
 p1Images = []
 p2Images = []
 
 player1 = new kart.PlayerKart
+player1.currentUpgrades = []
 player2 = null
 
 menu.mainMenu
-
-twoplayer = false
 
 if globals.hasIndex("numPlayers") and numPlayers == 2 then
 	player1.inputs = inputs.inputsForPlayer(1)
@@ -92,9 +99,9 @@ else
 	player1.inputs = inputs.inputsForPlayer(0)
 	player2 = new kart.EnemyKart
 end if
+player2.currentUpgrades = []
 
 player1.images = p1Images; player2.images = p2Images
-
 player1.init 0; player2.init 1
 
 level.setup

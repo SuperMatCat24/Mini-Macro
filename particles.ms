@@ -16,9 +16,9 @@ spawnRelativeToParent = function(parent, particle, offsetX, offsetY)
 
     p = new particle
     p.parent = parent
-
     p.lx = newX
     p.ly = newY
+    
     p.init
 end function
 

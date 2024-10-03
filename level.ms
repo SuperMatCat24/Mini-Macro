@@ -68,6 +68,8 @@ blocksWalking = function(x, y)
 end function
 
 wallRaycast = function(start, target)
+	// raycast for the enemy AI to know when
+	// to adjust the path to avoid walls
 	stepSize = 16  // Step size for the ray
 	currentPos = {"x":start[0], "y":start[1]}
 	targetPos = {"x":target[0], "y":target[1]}
@@ -130,7 +132,7 @@ playStartAnim = function
 		txt = str(i)
 		if i == 0 then txt = "GO!"
 		gfx.clear
-		gfx.print txt, 960/2, (640/2)-txt.len*10, color.white, "large"
+		gfx.print txt, 960/2-txt.len*10, 640/2, color.white, "large"
 
 		// Play the correct anouncer sound
 		sound["announce"+i].play
