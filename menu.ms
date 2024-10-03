@@ -258,6 +258,7 @@ end function
 optionsMenu = function
     gfx.clear
     uiElements.Button.clear
+
     bg = new Sprite
     bg.image = images.woodPanel
     bg.y = 320
@@ -265,41 +266,13 @@ optionsMenu = function
     bg.scale = 4
     disp.sprites.push bg
     
-    exit = new uiElements.Button
-    exit.x = 910; exit.y = 590
-    exit.text = "X"
-    exit.size = 0
-    exit.init
+    exit = uiElements.Button.make(910, 590, "X", 0)
 
-    clearAchivements = new uiElements.Button
-    clearAchivements.x = 960*(2/8); clearAchivements.y = 50
-    clearAchivements.text = "Clear Achivements"
-    clearAchivements.size = 2
-    clearAchivements.color = color.rgb(255, 50, 50)
-    clearAchivements.pressedColor = color.rgb(200, 0, 0)
-    clearAchivements.init
+    clearAchivements = uiElements.Button.make(960*(2/8), 50, "Clear Achivements", 2, color.rgb(255, 50, 50), color.rgb(200, 0, 0))
+    clearSettings = uiElements.Button.make(960*(6/8), 50, "Clear Settings", 2, color.rgb(255, 50, 50), color.rgb(200, 0, 0))
 
-    clearSettings = new uiElements.Button
-    clearSettings.x = 960*(6/8); clearSettings.y = 50
-    clearSettings.text = "Clear Settings"
-    clearSettings.size = 2
-    clearSettings.color = color.rgb(255, 50, 50)
-    clearSettings.pressedColor = color.rgb(200, 0, 0)
-    clearSettings.init
-
-    mVolume = new uiElements.Slider
-    mVolume.x = 300
-    mVolume.y = 550
-    mVolume.width = 200
-    mVolume.text = "Music Volume:"
-    mVolume.value = settings.musicVol
-
-    sVolume = new uiElements.Slider
-    sVolume.x = 300
-    sVolume.y = 500
-    sVolume.width = 200
-    sVolume.text = "Sound Volume:"
-    sVolume.value = settings.soundVol / 2
+    mVolume = uiElements.Slider.make(300, 550, 200, 20, 20, settings.musicVol, "Music Volume:")
+    sVolume = uiElements.Slider.make(300, 500, 200, 20, 20, settings.soundVol/2, "Sound Volume:")
 
     while true
         mVolume.update

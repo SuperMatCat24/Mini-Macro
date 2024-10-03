@@ -28,11 +28,14 @@ Button.init = function
     Button.instances.push self
 end function
 
-Button.make = function(x, y, txt, size=1)
+Button.make = function(x, y, txt, size=1, regColor="#FFFFFF", pressColor="#AAAAAA", disableColor="#777777")
 	b = new self
 	b.x = x; b.y = y
 	b.text = txt
 	b.size = size
+	b.color = regColor
+	b.pressedColor = pressColor
+	b.disabledColor = disableColor
 	b.init
 	return b
 end function
@@ -246,6 +249,17 @@ Slider.radius = 20
 Slider.value = 0.5
 Slider.dragging = false
 Slider.text = "Slider:"
+
+Slider.make = function(x, y, width=100, height=20, radius=20, value = 0.5, txt="Slider:")
+	s = new self
+	s.x = x; s.y = y
+	s.text = txt
+	s.width = width
+	s.height = height
+	s.radius = radius
+	s.value = value
+	return s
+end function
 
 Slider.draw = function
     gfx.fillRect self.x-self.radius, self.y - self.radius - self.height/2, self.width + self.radius*2, self.height + self.radius*2, color.clear
