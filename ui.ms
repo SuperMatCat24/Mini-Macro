@@ -209,26 +209,18 @@ chooseUpgradeSingle = function
 		txt = "Player 2 gets 10 coins for winning!"
 		gfx.print txt, 960/2 - txt.len*11/2, 560, color.yellow, "medium"
 	end if
-	
-	next = new uiElements.Button
-	next.x = 880; next.y = 100
-	next.text = "NEXT"
-	next.init
+
+	next = uiElements.Button.make(880, 100, "NEXT")
+
 	objects.clear
 	camera.update
 	upgradeButtons = []
 	possibleUpgrades = upgrades.getUpgrades(player1)
 	for i in range(0, 2)
-		b = new uiElements.UpgradeButton 
 		nextUpgrade = possibleUpgrades[possibleUpgrades.len*rnd]
-		b.upgrade = nextUpgrade
+		if nextUpgrade == null then continue
 		possibleUpgrades.removeVal nextUpgrade
-		b.x = 170 + 310 * i
-		b.y = 350
-		if b.upgrade == null then continue
-		b.text = b.upgrade.descriptions[nextUpgrade.level]
-		if nextUpgrade.icons != [] then b.bigImage = nextUpgrade.icons[0][nextUpgrade.level]
-		b.init
+		b = uiElements.UpgradeButton.make(170 + 310 * i, 350, nextUpgrade, player1)
 		upgradeButtons.push b
 	end for
 	chosenUpgrade = null
@@ -300,16 +292,9 @@ chooseUpgradeMulti = function
 			buttons = upgradeButtons[p]
 			nextUpgrade = possible[possible.len*rnd]
 			if nextUpgrade == null then continue
-
-			b = new uiElements.UpgradeButton 
-			b.x = 240 + 960*playerNum/2; b.y = 170 + 170 * i; b.size = 1
-			b.upgrade = nextUpgrade
-			b.channel = playerNum
 			possible.removeVal nextUpgrade
-			b.targetPlayer = globals[p]
-			b.text = b.upgrade.descriptions[nextUpgrade.level]
-			if nextUpgrade.icons != [] then b.regImage = nextUpgrade.icons[1][nextUpgrade.level]
-			b.init
+			b = uiElements.UpgradeButton.make(240 + 960*playerNum/2, 170 + 170 * i, nextUpgrade, globals[p], 1)
+			b.channel = playerNum
 			buttons.push b
 		end for
 		ready = new uiElements.Button

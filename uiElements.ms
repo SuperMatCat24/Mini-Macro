@@ -12,15 +12,17 @@ Button.instances = []
 Button.disabled = false
 Button.scale = 4
 
-Button.init = function
+Button.init = function(changeImages = true)
     super.init
-    if self.size == 0 then 
-        self.image = self.smallImage
-    else if self.size == 1 then 
-		self.image = self.regImage
-	else
-        self.image = self.bigImage
-    end if
+	if changeImages then
+    	if self.size == 0 then 
+    	    self.image = self.smallImage
+    	else if self.size == 1 then 
+			self.image = self.regImage
+		else
+    	    self.image = self.bigImage
+    	end if
+	end if
     disp.sprites.push self
 
 	self.printText
@@ -90,14 +92,28 @@ Button.onClick = function
 end function
 
 UpgradeButton = new Button
-UpgradeButton.bigImage = file.loadImage("pics/abilities/paper.png")
-UpgradeButton.regImage = file.loadImage("pics/abilities/paper_small.png")
+UpgradeButton.image = file.loadImage("pics/abilities/paper.png")
 UpgradeButton.upgrade = null
 UpgradeButton.size = 3
 UpgradeButton.highlighted = false
 UpgradeButton.instances = []
 UpgradeButton.channel = 0
 UpgradeButton.targetPlayer = null
+
+UpgradeButton.make = function(x, y, upgrade, target, size=0, regColor="#FFFFFF", pressColor="#AAAAAA", disableColor="#777777")
+	b = new self
+	b.x = x; b.y = y
+	b.upgrade = upgrade
+	b.size = size
+	b.color = regColor
+	b.pressedColor = pressColor
+	b.disabledColor = disableColor
+	b.text = upgrade.descriptions[upgrade.level]
+	b.targetPlayer = target
+	b.image = upgrade.icons[size][upgrade.level]
+	b.init
+	return b
+end function
 
 lastIndexOf = function(s, chr)
     for i in range(s.len-1, 0, -1)
@@ -107,13 +123,8 @@ lastIndexOf = function(s, chr)
 end function
 
 UpgradeButton.init = function
-	super.init
+	super.init false
 	UpgradeButton.instances.push self
-	//if self.size == 3 then 
-	//	self.image = self.bigImage
-	//else
-	//	self.image = self.smallImage
-	//end if
 end function
 
 UpgradeButton.die = function
