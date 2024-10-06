@@ -133,7 +133,7 @@ UpgradeButton.die = function
 end function 	
 
 UpgradeButton.printText = function
-	if self.size == 3 then 
+	if self.size == 0 then 
 		self.printTextBig
 	else
 		self.printTextSmall

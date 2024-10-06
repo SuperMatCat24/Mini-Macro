@@ -635,6 +635,7 @@ EnemyKart.driftBoost = 0
 EnemyKart.maxDriftBoost = 0
 
 EnemyKart.init = function(playerTwo)
+	self.pickRandomImage
     super.init
     self.pathPoint = pathUtil.PathPoint.make(globals.path, 0)
 	self.playerNum = playerTwo
@@ -643,9 +644,14 @@ end function
 EnemyKart.reset = function(x, y)
 	super.reset x, y
 	self.pathPoint = pathUtil.PathPoint.make(globals.path, 0)
-	imageIndex = mathUtil.randRange(0, images.carFrames.len)
-    indexMod = (imageIndex + images.carFrames.len) % (images.carFrames.len)
-    if indexMod == images.carFrames.indexOf(globals.p1Images) then imageIndex += 1
+	self.pickRandomImage
+end function
+
+EnemyKart.pickRandomImage = function
+	imageIndex = images.carFrames.len * rnd
+    if images.carFrames[imageIndex] == player1.images then 
+		imageIndex += 1
+	end if
     imageIndex = (imageIndex + images.carFrames.len) % (images.carFrames.len)
     self.changeImages(images.carFrames[imageIndex])
 end function

@@ -147,13 +147,13 @@ onePlayerMenu = function
     uiElements.Button.clear
     disp.sprites = [player1, player2]
 
-    imageIndex = mathUtil.randRange(0, images.carFrames.len)
-    indexMod = (imageIndex + images.carFrames.len) % (images.carFrames.len)
-    if indexMod == images.carFrames.indexOf(playerSprite.images) then imageIndex += 1
-    imageIndex = (imageIndex + images.carFrames.len) % (images.carFrames.len)
+    //imageIndex = mathUtil.randRange(0, images.carFrames.len)
+    //indexMod = (imageIndex + images.carFrames.len) % (images.carFrames.len)
+    //if indexMod == images.carFrames.indexOf(playerSprite.images) then imageIndex += 1
+    //imageIndex = (imageIndex + images.carFrames.len) % (images.carFrames.len)
 
     globals.p1Images = playerSprite.images
-    globals.p2Images = images.carFrames[imageIndex]
+    //globals.p2Images = images.carFrames[imageIndex]
 end function
 
 twoPlayerMenu = function
@@ -170,8 +170,7 @@ twoPlayerMenu = function
     playerSprite.images = images.carFrames[0]
     playerSprite.sprites = []
     playerSprite.scale = 10
-    playerSprite.x = 960*(1/4)
-    playerSprite.y = 350
+    playerSprite.x = 960*(1/4); playerSprite.y = 350
     playerSprite.init
     playerSprite.imageIndex = 0
 
@@ -179,8 +178,7 @@ twoPlayerMenu = function
     enemySprite.images = images.carFrames[1]
     enemySprite.sprites = []
     enemySprite.scale = 10
-    enemySprite.x = 960*(3/4)
-    enemySprite.y = 350
+    enemySprite.x = 960*(3/4); enemySprite.y = 350
     enemySprite.init
     enemySprite.imageIndex = 1
 
