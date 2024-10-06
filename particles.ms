@@ -35,9 +35,9 @@ PlayerParticle.parent = null
 PlayerParticle.init = function
     super.init
     if self.top == true then
-        disp.sprites.push self
+        particleDisp.sprites.push self
     else
-        disp.sprites.insert 0, self
+        particleDisp.sprites.insert 0, self
     end if
     self.spawnTime = time
     PlayerParticle.instances.push self
@@ -45,7 +45,7 @@ end function
 
 PlayerParticle.die = function
     super.die 
-    disp.sprites.removeVal self
+    particleDisp.sprites.removeVal self
     PlayerParticle.instances.removeVal self
 end function
 
@@ -139,7 +139,7 @@ DustParticle.top = true
 clear = function
     for p in PlayerParticle.instances
         p.suspend
-        disp.sprites.removeVal p
+        particleDisp.sprites.removeVal p
     end for
     PlayerParticle.instances = []
 end function

@@ -57,23 +57,29 @@ end function
 
 clear
 
-display(2).mode = displayMode.text
-text = display(2)
+display(1).mode = displayMode.text
+text = display(1)
 text.clear
 
-display(3).mode = displayMode.pixel
-gfx = display(3)
+display(2).mode = displayMode.pixel
+gfx = display(2)
 gfx.clear
 
-disp = display(4)
+display(3).mode = displayMode.sprite
+disp = display(3)
 disp.clear
+
+display(4).mode = displayMode.sprite
+particleDisp = display(4)
+particleDisp.clear
+
+display(5).mode = displayMode.tile
+walls = display(5)
+walls.clear
 
 display(6).mode = displayMode.tile
 ground = display(6)
 ground.clear
-display(5).mode = displayMode.tile
-walls = display(5)
-walls.clear
 
 // ---------- Init Game ----------
 

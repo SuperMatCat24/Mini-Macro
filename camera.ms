@@ -62,6 +62,8 @@ scrollTo = function(sx, sy)
 	walls.scrollY = sy
 	disp.scrollX = sx
 	disp.scrollY = sy
+	particleDisp.scrollX = sx
+	particleDisp.scrollY = sy
 end function
 
 reset = function
