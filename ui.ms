@@ -140,6 +140,7 @@ end function
 
 levelComplete = function
 
+	Sound.stopAll
 	particles.clear
 	lastTime = time
 	while player1.vx + player1.vy + player2.vy + player2.vx != 0
@@ -162,7 +163,6 @@ levelComplete = function
 	wait 0.5
 
 	gfx.clear
-	sound.skid.adjust 0
 	outer.bg = new Sprite
     bg.image = images.woodPanel
     bg.y = -320 + disp.scrollY

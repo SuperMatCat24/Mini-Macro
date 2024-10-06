@@ -51,9 +51,6 @@ skid3.fadeOut = 0
 skid3.loop = true
 skid.mix skid3
 
-skid.play
-skid.adjust 0
-
 crack = new Sound 
 crack.init 1.6, [800, 100, 600, 50, 400, 20, 200, 0], [0.35, 0.15, 0], Sound.noiseWave 
 crack2 = new Sound 

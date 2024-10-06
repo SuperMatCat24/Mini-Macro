@@ -57,6 +57,8 @@ Kart.currentLap = 1
 Kart.currentCheckpoint = 0
 Kart.currentUpgrades = []
 
+Kart.skidSound = null
+
 Kart.init = function
 	disp.sprites.push self
 	super.init
@@ -485,6 +487,27 @@ Kart.tryAccelerate = function(tdx, tdy)
     end if
 end function
 
+Kart.playSkidSound = function(angle_dif)
+
+	if self.vx + self.vy != 0 then
+		// Define the center position of the screen
+		centerX = 960/2
+		centerY = 640/2
+
+		// Calculate the distance from the center
+		distance = abs(self.x - disp.scrollX - centerX) + abs(self.y - disp.scrollY - centerY)  // Simple Manhattan distance
+
+		// Scale the volume inversely based on the distance
+		vol = mathUtil.clamp(1 - (distance / 800), 0, 1)  // The farther from center, the lower the volume
+
+		// Apply this to the skid sound adjustment, with pan adjustment
+		pan = mathUtil.clamp((self.x - disp.scrollX) / 480 - 1, 0, 1)
+		self.skidSound.adjust mathUtil.clamp(vol * (angle_dif / 180), 0, 0.7) * settings.soundVol, pan
+
+	else
+		self.skidSound.adjust 0
+	end if
+end function
 
 Kart.onCheckpointFound = function
 end function
@@ -502,10 +525,15 @@ PlayerKart.currentUpgrades = []
 PlayerKart.losses = 0
 PlayerKart.playerNum = 0
 PlayerKart.inputs = null
+PlayerKart.skidSound = null
 
 PlayerKart.init = function(playerTwo)
     super.init
 	self.playerNum = playerTwo
+	sound.skid.stop
+	self.skidSound = sound.skid
+	self.skidSound.play
+	self.skidSound.adjust 0
 end function
 
 PlayerKart.forwardInput = function
@@ -610,11 +638,7 @@ PlayerKart.update = function(dt = 0.0167)
 		angle_dif = 360 - angle_dif
 	end if
 
-	if self.vx + self.vy != 0 then
-		sound.skid.adjust mathUtil.clamp(angle_dif / 180, 0, 0.7) * settings.soundVol
-	else
-		sound.skid.adjust 0
-	end if
+	self.playSkidSound angle_dif
 
 	self.emitParticles true, angle_dif
 	super.update dt
@@ -633,12 +657,17 @@ EnemyKart.currentUpgrades = []
 EnemyKart.playerNum = 0
 EnemyKart.driftBoost = 0
 EnemyKart.maxDriftBoost = 0
+EnemyKart.skidSound = null
 
 EnemyKart.init = function(playerTwo)
 	self.pickRandomImage
     super.init
     self.pathPoint = pathUtil.PathPoint.make(globals.path, 0)
 	self.playerNum = playerTwo
+	sound.skid.stop
+	self.skidSound = sound.skid
+	self.skidSound.play
+	self.skidSound.adjust 0
 end function
 
 EnemyKart.reset = function(x, y)
@@ -812,11 +841,7 @@ EnemyKart.update = function(dt = 0.0167)
 		angle_dif = 360 - angle_dif
 	end if
 
-	if self.vx + self.vy != 0 then
-		sound.skid.adjust mathUtil.clamp(angle_dif / 180, 0, 0.7) * settings.soundVol
-	else
-		sound.skid.adjust 0
-	end if
+	self.playSkidSound angle_dif
 
 	self.emitParticles false, angle_dif
 	super.update dt
