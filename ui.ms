@@ -174,7 +174,7 @@ levelComplete = function
         yield
     end for
 	player1.x = 0; player1.y = 0
-	camera.update
+	camera.reset
 	bg.y = 320
 	bg.x = 960/2
 
@@ -297,10 +297,7 @@ chooseUpgradeMulti = function
 			b.channel = playerNum
 			buttons.push b
 		end for
-		ready = new uiElements.Button
-		ready.x = 360 + 960*playerNum/4; ready.y = 45
-		ready.text = "READY"
-		ready.init
+		ready = uiElements.Button.make(360 + 960*playerNum/4, 45, "READY")
 		ready.ready = false
 		readyButtons[p] = ready
 		playerNum += 1

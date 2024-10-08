@@ -260,7 +260,7 @@ Kart.checkCheckpoints = function
 	end for
 
 	for c in level.checkpoints
-		if self.overlaps(c) then 
+		if c.contains([self.lx, self.ly]) then 
 			index = level.checkpoints.indexOf(c)
 			if index == (self.currentCheckpoint + 1)%level.checkpoints.len then 
 				self.currentCheckpoint = index

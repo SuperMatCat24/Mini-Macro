@@ -157,10 +157,10 @@ makeCheckpoints = function
 	outer.checkpoints = []
 	for c in constants.checkpoints[race-1]
 		checkpoint = new Bounds
-		checkpoint.x = c[0] * ground.cellSize
-		checkpoint.y = c[1] * ground.cellSize
-		checkpoint.width = c[2] * ground.cellSize
-		checkpoint.height = c[3] * ground.cellSize
+		checkpoint.x = c[0] * 64
+		checkpoint.y = c[1] * 64
+		checkpoint.width = c[2] * 64
+		checkpoint.height = c[3] * 64
 		outer.checkpoints.push checkpoint
 	end for
 end function
