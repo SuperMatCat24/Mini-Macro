@@ -34,9 +34,10 @@ setup = function
 	tileUtil.loadFromFile lvl, walls, ground
 	checkLevelTint
 
-	// Update camera before processing level so objects are placed correctly.
-	camera.update
 	processLevel
+	// Update camera before processing level so objects are placed correctly.
+	globals.updateSpritePositions
+	camera.update
 
 	makeCheckpoints
 

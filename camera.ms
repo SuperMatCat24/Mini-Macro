@@ -44,6 +44,7 @@ update = function
 		end if
 		scrollTo sx, sy
 	else
+		minSize = mathUtil.min(960 / ground.extent[0], 640 / ground.extent[1])
 		// Calculate the center point between the players
 		centerX = (player1.x + player2.x) / 2 - 960/2
 		centerY = (player1.y + player2.y) / 2 - 640/2
@@ -60,16 +61,38 @@ update = function
 		// Use the smaller scale to ensure both dimensions fit
 		zoomLevel = 32+mathUtil.min(scaleX, scaleY)
 
-		// Ensure the zoom level is not too high or too low
-		zoomLevel = mathUtil.clamp(zoomLevel, 1, 64)  // Keep the zoom level between 1 and 64
+		camera.tileCellSize = zoomLevel
+		ground.cellSize = camera.tileCellSize
+		walls.cellSize = camera.tileCellSize 
+		scrollTo centerX, centerY
 
-		// Apply the zoom to tile sizes
-		outer.tileCellSize = zoomLevel
-		ground.cellSize = outer.tileCellSize
-		walls.cellSize = outer.tileCellSize
+		leftBorder = centerX - scaleX < 0
+		rightBorder = centerX + scaleX > ground.extent[0]
 
-		// Scroll the view to the center point between the players
-		scrollTo mathUtil.moveTowards(ground.scrollX, centerX, distance*0.1), mathUtil.moveTowards(ground.scrollY, centerY, distance*0.1)
+		if leftBorder == true and rightBorder == true then
+			camera.tileCellSize = minSize
+			ground.cellSize = camera.tileCellSize
+			walls.cellSize = camera.tileCellSize 
+			scrollTo 0, 0
+		else if leftBorder == true then
+			scrollTo centerX + abs(centerX - scaleX), centerY
+		else if rightBorder == true then
+			scrollTo centerX - abs(centerX + scaleX), centerY
+		end if
+
+		topBorder = centerY - scaleY < 0
+		bottomBorder = centerY + scaleY > ground.extent[1]
+
+		if topBorder == true and bottomBorder == true then
+			camera.tileCellSize = minSize
+			ground.cellSize = camera.tileCellSize
+			walls.cellSize = camera.tileCellSize 
+			scrollTo 0, 0
+		else if topBorder == true then
+			scrollTo ground.scrollX, centerY + abs(centerY - scaleY)
+		else if bottomBorder == true then
+			scrollTo ground.scrollX, centerY - abs(centerY + scaleY)
+		end if
 	end if
 end function
 
