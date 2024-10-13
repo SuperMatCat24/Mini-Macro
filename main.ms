@@ -21,12 +21,10 @@ ensureImport "highscore"
 
 settings.loadSettings
 
-print "Loading music..."
 mus = file.loadSound("mus.ogg")
 mus.loop = true
 mus.play
 mus.adjust settings.musicVol
-print "Music loaded!"
 
 // ---------- Utility functions ----------
 

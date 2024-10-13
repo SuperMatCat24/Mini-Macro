@@ -7,9 +7,6 @@ text = display(2)
 text.clear
 text.delimiter = char(13)
 
-print "LOADING IMAGES..."
-print "Loading Cars"
-
 carFrames = []
 
 blueCarFrames = file.loadImage("/usr/pics/karts/BlueCar.png")
@@ -23,18 +20,12 @@ carFrames.push createFrames(redCarFrames, 16, 16)
 purpleCarFrames = file.loadImage("/usr/pics/karts/PurpleCar.png")
 carFrames.push createFrames(purpleCarFrames, 16, 16)
 
-print "Car images loaded!"
-print "Loading Tilesets"
-
 tileset2 = []
 tileset2.push file.loadImage("pics/tileset2a.png")
 tileset2.push file.loadImage("pics/tileset2b.png")
 tileset2.push file.loadImage("pics/tileset2c.png")
 tileset2.push file.loadImage("pics/tileset2d.png")
 tileset2.push file.loadImage("pics/tileset2e.png")
-
-print "Tilesets Loaded!"
-print "Loading UI Images"
 
 bronzeMedal = file.loadImage("pics/bronzeMedal.png")
 silverMedal = file.loadImage("pics/silverMedal.png")
@@ -43,5 +34,3 @@ trophyImg = file.loadImage("pics/trophy.png")
 
 woodPanel = file.loadImage("pics/WoodBG.png")
 infoPanel = file.loadImage("pics/WoodPaperBG.png")
-
-print "IMAGES LOADED!"
