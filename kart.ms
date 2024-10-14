@@ -393,8 +393,7 @@ Kart.emitParticles = function(isPlayer, angle_dif)
 	else
 		if angle_dif > 45 then
 			p = new particles.DriftParticle
-			p.lx = self.lx
-			p.ly = self.ly
+			p.lx = self.lx; p.ly = self.ly
 			p.rotation = self.rotation
 			p.parent = self
 			if isPlayer then

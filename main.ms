@@ -44,11 +44,15 @@ updateSpritePositions = function
     // Loop though all updatableSprites and change positions and scale
     // to act as a dynamic camera.
     for a in updatable.all
-        if not (a isa Sprite or a isa UpdatableSprite or a isa StackedSprite) then continue
-        a.x = a.lx * camera.tileCellSize / 64
-        a.y = a.ly * camera.tileCellSize / 64
-        a.scale = a.lScale * camera.tileCellSize / 64
+        updateSpritePosition a
     end for
+end function
+
+updateSpritePosition = function(s)
+    if not (s isa Sprite or s isa UpdatableSprite or s isa StackedSprite) then return
+    s.x = s.lx * camera.tileCellSize / 64
+    s.y = s.ly * camera.tileCellSize / 64
+    s.scale = s.lScale * camera.tileCellSize / 64
 end function
 
 // ---------- Init Displays ----------

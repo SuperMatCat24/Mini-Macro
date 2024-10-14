@@ -41,6 +41,7 @@ PlayerParticle.init = function
     end if
     self.spawnTime = time
     PlayerParticle.instances.push self
+    globals.updateSpritePosition self
 end function
 
 PlayerParticle.die = function

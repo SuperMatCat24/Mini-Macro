@@ -8,10 +8,11 @@
 - ~~Enemy pathfinding sometimes randomly crashes~~
 - Collisions with walls are broken
 - ~~Some particles are scaled too big~~
-- Some particles are spawned incorrectly
+- ~~Some particles are spawned incorrectly~~
 - ~~Particles are drawn over the cars~~
 - ~~The enemy sometimes uses the same car as the player~~
 - Only player 1 can make noise
+- Two player camera is completely broken
 
 # TODO
 
