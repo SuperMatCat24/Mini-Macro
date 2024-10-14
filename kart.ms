@@ -99,24 +99,26 @@ end function
 
 Kart.checkWalls = function
 	playerHitbox = (12*(self.scale/4))
+	playerLocalHitbox = (12*(self.lScale/4))
 	if level.blocksWalking(self.x + playerHitbox, self.y) then
 		if self.checkCrate(self.x + playerHitbox, self.y) == true then return
-		self.lx = floor((self.lx + playerHitbox) / camera.tileCellSize) * camera.tileCellSize - playerHitbox
+		self.lx = floor((self.lx + playerLocalHitbox) / camera.tileCellSize) * camera.tileCellSize - playerLocalHitbox
 		self.onWallHit true
 	else if level.blocksWalking(self.x - playerHitbox, self.y) then
 		if self.checkCrate(self.x - playerHitbox, self.y) == true then return
-		self.lx = ceil((self.lx - playerHitbox) / camera.tileCellSize) * camera.tileCellSize + playerHitbox
+		self.lx = ceil((self.lx - playerLocalHitbox) / camera.tileCellSize) * camera.tileCellSize + playerLocalHitbox
 		self.onWallHit true
 	end if
 	if level.blocksWalking(self.x, self.y + playerHitbox) then
 		if self.checkCrate(self.x, self.y + playerHitbox) == true then return
-		self.ly = floor((self.ly + playerHitbox) / camera.tileCellSize) * camera.tileCellSize - playerHitbox
+		self.ly = floor((self.ly + playerLocalHitbox) / camera.tileCellSize) * camera.tileCellSize - playerLocalHitbox
 		self.onWallHit false
 	else if level.blocksWalking(self.x, self.y - playerHitbox) then
 		if self.checkCrate(self.x, self.y - playerHitbox) == true then return
-		self.ly = ceil((self.ly - playerHitbox) / camera.tileCellSize) * camera.tileCellSize + playerHitbox
+		self.ly = ceil((self.ly - playerLocalHitbox) / camera.tileCellSize) * camera.tileCellSize + playerLocalHitbox
 		self.onWallHit false
 	end if
+
 	if self.lx * camera.tileCellSize / 64 < 0 then
         self.lx = 0
         self.onWallHit true
