@@ -3,14 +3,6 @@
 
 # Known bugs
 
-- ~~Laps are sometimes not counted correctly~~
-- ~~Enemy AI can get stuck on walls~~
-- ~~Enemy pathfinding sometimes randomly crashes~~
-- ~~Collisions with walls are broken~~
-- ~~Some particles are scaled too big~~
-- ~~Some particles are spawned incorrectly~~
-- ~~Particles are drawn over the cars~~
-- ~~The enemy sometimes uses the same car as the player~~
 - Only player 1 can make noise
 - Two player camera is completely broken
 
@@ -18,10 +10,6 @@
 
 - Add controls to the options menu
 - Finish two player mode
-- ~~Rework old levels~~
-- ~~Add saving for player options~~
-- ~~Display high scores at the end of the game~~
-- ~~Add saving for high scores~~
 - Refactor code
 
 # OTHER FEATURES
