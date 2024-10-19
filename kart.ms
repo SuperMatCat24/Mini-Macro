@@ -100,8 +100,10 @@ end function
 Kart.checkWalls = function
 	playerHitbox = (12*(self.scale/4))
 	playerLocalHitbox = (12*(self.lScale/4))
-	if level.blocksWalking(self.x + playerHitbox, self.y) then
-		if self.checkCrate(self.x + playerHitbox, self.y) == true then return
+	globalX = self.lx * camera.tileCellSize / 64
+	globalY = self.ly * camera.tileCellSize / 64
+	if level.blocksWalking(globalX + playerHitbox, self.y) then
+		if self.checkCrate(globalX + playerHitbox, self.y) == true then return
 		self.lx = floor((self.lx + playerLocalHitbox) / camera.tileCellSize) * camera.tileCellSize - playerLocalHitbox
 		self.onWallHit true
 	else if level.blocksWalking(self.x - playerHitbox, self.y) then
@@ -109,8 +111,8 @@ Kart.checkWalls = function
 		self.lx = ceil((self.lx - playerLocalHitbox) / camera.tileCellSize) * camera.tileCellSize + playerLocalHitbox
 		self.onWallHit true
 	end if
-	if level.blocksWalking(self.x, self.y + playerHitbox) then
-		if self.checkCrate(self.x, self.y + playerHitbox) == true then return
+	if level.blocksWalking(globalX, self.y + playerHitbox) then
+		if self.checkCrate(globalX, self.y + playerHitbox) == true then return
 		self.ly = floor((self.ly + playerLocalHitbox) / camera.tileCellSize) * camera.tileCellSize - playerLocalHitbox
 		self.onWallHit false
 	else if level.blocksWalking(self.x, self.y - playerHitbox) then
@@ -565,6 +567,9 @@ PlayerKart.update = function(dt = 0.0167)
 	tdx = sin(angle_radians)
 	tdy = cos(angle_radians)
 
+	self.checkWalls
+	self.checkCheckpoints
+
 	if key.pressed("left shift") and self.forwardInput >= 1 then
 
 		currentSpeed = sqrt(self.vx * self.vx + self.vy * self.vy)
@@ -625,7 +630,7 @@ PlayerKart.update = function(dt = 0.0167)
 	self.by = mathUtil.moveTowards(self.by, 0, self.boostDecel * dt)
 
 	// Check for wall collisions
-	self.checkWalls
+	
 	self.checkCheckpoints
 
 	angle_deg = self.calculateVelocityAngle
@@ -793,6 +798,9 @@ EnemyKart.update = function(dt = 0.0167)
     dir = (targetAngle*180/pi+90) 
 	self.angle_degrees = moveTowardsAngle(self.angle_degrees, -dir, turnSpeed*dt)
 
+	self.checkWalls
+	self.checkCheckpoints
+
 	// Update position
 	self.lx += (self.vx + self.bx) * dt
 	self.ly += (self.vy + self.by) * dt 
@@ -805,10 +813,6 @@ EnemyKart.update = function(dt = 0.0167)
 
 	self.bx = mathUtil.moveTowards(self.bx, 0, self.boostDecel * dt)
 	self.by = mathUtil.moveTowards(self.by, 0, self.boostDecel * dt)
-
-	// Check for wall collisions
-	self.checkWalls
-	self.checkCheckpoints
 
 	angle_deg = 0
 

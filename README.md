@@ -6,7 +6,7 @@
 - ~~Laps are sometimes not counted correctly~~
 - ~~Enemy AI can get stuck on walls~~
 - ~~Enemy pathfinding sometimes randomly crashes~~
-- Collisions with walls are broken <- FIX NEXT
+- ~~Collisions with walls are broken~~
 - ~~Some particles are scaled too big~~
 - ~~Some particles are spawned incorrectly~~
 - ~~Particles are drawn over the cars~~
