@@ -16,7 +16,7 @@ Coin.place = function(tileX, tileY)
 	coin = new Coin
 	coin.x = tileX * camera.tileCellSize + (camera.tileCellSize/2)
     coin.y = tileY * camera.tileCellSize + (camera.tileCellSize/2)
-    coin.scale = 4 * (camera.tileCellSize / 64)
+    coin.scale = 4 * camera.scale
     coin.tileX = tileX
     coin.tileY = tileY
     disp.sprites.push coin

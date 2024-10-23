@@ -3,8 +3,13 @@
 
 import "importUtil"
 ensureImport "level"
+ensureImport "mathUtil"
 
-tileCellSize = 64
+min = @mathUtil.min
+max = @mathUtil.max
+
+scale = 1
+tileCellSize = 64	// Actual size of scaled tiles on screen
 
 camBox = {}
 camBox.left = 960/2.25
@@ -12,91 +17,91 @@ camBox.right = 960/1.75
 camBox.bottom = 220
 camBox.top = 300
 
+twoPlayerCamBox = {}
+twoPlayerCamBox.left = 64
+twoPlayerCamBox.right = 960 - 64
+twoPlayerCamBox.bottom = 64
+twoPlayerCamBox.top = 640 - 64*2
+twoPlayerCamBox.midX = (twoPlayerCamBox.left + twoPlayerCamBox.right)/2
+twoPlayerCamBox.midY = (twoPlayerCamBox.bottom + twoPlayerCamBox.top)/2
+
+// Set the following to true to force a dynamic camera, even
+// in a 1P game.
+kForceDynamicCam = true
+
+// Scroll as needed to get x,y (in world coordinates)
+// to be within camBox (in screen coordinates).
+updateOnePlayer = function(x,y)
+	ground.cellSize = 64
+	walls.cellSize = 64
+	sx = ground.scrollX
+	sy = ground.scrollY
+	if x - sx < camBox.left then
+		sx = x - camBox.left
+	else if x - sx > camBox.right then
+		sx = x - camBox.right
+	end if
+	if y - sy < camBox.bottom then
+		sy = y - camBox.bottom
+	else if y - sy > camBox.top then
+		sy = y - camBox.top
+	end if
+	if sx < 0 then
+		sx = 0
+	else if sx + 960 > ground.extent[0] * 64 then
+		sx = ground.extent[0] * 64 - 960
+	end if
+	if sy < 0 then
+		sy = 0
+	else if sy + 640 > ground.extent[1] * 64 then
+		sy = ground.extent[1] * 64 - 640
+	end if
+	scrollTo sx, sy
+end function
+
+
+// Scroll as needed to get both players (in world coordinates)
+// to be within the twoPlayerCamBox (minus some border).
+updateTwoPlayer = function
+	// Find the min and max in each of X and Y (from player world coordinates).
+	x1 = min(player1.lx, player2.lx)
+	x2 = max(player1.lx, player2.lx)
+	y1 = min(player1.ly, player2.ly)
+	y2 = max(player1.ly, player2.ly)
+	
+	// Now figure out the scale needed in each dimension to make the span
+	// between min and max, match the view size.  Then pick the smaller
+	// scale, so that both spans are in view.
+	xscale = (twoPlayerCamBox.right - twoPlayerCamBox.left) / (x2 - x1)
+	yscale = (twoPlayerCamBox.top - twoPlayerCamBox.bottom) / (y2 - y1)
+	scale = min(xscale, yscale)
+	if scale > 1 then scale = 1
+	
+	// Then, figure out how much we want to scroll.
+	// For now let's just keep the midpoint of the players at the center
+	// of the cam box.
+	midX = (x2 + x1)/2
+	midY = (y2 + y1)/2
+	scrollTo midX*scale - twoPlayerCamBox.midX, midY*scale - twoPlayerCamBox.midY, scale
+end function
+
+
 // Scroll as needed to get x,y (in world coordinates)
 // to be within camBox (in screen coordinates).
 update = function
-	if globals.twoplayer == false then
-		ground.cellSize = 64
-		walls.cellSize = 64
-		x = player1.x
-		y = player1.y
-		sx = ground.scrollX
-		sy = ground.scrollY
-		if x - sx < camBox.left then
-			sx = x - camBox.left
-		else if x - sx > camBox.right then
-			sx = x - camBox.right
-		end if
-		if y - sy < camBox.bottom then
-			sy = y - camBox.bottom
-		else if y - sy > camBox.top then
-			sy = y - camBox.top
-		end if
-		if sx < 0 then
-			sx = 0
-		else if sx + 960 > ground.extent[0] * 64 then
-			sx = ground.extent[0] * 64 - 960
-		end if
-		if sy < 0 then
-			sy = 0
-		else if sy + 640 > ground.extent[1] * 64 then
-			sy = ground.extent[1] * 64 - 640
-		end if
-		scrollTo sx, sy
+	if globals.twoplayer or kForceDynamicCam then
+		updateTwoPlayer
 	else
-		minSize = mathUtil.min(960 / ground.extent[0], 640 / ground.extent[1])
-		// Calculate the center point between the players
-		centerX = (player1.x + player2.x) / 2 - 960/2
-		centerY = (player1.y + player2.y) / 2 - 640/2
-
-		// Calculate the distance between the players
-		distanceX = abs(player2.x - player1.x)
-		distanceY = abs(player2.y - player1.y)
-		distance = (distanceX + distanceY) / 2
-
-		// Calculate the scaling factors to fit both players on screen
-		scaleX = 960 / (distanceX) // Adding 64 for a bit of padding
-		scaleY = 640 / (distanceY)
-
-		// Use the smaller scale to ensure both dimensions fit
-		zoomLevel = 32+mathUtil.min(scaleX, scaleY)
-
-		camera.tileCellSize = zoomLevel
-		ground.cellSize = camera.tileCellSize
-		walls.cellSize = camera.tileCellSize 
-		scrollTo centerX, centerY
-
-		leftBorder = centerX - scaleX < 0
-		rightBorder = centerX + scaleX > ground.extent[0]
-
-		if leftBorder == true and rightBorder == true then
-			camera.tileCellSize = minSize
-			ground.cellSize = camera.tileCellSize
-			walls.cellSize = camera.tileCellSize 
-			scrollTo 0, 0
-		else if leftBorder == true then
-			scrollTo centerX + abs(centerX - scaleX), centerY
-		else if rightBorder == true then
-			scrollTo centerX - abs(centerX + scaleX), centerY
-		end if
-
-		topBorder = centerY - scaleY < 0
-		bottomBorder = centerY + scaleY > ground.extent[1]
-
-		if topBorder == true and bottomBorder == true then
-			camera.tileCellSize = minSize
-			ground.cellSize = camera.tileCellSize
-			walls.cellSize = camera.tileCellSize 
-			scrollTo 0, 0
-		else if topBorder == true then
-			scrollTo ground.scrollX, centerY + abs(centerY - scaleY)
-		else if bottomBorder == true then
-			scrollTo ground.scrollX, centerY - abs(centerY + scaleY)
-		end if
+		updateOnePlayer player1.x, player1.y
 	end if
 end function
 
-scrollTo = function(sx, sy)
+// Scroll the screen such that the bottom-left corner of the screen is
+// at sx, sy in world space.  Also, scale the display: scale=1 means
+// full size, scale = 0.5 means everything is half as big on screen, etc.
+scrollTo = function(sx, sy, scale=1)
+	sx *= scale
+	sy *= scale
 	ground.scrollX = sx
 	ground.scrollY = sy
 	walls.scrollX = sx
@@ -105,6 +110,11 @@ scrollTo = function(sx, sy)
 	disp.scrollY = sy
 	particleDisp.scrollX = sx
 	particleDisp.scrollY = sy
+	
+	outer.scale = scale
+	outer.tileCellSize = 64 * scale
+	ground.cellSize = tileCellSize
+	walls.cellSize = tileCellSize
 end function
 
 reset = function

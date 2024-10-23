@@ -50,9 +50,9 @@ end function
 
 updateSpritePosition = function(s)
     if not (s isa Sprite or s isa UpdatableSprite or s isa StackedSprite) then return
-    s.x = s.lx * camera.tileCellSize / 64
-    s.y = s.ly * camera.tileCellSize / 64
-    s.scale = s.lScale * camera.tileCellSize / 64
+    s.x = s.lx * camera.scale
+    s.y = s.ly * camera.scale
+    s.scale = s.lScale * camera.scale
 end function
 
 // ---------- Init Displays ----------
