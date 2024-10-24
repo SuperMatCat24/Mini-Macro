@@ -213,7 +213,7 @@ chooseUpgradeSingle = function
 	next = uiElements.Button.make(880, 100, "NEXT")
 
 	objects.clear
-	camera.update
+	camera.reset
 	upgradeButtons = []
 	possibleUpgrades = upgrades.getUpgrades(player1)
 	for i in range(0, 2)
@@ -260,7 +260,7 @@ chooseUpgradeMulti = function
     gfx.line 960/2, 0, 960/2, 640, color.red, 10
 
 	objects.clear
-	camera.update
+	camera.reset
 
 	txt = "Player 1"
     gfx.print txt, 960*(1/4)-txt.len*10, 595, color.white, "large"

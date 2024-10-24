@@ -27,7 +27,7 @@ twoPlayerCamBox.midY = (twoPlayerCamBox.bottom + twoPlayerCamBox.top)/2
 
 // Set the following to true to force a dynamic camera, even
 // in a 1P game.
-kForceDynamicCam = true
+kForceDynamicCam = false
 
 // Scroll as needed to get x,y (in world coordinates)
 // to be within camBox (in screen coordinates).
@@ -46,16 +46,16 @@ updateOnePlayer = function(x,y)
 	else if y - sy > camBox.top then
 		sy = y - camBox.top
 	end if
-	if sx < 0 then
-		sx = 0
-	else if sx + 960 > ground.extent[0] * 64 then
-		sx = ground.extent[0] * 64 - 960
-	end if
-	if sy < 0 then
-		sy = 0
-	else if sy + 640 > ground.extent[1] * 64 then
-		sy = ground.extent[1] * 64 - 640
-	end if
+//	if sx < 0 then
+//		sx = 0
+//	else if sx + 960 > ground.extent[0] * 64 then
+//		sx = ground.extent[0] * 64 - 960
+//	end if
+//	if sy < 0 then
+//		sy = 0
+//	else if sy + 640 > ground.extent[1] * 64 then
+//		sy = ground.extent[1] * 64 - 640
+//	end if
 	scrollTo sx, sy
 end function
 
@@ -78,11 +78,10 @@ updateTwoPlayer = function
 	if scale > 1 then scale = 1
 	
 	// Then, figure out how much we want to scroll.
-	// For now let's just keep the midpoint of the players at the center
-	// of the cam box.
+	// Put the midpoint of the players at the center of the cam box.
 	midX = (x2 + x1)/2
 	midY = (y2 + y1)/2
-	scrollTo midX*scale - twoPlayerCamBox.midX, midY*scale - twoPlayerCamBox.midY, scale
+	scrollTo midX - twoPlayerCamBox.midX/scale, midY - twoPlayerCamBox.midY/scale, scale
 end function
 
 
@@ -97,11 +96,22 @@ update = function
 end function
 
 // Scroll the screen such that the bottom-left corner of the screen is
-// at sx, sy in world space.  Also, scale the display: scale=1 means
+// at sx, sy in world space (but limited to keep from going beyond the
+// bounds of the ground display).  Also, scale the display: scale=1 means
 // full size, scale = 0.5 means everything is half as big on screen, etc.
 scrollTo = function(sx, sy, scale=1)
 	sx *= scale
 	sy *= scale
+	if sx < 0 then
+		sx = 0
+	else
+		sx = min(sx, ground.extent[0] * 64 * scale - 960)
+	end if
+	if sy < 0 then
+		sy = 0
+	else
+		sy = min(sy, ground.extent[1] * 64 * scale - 640)
+	end if
 	ground.scrollX = sx
 	ground.scrollY = sy
 	walls.scrollX = sx
