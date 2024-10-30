@@ -46,6 +46,9 @@ updateSpritePositions = function
     for a in updatable.all
         updateSpritePosition a
     end for
+    for c in objects.Coin.instances
+        updateSpritePosition c
+    end for
 end function
 
 updateSpritePosition = function(s)
@@ -129,8 +132,6 @@ while true
     lastTime = time
     coinTimer += dt
 
-    updateSpritePositions
-
     if coinTimer > 25 then
         objects.regenCoins
         coinTimer = 0
@@ -145,6 +146,7 @@ while true
     end if
 
     updatable.update dt
+    updateSpritePositions
     camera.update 
 
     key.clear // Clear key buffer in case of a crash.

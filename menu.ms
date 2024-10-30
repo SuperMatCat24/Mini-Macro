@@ -253,6 +253,7 @@ twoPlayerMenu = function
     globals.p2Images = enemySprite.images
 end function
 
+inputButtonImage = file.loadImage("pics/inputButton.png")
 optionsMenu = function
     gfx.clear
     uiElements.Button.clear
@@ -264,13 +265,37 @@ optionsMenu = function
     bg.scale = 4
     disp.sprites.push bg
     
-    exit = uiElements.Button.make(910, 590, "X", 0)
-
-    clearAchivements = uiElements.Button.make(960*(2/8), 50, "Clear Achivements", 2, color.rgb(255, 50, 50), color.rgb(200, 0, 0))
-    clearSettings = uiElements.Button.make(960*(6/8), 50, "Clear Settings", 2, color.rgb(255, 50, 50), color.rgb(200, 0, 0))
+    exit = uiElements.Button.make(910, 590, "X", 0) 
 
     mVolume = uiElements.Slider.make(300, 550, 200, 20, 20, settings.musicVol, "Music Volume:")
     sVolume = uiElements.Slider.make(300, 500, 200, 20, 20, settings.soundVol/2, "Sound Volume:")
+
+    inputStrings = ["Up", "Down", "Left", "Right", "Drift"]
+
+    //p1ChangeInput = uiElements.Button.make(960*(1/4), 400, "Player 1 Inputs", 2)
+    //p2ChangeInput = uiElements.Button.make(960*(3/4), 400, "Player 2 Inputs", 2)
+    txt = "Player 1 Inputs"
+    gfx.print txt, 0+100, 400, color.white, "large"
+    txt = "Player 2 Inputs"
+    gfx.print txt, 960*(2/4)+100, 400, color.white, "large"
+
+    p1InputButtons = []
+    for i in range(inputs.p1Inputs.len-1)
+        txt = inputStrings[i]
+        gfx.print txt, 0+100, 350-i*(inputButtonImage.height*4-12), color.white, "large"
+        b = uiElements.Button.make(960*(1/4), 350-i*(inputButtonImage.height*4-12), inputs.p1Inputs[i][0], -1)
+        b.image = inputButtonImage
+        p1InputButtons.push b
+    end for
+
+    p2InputButtons = []
+    for i in range(inputs.p2Inputs.len-1)
+        txt = inputStrings[i]
+        gfx.print txt, 960*(2/4)+100, 350-i*(inputButtonImage.height*4-12), color.white, "large"
+        b = uiElements.Button.make(960*(3/4), 350-i*(inputButtonImage.height*4-12), inputs.p2Inputs[i][0], -1)
+        b.image = inputButtonImage
+        p1InputButtons.push b
+    end for
 
     while true
         mVolume.update
@@ -291,9 +316,22 @@ optionsMenu = function
             updatable.all = []
             mainMenu
             return
-        else if clearAchivements.isClicked then
-        else if clearSettings.isClicked then
         end if
         yield
     end while
 end function
+
+waitForAny = function
+	while true
+		for k in key.keyNames
+			if key.pressed(k) then return k
+		end for
+		for axis in allAxes
+			if abs(key.axis(axis)) > 0.5 then
+				if key.axis(axis) > 0 then return axis + " +"
+				return axis + " -"
+			end if
+		end for
+		yield
+	end while
+end function	
