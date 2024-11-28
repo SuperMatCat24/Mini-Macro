@@ -13,8 +13,12 @@
 
 # TODO
 
+- Finish control customization in options screen
 - Finish two player mode
 - Refactor code
+- Add some way to abort a game (Esc key)
+- Add more Help (brief description of how to play)
+- On shop panels: if an item is too expensive, we still need to show the price.
 
 # OTHER FEATURES
 

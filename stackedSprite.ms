@@ -70,7 +70,7 @@ StackedSprite.updateSprites = function
 	// Loop through all of our sprites,
 	// and make sure its position and scale is the same as ours. 
 	// Increases the y position to make it look 3D.
-	for i in range(0, self.sprites.len-1)
+	for i in self.sprites.indexes
 		s = self.sprites[i]
 		s.x = self.x; s.y = self.y + i*self.scale
 		s.scale = self.scale
