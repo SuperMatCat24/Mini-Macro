@@ -1,19 +1,18 @@
 # Mini-Macro
 
-1v1 racing game made in mini micro.
+1v1 racing game made in Mini Micro.
 
 # Known bugs
 
-- Only player 1 can make noise
+- Only player 1 can make noise (fixed?)
+- Only player 1 can drift (fixed?)
 - Sprite display and tile displays are offset sometimes
+- (Maybe same issue) sometimes a stationary player appears to shift around on the road as the camera moves/zooms
 - Collision breaks sometimes with dynamic camera
 - Game lags when starting rounds and picking up coins
-- Only player 1 can drift
 
 # TODO
 
-- Add controls to the options menu
-- Limit the max zoom of the two player camera
 - Finish two player mode
 - Refactor code
 
